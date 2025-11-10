@@ -1,0 +1,125 @@
+// main.dart
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vivar/core/database/database_seeder.dart';
+import 'package:vivar/models/place_model.dart';
+import 'app.dart';
+import 'providers/auth_provider.dart';
+import 'providers/places_provider.dart';
+import 'providers/user_provider.dart';
+import 'providers/favorites_provider.dart';
+import 'providers/checkins_provider.dart';
+import 'providers/badges_provider.dart';
+import 'providers/challenges_provider.dart';
+import 'providers/notifications_provider.dart';
+import 'core/database/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializar banco de dados
+  await DatabaseHelper().deleteDatabase();
+  await DatabaseHelper().database;
+  await DatabaseHelper().clearAllData();
+
+  // Popular banco de dados com mocks (apenas na primeira vez)
+  final seeder = DatabaseSeeder();
+  await seeder.seed();
+
+  await _testDatabaseDirectly();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        // ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => PlacesProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        ChangeNotifierProvider(create: (_) => CheckinsProvider()),
+        ChangeNotifierProvider(create: (_) => BadgesProvider()),
+        ChangeNotifierProvider(create: (_) => ChallengesProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationsProvider()),
+      ],
+      child: VivarApp(),
+    ),
+  );
+}
+
+Future<void> _testDatabaseDirectly() async {
+  debugPrint('🧪 TESTE DIRETO NO BANCO');
+
+  try {
+    final db = await DatabaseHelper().database;
+
+    // 1. Verificar se a tabela existe
+    final tables = await db.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='places'",
+    );
+    debugPrint('📋 Tabela places existe? ${tables.isNotEmpty}');
+
+    if (tables.isEmpty) {
+      debugPrint('❌ PROBLEMA: Tabela places não existe!');
+      return;
+    }
+
+    // 2. Contar registros
+    final count = Sqflite.firstIntValue(
+      await db.rawQuery('SELECT COUNT(*) FROM places'),
+    );
+    debugPrint('📊 Total de registros: $count');
+
+    if (count == 0) {
+      debugPrint('⚠️ BANCO VAZIO! Vamos inserir um teste...');
+
+      // 3. Inserir um registro de teste MANUALMENTE
+      await db.insert('places', {
+        'id': 'test_manual_${DateTime.now().millisecondsSinceEpoch}',
+        'name': 'Teste Manual',
+        'category': 'Cafés',
+        'address': 'Rua Teste, 123',
+        'city': 'São Paulo',
+        'state': 'SP',
+        'latitude': -23.5505,
+        'longitude': -46.6333,
+        'rating': 5.0,
+        'reviews_count': 1,
+        'is_open': 1,
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+        'synced': 0,
+      });
+
+      debugPrint('✅ Registro de teste inserido!');
+
+      // 4. Verificar novamente
+      final newCount = Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM places'),
+      );
+      debugPrint('📊 Novo total: $newCount');
+    }
+
+    // 5. Buscar e mostrar os primeiros 3
+    final maps = await db.query('places', limit: 3);
+    debugPrint('📋 Primeiros registros:');
+    for (var map in maps) {
+      debugPrint('   - ${map['name']} (${map['id']})');
+    }
+
+    // 6. Testar PlaceModel.fromMap()
+    if (maps.isNotEmpty) {
+      try {
+        final place = PlaceModel.fromMap(maps.first);
+        debugPrint('✅ PlaceModel.fromMap() funcionou: ${place.name}');
+      } catch (e, stack) {
+        debugPrint('❌ ERRO no PlaceModel.fromMap(): $e');
+        debugPrint('Stack: $stack');
+        debugPrint('Map que causou erro: ${maps.first}');
+      }
+    }
+  } catch (e, stack) {
+    debugPrint('❌ ERRO NO TESTE: $e');
+    debugPrint('Stack: $stack');
+  }
+}
