@@ -3,7 +3,96 @@ import '../database/database_helper.dart';
 import '../../models/place_model.dart';
 import 'base_repository.dart';
 
-class PlaceRepository extends BaseRepository<PlaceModel> {
+// core/repositories/protocols/place_protocols.dart
+
+// Arquivo: place_category_reader_protocol.dart
+/// Protocolo para leitura de lugares por categoria
+abstract class PlaceCategoryReaderProtocol {
+  /// Retorna lugares de uma categoria específica
+  Future<List<PlaceModel>> getByCategory(String category);
+}
+
+// Arquivo: place_location_reader_protocol.dart
+/// Protocolo para leitura de lugares por localização
+abstract class PlaceLocationReaderProtocol {
+  /// Retorna lugares próximos a uma coordenada
+  Future<List<PlaceModel>> getNearby(
+    double latitude,
+    double longitude,
+    double radiusKm,
+  );
+}
+
+// Arquivo: place_availability_reader_protocol.dart
+/// Protocolo para leitura de disponibilidade de lugares
+abstract class PlaceAvailabilityReaderProtocol {
+  /// Retorna apenas lugares que estão abertos
+  Future<List<PlaceModel>> getOpenPlaces();
+}
+
+// Arquivo: place_search_protocol.dart
+/// Protocolo para busca de lugares
+abstract class PlaceSearchProtocol {
+  /// Busca lugares por texto (nome, descrição ou categoria)
+  Future<List<PlaceModel>> search(String searchText);
+}
+
+// Arquivo: place_discount_reader_protocol.dart
+/// Protocolo para leitura de lugares com desconto
+abstract class PlaceDiscountReaderProtocol {
+  /// Retorna lugares que oferecem desconto
+  Future<List<PlaceModel>> getPlacesWithDiscount();
+}
+
+// Arquivo: place_premium_reader_protocol.dart
+/// Protocolo para leitura de lugares premium
+abstract class PlacePremiumReaderProtocol {
+  /// Retorna lugares exclusivos para usuários premium
+  Future<List<PlaceModel>> getPremiumPlaces();
+}
+
+// Arquivo: place_rating_reader_protocol.dart
+/// Protocolo para leitura de lugares por avaliação
+abstract class PlaceRatingReaderProtocol {
+  /// Retorna os lugares mais bem avaliados
+  Future<List<PlaceModel>> getTopRated({int limit = 10});
+}
+
+// Arquivo: place_rating_updater_protocol.dart
+/// Protocolo para atualização de avaliações de lugares
+abstract class PlaceRatingUpdaterProtocol {
+  /// Atualiza a avaliação média e contagem de reviews de um lugar
+  Future<int> updateRating(String placeId, double newRating, int reviewsCount);
+}
+
+// Arquivo: place_filter_protocol.dart
+/// Protocolo para filtragem avançada de lugares
+abstract class PlaceFilterProtocol {
+  /// Retorna lugares filtrados por múltiplos critérios
+  Future<List<PlaceModel>> getFiltered({
+    List<String>? categories,
+    String? priceRange,
+    double? minRating,
+    List<String>? amenities,
+    bool? openNow,
+  });
+}
+
+// ============================================
+// IMPLEMENTAÇÃO NO REPOSITORY
+// ============================================
+
+class PlaceRepository extends BaseRepository<PlaceModel>
+    implements
+        PlaceCategoryReaderProtocol,
+        PlaceLocationReaderProtocol,
+        PlaceAvailabilityReaderProtocol,
+        PlaceSearchProtocol,
+        PlaceDiscountReaderProtocol,
+        PlacePremiumReaderProtocol,
+        PlaceRatingReaderProtocol,
+        PlaceRatingUpdaterProtocol,
+        PlaceFilterProtocol {
   @override
   String get tableName => 'places';
 
@@ -14,11 +103,13 @@ class PlaceRepository extends BaseRepository<PlaceModel> {
   Map<String, dynamic> toMap(PlaceModel model) => model.toMap();
 
   // Buscar por categoria
+  @override
   Future<List<PlaceModel>> getByCategory(String category) async {
     return await getWhere('category = ?', [category]);
   }
 
   // Buscar por proximidade (requer cálculo de distância)
+  @override
   Future<List<PlaceModel>> getNearby(
     double latitude,
     double longitude,
@@ -53,11 +144,13 @@ class PlaceRepository extends BaseRepository<PlaceModel> {
   }
 
   // Buscar lugares abertos
+  @override
   Future<List<PlaceModel>> getOpenPlaces() async {
     return await getWhere('is_open = ?', [1]);
   }
 
   // Buscar por texto
+  @override
   Future<List<PlaceModel>> search(String searchText) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -69,6 +162,7 @@ class PlaceRepository extends BaseRepository<PlaceModel> {
   }
 
   // Lugares com desconto
+  @override
   Future<List<PlaceModel>> getPlacesWithDiscount() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -79,11 +173,13 @@ class PlaceRepository extends BaseRepository<PlaceModel> {
   }
 
   // Lugares premium
+  @override
   Future<List<PlaceModel>> getPremiumPlaces() async {
     return await getWhere('is_premium_only = ?', [1]);
   }
 
   // Top avaliados
+  @override
   Future<List<PlaceModel>> getTopRated({int limit = 10}) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -95,6 +191,7 @@ class PlaceRepository extends BaseRepository<PlaceModel> {
   }
 
   // Atualizar rating
+  @override
   Future<int> updateRating(
     String placeId,
     double newRating,
@@ -114,6 +211,7 @@ class PlaceRepository extends BaseRepository<PlaceModel> {
   }
 
   // Filtros avançados
+  @override
   Future<List<PlaceModel>> getFiltered({
     List<String>? categories,
     String? priceRange,

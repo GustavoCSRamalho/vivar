@@ -32,7 +32,6 @@ class SwipeCard extends StatelessWidget {
             children: [
               // Imagem
               Expanded(
-                flex: 3,
                 child: Stack(
                   children: [
                     // Imagem de fundo
@@ -125,124 +124,126 @@ class SwipeCard extends StatelessWidget {
               ),
 
               // Informações
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Nome e Rating
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              place['name'],
-                              style: AppTextStyles.h3,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nome e Rating
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            place['name'],
+                            style: AppTextStyles.h3,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(width: 8),
-                          Icon(Icons.star, color: AppColors.accent, size: 18),
-                          SizedBox(width: 4),
-                          Text(
-                            place['rating'].toString(),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(Icons.star, color: AppColors.accent, size: 18),
+                        SizedBox(width: 4),
+                        Text(
+                          place['rating'].toString(),
+                          style: AppTextStyles.bodySmall.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
 
-                      SizedBox(height: 8),
+                    SizedBox(height: 6),
 
-                      // Categoria e Distância
-                      Row(
-                        children: [
-                          Text(
+                    // Categoria e Distância
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
                             place['category'],
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.textSecondary,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          Text(
-                            ' • ',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          Text(
-                            place['priceRange'],
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            ' • ',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          Icon(
-                            Icons.location_on,
-                            size: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                          SizedBox(width: 2),
-                          Text(
-                            '${place['distance']}km',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 12),
-
-                      // Descrição
-                      Expanded(
-                        child: Text(
-                          place['description'],
+                        ),
+                        Text(
+                          ' • ',
                           style: AppTextStyles.bodySmall.copyWith(
                             color: AppColors.textSecondary,
-                            height: 1.4,
                           ),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
+                        Text(
+                          place['priceRange'],
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          ' • ',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        Icon(
+                          Icons.location_on,
+                          size: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                        SizedBox(width: 2),
+                        Text(
+                          '${place['distance']}km',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
 
-                      // Tags
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: (place['tags'] as List<String>).take(3).map((
-                          tag,
-                        ) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.inputBackground,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Text(
-                              tag,
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                    SizedBox(height: 6),
+
+                    // Descrição
+                    Text(
+                      place['description'],
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                        height: 1.4,
                       ),
-                    ],
-                  ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    SizedBox(height: 8),
+
+                    // Tags
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: (place['tags'] as List<String>).take(3).map((
+                        tag,
+                      ) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.inputBackground,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            tag,
+                            style: AppTextStyles.caption.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ),
             ],

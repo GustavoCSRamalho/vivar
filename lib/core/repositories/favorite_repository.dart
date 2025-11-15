@@ -6,7 +6,56 @@ import '../../models/favorite_model.dart';
 import 'base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class FavoriteRepository extends BaseRepository<FavoriteModel> {
+// core/repositories/protocols/favorite_protocols.dart
+
+// Arquivo: user_favorite_reader_protocol.dart
+/// Protocolo para leitura de favoritos do usuário
+abstract class UserFavoriteReaderProtocol {
+  /// Retorna todos os favoritos de um usuário
+  Future<List<FavoriteModel>> getUserFavorites(String userId);
+
+  /// Retorna apenas os IDs dos lugares favoritos
+  Future<List<String>> getFavoritePlaceIds(String userId);
+}
+
+// Arquivo: favorite_validator_protocol.dart
+/// Protocolo para validação de favoritos
+abstract class FavoriteValidatorProtocol {
+  /// Verifica se um lugar é favorito do usuário
+  Future<bool> isFavorite(String userId, String placeId);
+}
+
+// Arquivo: favorite_manager_protocol.dart
+/// Protocolo para gerenciamento de favoritos
+abstract class FavoriteManagerProtocol {
+  /// Adiciona um lugar aos favoritos
+  Future<void> addFavorite(String userId, String placeId);
+
+  /// Alterna o estado de favorito (adiciona ou remove)
+  /// Retorna true se adicionou, false se removeu
+  Future<bool> toggleFavorite(String userId, String placeId);
+
+  /// Remove um lugar específico dos favoritos
+  Future<int> removeByPlace(String userId, String placeId);
+}
+
+// Arquivo: favorite_counter_protocol.dart
+/// Protocolo para contagem de favoritos
+abstract class FavoriteCounterProtocol {
+  /// Retorna a quantidade total de favoritos do usuário
+  Future<int> getFavoritesCount(String userId);
+}
+
+// ============================================
+// IMPLEMENTAÇÃO NO REPOSITORY
+// ============================================
+
+class FavoriteRepository extends BaseRepository<FavoriteModel>
+    implements
+        UserFavoriteReaderProtocol,
+        FavoriteValidatorProtocol,
+        FavoriteManagerProtocol,
+        FavoriteCounterProtocol {
   @override
   String get tableName => 'favorites';
 
@@ -17,16 +66,19 @@ class FavoriteRepository extends BaseRepository<FavoriteModel> {
   Map<String, dynamic> toMap(FavoriteModel model) => model.toMap();
 
   // Favoritos do usuário
+  @override
   Future<List<FavoriteModel>> getUserFavorites(String userId) async {
     return await getWhere('user_id = ?', [userId]);
   }
 
   // IDs dos lugares favoritos
+  @override
   Future<List<String>> getFavoritePlaceIds(String userId) async {
     final favorites = await getUserFavorites(userId);
     return favorites.map((f) => f.placeId).toList();
   }
 
+  @override
   Future<void> addFavorite(String userId, String placeId) async {
     try {
       final db = await database;
@@ -46,6 +98,7 @@ class FavoriteRepository extends BaseRepository<FavoriteModel> {
   }
 
   // Verificar se é favorito
+  @override
   Future<bool> isFavorite(String userId, String placeId) async {
     final db = await database;
     final result = await db.query(
@@ -58,6 +111,7 @@ class FavoriteRepository extends BaseRepository<FavoriteModel> {
   }
 
   // Toggle favorito
+  @override
   Future<bool> toggleFavorite(String userId, String placeId) async {
     try {
       final db = await database;
@@ -96,6 +150,7 @@ class FavoriteRepository extends BaseRepository<FavoriteModel> {
   }
 
   // Remover por place_id
+  @override
   Future<int> removeByPlace(String userId, String placeId) async {
     final db = await database;
     return await db.delete(
@@ -106,6 +161,7 @@ class FavoriteRepository extends BaseRepository<FavoriteModel> {
   }
 
   // Contagem de favoritos
+  @override
   Future<int> getFavoritesCount(String userId) async {
     final db = await database;
     final result = await db.rawQuery(

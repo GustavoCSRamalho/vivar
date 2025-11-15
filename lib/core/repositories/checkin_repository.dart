@@ -4,7 +4,58 @@ import '../../models/checkin_model.dart';
 import 'base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class CheckinRepository extends BaseRepository<CheckinModel> {
+// core/repositories/protocols/checkin_protocols.dart
+
+// Arquivo: user_checkin_reader_protocol.dart
+/// Protocolo para leitura de check-ins do usuário
+abstract class UserCheckinReaderProtocol {
+  /// Retorna todos os check-ins de um usuário
+  Future<List<CheckinModel>> getUserCheckins(String userId);
+
+  /// Retorna os check-ins mais recentes de um usuário
+  Future<List<CheckinModel>> getRecentCheckins(String userId, {int limit = 10});
+}
+
+// Arquivo: place_checkin_reader_protocol.dart
+/// Protocolo para leitura de check-ins de um lugar
+abstract class PlaceCheckinReaderProtocol {
+  /// Retorna todos os check-ins de um lugar específico
+  Future<List<CheckinModel>> getPlaceCheckins(String placeId);
+}
+
+// Arquivo: checkin_validator_protocol.dart
+/// Protocolo para validação de check-ins
+abstract class CheckinValidatorProtocol {
+  /// Verifica se o usuário já fez check-in hoje em um lugar específico
+  Future<bool> hasCheckedInToday(String userId, String placeId);
+}
+
+// Arquivo: checkin_statistics_protocol.dart
+/// Protocolo para estatísticas de check-ins
+abstract class CheckinStatisticsProtocol {
+  /// Retorna o total de pontos ganhos pelo usuário
+  Future<int> getTotalPointsEarned(String userId);
+
+  /// Retorna a contagem total de check-ins do usuário
+  Future<int> getCheckinCount(String userId);
+
+  /// Retorna a quantidade de lugares únicos visitados
+  Future<int> getUniquePlacesVisited(String userId);
+
+  /// Retorna o streak atual de dias consecutivos com check-in
+  Future<int> getCurrentStreak(String userId);
+}
+
+// ============================================
+// IMPLEMENTAÇÃO NO REPOSITORY
+// ============================================
+
+class CheckinRepository extends BaseRepository<CheckinModel>
+    implements
+        UserCheckinReaderProtocol,
+        PlaceCheckinReaderProtocol,
+        CheckinValidatorProtocol,
+        CheckinStatisticsProtocol {
   @override
   String get tableName => 'checkins';
 
@@ -15,11 +66,13 @@ class CheckinRepository extends BaseRepository<CheckinModel> {
   Map<String, dynamic> toMap(CheckinModel model) => model.toMap();
 
   // Check-ins do usuário
+  @override
   Future<List<CheckinModel>> getUserCheckins(String userId) async {
     return await getWhere('user_id = ?', [userId]);
   }
 
   // Check-ins recentes do usuário
+  @override
   Future<List<CheckinModel>> getRecentCheckins(
     String userId, {
     int limit = 10,
@@ -36,11 +89,13 @@ class CheckinRepository extends BaseRepository<CheckinModel> {
   }
 
   // Check-ins de um lugar
+  @override
   Future<List<CheckinModel>> getPlaceCheckins(String placeId) async {
     return await getWhere('place_id = ?', [placeId]);
   }
 
   // Verificar se usuário já fez check-in hoje em um lugar
+  @override
   Future<bool> hasCheckedInToday(String userId, String placeId) async {
     final db = await database;
     final today = DateTime.now();
@@ -61,6 +116,7 @@ class CheckinRepository extends BaseRepository<CheckinModel> {
   }
 
   // Total de pontos ganhos pelo usuário
+  @override
   Future<int> getTotalPointsEarned(String userId) async {
     final db = await database;
     final result = await db.rawQuery(
@@ -71,6 +127,7 @@ class CheckinRepository extends BaseRepository<CheckinModel> {
   }
 
   // Contagem de check-ins por usuário
+  @override
   Future<int> getCheckinCount(String userId) async {
     final db = await database;
     final result = await db.rawQuery(
@@ -81,6 +138,7 @@ class CheckinRepository extends BaseRepository<CheckinModel> {
   }
 
   // Contagem de lugares únicos visitados
+  @override
   Future<int> getUniquePlacesVisited(String userId) async {
     final db = await database;
     final result = await db.rawQuery(
@@ -91,6 +149,7 @@ class CheckinRepository extends BaseRepository<CheckinModel> {
   }
 
   // Streak de dias consecutivos
+  @override
   Future<int> getCurrentStreak(String userId) async {
     final db = await database;
     final checkins = await db.query(

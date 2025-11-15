@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'vivar-63f29.firebasestorage.app',
     measurementId: 'G-VK44BE7X43',
   );
+
 }

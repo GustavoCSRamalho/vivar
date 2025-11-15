@@ -3,7 +3,60 @@ import '../database/database_helper.dart';
 import '../../models/user_model.dart';
 import 'base_repository.dart';
 
-class UserRepository extends BaseRepository<UserModel> {
+// core/repositories/protocols/user_protocols.dart
+
+// Arquivo: current_user_reader_protocol.dart
+/// Protocolo para leitura do usuário atual
+abstract class CurrentUserReaderProtocol {
+  /// Retorna o usuário atual logado
+  Future<UserModel?> getCurrentUser();
+}
+
+// Arquivo: user_finder_protocol.dart
+/// Protocolo para busca de usuários
+abstract class UserFinderProtocol {
+  /// Busca usuário por email
+  Future<UserModel?> getUserByEmail(String email);
+}
+
+// Arquivo: user_points_manager_protocol.dart
+/// Protocolo para gerenciamento de pontos do usuário
+abstract class UserPointsManagerProtocol {
+  /// Atualiza os pontos do usuário (incrementa ou decrementa)
+  Future<int> updatePoints(String userId, int points);
+}
+
+// Arquivo: user_statistics_updater_protocol.dart
+/// Protocolo para atualização de estatísticas do usuário
+abstract class UserStatisticsUpdaterProtocol {
+  /// Incrementa o contador de lugares visitados
+  Future<int> incrementPlacesVisited(String userId);
+
+  /// Incrementa o contador de badges conquistados
+  Future<int> incrementBadgesCount(String userId);
+
+  /// Atualiza o streak de dias consecutivos
+  Future<int> updateStreak(String userId, int days);
+}
+
+// Arquivo: user_plan_manager_protocol.dart
+/// Protocolo para gerenciamento de plano do usuário
+abstract class UserPlanManagerProtocol {
+  /// Atualiza o usuário para o plano premium
+  Future<int> upgradeToPremium(String userId);
+}
+
+// ============================================
+// IMPLEMENTAÇÃO NO REPOSITORY
+// ============================================
+
+class UserRepository extends BaseRepository<UserModel>
+    implements
+        CurrentUserReaderProtocol,
+        UserFinderProtocol,
+        UserPointsManagerProtocol,
+        UserStatisticsUpdaterProtocol,
+        UserPlanManagerProtocol {
   @override
   String get tableName => 'users';
 
@@ -14,16 +67,19 @@ class UserRepository extends BaseRepository<UserModel> {
   Map<String, dynamic> toMap(UserModel model) => model.toMap();
 
   // Métodos específicos de usuário
+  @override
   Future<UserModel?> getCurrentUser() async {
     final users = await getAll();
     return users.isNotEmpty ? users.first : null;
   }
 
+  @override
   Future<UserModel?> getUserByEmail(String email) async {
     final users = await getWhere('email = ?', [email]);
     return users.isNotEmpty ? users.first : null;
   }
 
+  @override
   Future<int> updatePoints(String userId, int points) async {
     final db = await database;
     return await db.rawUpdate(
@@ -32,6 +88,7 @@ class UserRepository extends BaseRepository<UserModel> {
     );
   }
 
+  @override
   Future<int> incrementPlacesVisited(String userId) async {
     final db = await database;
     return await db.rawUpdate(
@@ -40,6 +97,7 @@ class UserRepository extends BaseRepository<UserModel> {
     );
   }
 
+  @override
   Future<int> incrementBadgesCount(String userId) async {
     final db = await database;
     return await db.rawUpdate(
@@ -48,6 +106,7 @@ class UserRepository extends BaseRepository<UserModel> {
     );
   }
 
+  @override
   Future<int> updateStreak(String userId, int days) async {
     final db = await database;
     return await db.update(
@@ -58,6 +117,7 @@ class UserRepository extends BaseRepository<UserModel> {
     );
   }
 
+  @override
   Future<int> upgradeToPremium(String userId) async {
     final db = await database;
     return await db.update(
