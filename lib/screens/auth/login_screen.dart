@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/constants/routes.dart';
-import 'package:vivar/models/user_model.dart';
+import 'package:vivar/screens/home/data/models/user_model.dart';
 import 'package:vivar/providers/user_provider.dart';
 import 'package:vivar/widgets/buttons/custom_text_field.dart';
 import '../../core/constants/colors.dart';

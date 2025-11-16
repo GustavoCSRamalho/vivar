@@ -1,0 +1,74 @@
+// presentation/providers/home_provider_factory.dart
+
+import 'package:vivar/core/repositories/favorite_repository.dart';
+import 'package:vivar/core/repositories/notification_repository.dart';
+import 'package:vivar/core/repositories/place_repository.dart';
+import 'package:vivar/core/repositories/user_repository.dart';
+import 'package:vivar/core/services/location_service.dart';
+import 'package:vivar/screens/home/data/repositories/location_repository_impl.dart';
+import 'package:vivar/screens/home/data/repositories/notification_repository_impl.dart';
+import 'package:vivar/screens/home/data/repositories/place_repository_impl.dart';
+import 'package:vivar/screens/home/data/repositories/user_repository_impl.dart';
+import 'package:vivar/screens/home/domain/usecases/location/get_current_location_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/notification/check_unread_notifications_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/notification/get_notifications_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/place/filter_places_by_category_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/place/get_all_places_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/place/get_nearby_places_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/place/search_places_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/user/get_current_user_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/user/load_user_favorites_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/user/toggle_favorite_place_usecase.dart';
+import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
+
+class HomeProviderFactory {
+  static HomeProvider create() {
+    final locationService = LocationService();
+
+    // Repository Implementations
+    final placeRepositoryImpl = PlaceRepositoryImpl();
+    final userRepositoryImpl = UserRepositoryImpl();
+    final locationRepositoryImpl = LocationRepositoryImpl();
+    final notificationRepositoryImpl = NotificationRepositoryImpl();
+
+    // Use Cases
+    final getCurrentLocationUseCase = GetCurrentLocationUseCase(
+      locationService,
+      locationRepositoryImpl,
+    );
+    final getAllPlacesUseCase = GetAllPlacesUseCase(placeRepositoryImpl);
+    final getNearbyPlacesUseCase = GetNearbyPlacesUseCase(
+      placeRepositoryImpl,
+      locationService,
+    );
+    final filterPlacesByCategoryUseCase = FilterPlacesByCategoryUseCase();
+    final searchPlacesUseCase = SearchPlacesUseCase(placeRepositoryImpl);
+    final getCurrentUserUseCase = GetCurrentUserUseCase(userRepositoryImpl);
+    final loadUserFavoritesUseCase = LoadUserFavoritesUseCase(
+      userRepositoryImpl,
+    );
+    final toggleFavoritePlaceUseCase = ToggleFavoritePlaceUseCase(
+      userRepositoryImpl,
+    );
+    final getNotificationsUseCase = GetNotificationsUseCase(
+      notificationRepositoryImpl,
+    );
+    final checkUnreadNotificationsUseCase = CheckUnreadNotificationsUseCase(
+      notificationRepositoryImpl,
+    );
+
+    // HomeProvider
+    return HomeProvider(
+      getCurrentLocationUseCase: getCurrentLocationUseCase,
+      getAllPlacesUseCase: getAllPlacesUseCase,
+      getNearbyPlacesUseCase: getNearbyPlacesUseCase,
+      filterPlacesByCategoryUseCase: filterPlacesByCategoryUseCase,
+      searchPlacesUseCase: searchPlacesUseCase,
+      getCurrentUserUseCase: getCurrentUserUseCase,
+      loadUserFavoritesUseCase: loadUserFavoritesUseCase,
+      toggleFavoritePlaceUseCase: toggleFavoritePlaceUseCase,
+      getNotificationsUseCase: getNotificationsUseCase,
+      checkUnreadNotificationsUseCase: checkUnreadNotificationsUseCase,
+    );
+  }
+}

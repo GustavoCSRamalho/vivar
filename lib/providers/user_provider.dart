@@ -1,6 +1,6 @@
 // providers/user_provider.dart
 import 'package:flutter/foundation.dart';
-import '../models/user_model.dart';
+import '../screens/home/data/models/user_model.dart';
 import '../core/repositories/user_repository.dart';
 import '../core/repositories/checkin_repository.dart';
 import '../core/repositories/badge_repository.dart';

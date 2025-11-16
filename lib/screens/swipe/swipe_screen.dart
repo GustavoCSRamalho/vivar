@@ -8,7 +8,7 @@ import '../../core/constants/spacing.dart';
 import '../../core/constants/routes.dart';
 import '../../providers/places_provider.dart';
 import '../../providers/user_provider.dart';
-import '../../models/place_model.dart';
+import '../home/data/models/place_model.dart';
 import '../../widgets/navigation/custom_bottom_nav_bar.dart';
 import 'widgets/swipe_card.dart';
 import 'widgets/swipe_buttons.dart';

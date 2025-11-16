@@ -1,6 +1,6 @@
 // core/repositories/place_repository.dart
 import '../database/database_helper.dart';
-import '../../models/place_model.dart';
+import '../../screens/home/data/models/place_model.dart';
 import 'base_repository.dart';
 
 // core/repositories/protocols/place_protocols.dart

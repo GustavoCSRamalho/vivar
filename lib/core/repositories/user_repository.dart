@@ -1,6 +1,6 @@
 // core/repositories/user_repository.dart
 import '../database/database_helper.dart';
-import '../../models/user_model.dart';
+import '../../screens/home/data/models/user_model.dart';
 import 'base_repository.dart';
 
 // core/repositories/protocols/user_protocols.dart

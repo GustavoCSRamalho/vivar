@@ -1,6 +1,6 @@
 // providers/notifications_provider.dart
 import 'package:flutter/foundation.dart';
-import '../models/notification_model.dart';
+import 'package:vivar/screens/home/data/models/notification_model.dart';
 import '../core/repositories/notification_repository.dart';
 
 class NotificationsProvider with ChangeNotifier {

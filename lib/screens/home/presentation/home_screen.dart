@@ -1,16 +1,13 @@
 // screens/home/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/routes.dart';
 import 'package:vivar/models/filters_bottom_sheet.dart';
+import 'package:vivar/screens/home/domain/entities/place_entity.dart';
+import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 import 'package:vivar/widgets/buttons/custom_bottom_nav_bar.dart';
 import 'package:vivar/widgets/buttons/place_card.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/routes.dart';
-import '../../providers/places_provider.dart';
-import '../../providers/user_provider.dart';
-import '../../providers/notifications_provider.dart';
-import '../../core/services/location_service.dart';
-import '../../models/place_model.dart';
 import 'widgets/home_header.dart';
 import 'widgets/category_bar.dart';
 import 'widgets/today_card.dart';
@@ -21,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedCategoryIndex = 0;
   final List<String> _categories = [
     'Todos',
     'Cafés',
@@ -41,55 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    debugPrint('🔄 Iniciando carregamento de dados...');
-
-    final placesProvider = context.read<PlacesProvider>();
-    final userProvider = context.read<UserProvider>();
-    final notificationsProvider = context.read<NotificationsProvider>();
-
-    try {
-      // 1. Carregar usuário
-      await userProvider.loadCurrentUser();
-      debugPrint('✅ Usuário carregado');
-
-      // 2. Tentar obter localização
-      final locationService = LocationService();
-      final position = await locationService.getCurrentLocation();
-
-      if (position != null) {
-        debugPrint(
-          '📍 Localização obtida: ${position.latitude}, ${position.longitude}',
-        );
-
-        // Carregar lugares próximos
-        // await placesProvider.loadNearbyPlaces(
-        //   position.latitude,
-        //   position.longitude,
-        //   radiusKm: 5.0,
-        // );
-        await placesProvider.loadPlaces();
-        debugPrint('⚠️ placesProvider.loadNearbyPlaces');
-      } else {
-        debugPrint(
-          '⚠️ Localização não disponível, carregando todos os lugares',
-        );
-        // Sem localização, carregar todos os lugares
-        debugPrint('⚠️ placesProvider.loadPlaces');
-        await placesProvider.loadPlaces();
-      }
-
-      // 3. Carregar favoritos se houver usuário
-      if (userProvider.currentUser != null) {
-        await placesProvider.loadFavorites(userProvider.currentUser!.id);
-        await notificationsProvider.loadNotifications(
-          userProvider.currentUser!.id,
-        );
-      }
-
-      debugPrint('✅ Dados carregados com sucesso');
-    } catch (e) {
-      debugPrint('❌ Erro ao carregar dados: $e');
-    }
+    await context.read<HomeProvider>().initialize();
   }
 
   @override
@@ -99,32 +47,38 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           // Header
-          Consumer2<UserProvider, NotificationsProvider>(
-            builder: (context, userProvider, notificationsProvider, child) {
+          Consumer<HomeProvider>(
+            builder: (context, provider, child) {
               return HomeHeader(
-                location: userProvider.currentUser?.location ?? 'São Paulo, SP',
+                location: provider.userLocation,
                 onLocationTap: _openLocationPicker,
                 onNotificationTap: _openNotifications,
                 onSearchTap: _openSearch,
                 onFilterTap: _openFilters,
-                hasUnreadNotifications: notificationsProvider.hasUnread,
+                hasUnreadNotifications: provider.hasUnreadNotifications,
               );
             },
           ),
 
           // Categorias
-          CategoryBar(
-            categories: _categories,
-            selectedIndex: _selectedCategoryIndex,
-            onCategorySelected: (index) {
-              setState(() => _selectedCategoryIndex = index);
-              _filterByCategory(index);
+          Consumer<HomeProvider>(
+            builder: (context, provider, child) {
+              final selectedIndex = _categories.indexOf(
+                provider.selectedCategory,
+              );
+              return CategoryBar(
+                categories: _categories,
+                selectedIndex: selectedIndex == -1 ? 0 : selectedIndex,
+                onCategorySelected: (index) {
+                  provider.filterByCategory(_categories[index]);
+                },
+              );
             },
           ),
 
           // Feed
           Expanded(
-            child: Consumer<PlacesProvider>(
+            child: Consumer<HomeProvider>(
               builder: (context, provider, child) {
                 // Loading state
                 if (provider.isLoading) {
@@ -186,26 +140,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
 
                 // Filtrar por categoria se necessário
-                List<PlaceModel> placesToShow = provider.places;
-
-                if (_selectedCategoryIndex > 0) {
-                  final category = _categories[_selectedCategoryIndex];
-                  placesToShow = provider.places
-                      .where((place) => place.category == category)
-                      .toList();
-                  debugPrint(
-                    '🔍 Filtrando por $category: ${placesToShow.length} lugares',
-                  );
-                }
+                List<PlaceEntity> placesToShow = provider.places;
 
                 // Empty state
                 if (placesToShow.isEmpty) {
-                  return _buildEmptyState();
+                  return _buildEmptyState(provider);
                 }
 
                 // Success state - Lista de lugares
                 return RefreshIndicator(
-                  onRefresh: _loadData,
+                  onRefresh: provider.refresh,
                   color: AppColors.primary,
                   child: CustomScrollView(
                     slivers: [
@@ -229,16 +173,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         delegate: SliverChildBuilderDelegate((context, index) {
                           final place = placesToShow[index];
                           return PlaceCard(
-                            imageUrl: place.images?.isNotEmpty == true
-                                ? place.images!.first
-                                : '',
+                            imageUrl: place.firstImage ?? '',
                             name: place.name,
                             rating: place.rating,
-                            category:
-                                '${place.category}${place.priceRange != null ? " · ${place.priceRange}" : ""}',
-                            distance: place.distance != null
-                                ? '${(place.distance! / 1000).toStringAsFixed(1)}km'
-                                : 'N/A',
+                            category: place.categoryWithPrice,
+                            distance: place.formattedDistance,
                             discount: place.discountText,
                             isOpen: place.isOpen,
                             closingTime: '22h',
@@ -270,8 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
-    final isFiltered = _selectedCategoryIndex > 0;
+  Widget _buildEmptyState(HomeProvider provider) {
+    final isFiltered = provider.selectedCategory != 'Todos';
 
     return Center(
       child: Padding(
@@ -306,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               onPressed: () {
                 if (isFiltered) {
-                  setState(() => _selectedCategoryIndex = 0);
+                  provider.clearFilter();
                 } else {
                   _loadData();
                 }
@@ -322,13 +261,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  void _filterByCategory(int index) {
-    debugPrint(
-      '🔍 Categoria selecionada: ${_categories[index]} (index: $index)',
-    );
-    setState(() {}); // Força rebuild para aplicar filtro
   }
 
   void _openLocationPicker() {
@@ -444,9 +376,9 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
       return Center(child: Text('Digite para buscar lugares'));
     }
 
-    context.read<PlacesProvider>().searchPlaces(query);
+    context.read<HomeProvider>().searchPlaces(query);
 
-    return Consumer<PlacesProvider>(
+    return Consumer<HomeProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading) {
           return Center(
@@ -486,7 +418,7 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
               ),
               title: Text(place.name),
               subtitle: Text(
-                '${place.category}${place.distance != null ? " · ${(place.distance! / 1000).toStringAsFixed(1)}km" : ""}',
+                '${place.categoryWithPrice} · ${place.formattedDistance}',
               ),
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {

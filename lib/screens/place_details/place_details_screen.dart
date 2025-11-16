@@ -5,7 +5,7 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/text_styles.dart';
 import '../../providers/places_provider.dart';
 import '../../providers/user_provider.dart';
-import '../../models/place_model.dart';
+import '../home/data/models/place_model.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/buttons/secondary_button.dart';
 

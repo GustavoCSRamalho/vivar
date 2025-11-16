@@ -6,7 +6,7 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/spacing.dart';
 import '../../providers/notifications_provider.dart';
 import '../../providers/user_provider.dart';
-import '../../models/notification_model.dart';
+import '../home/data/models/notification_model.dart';
 
 class NotificationsScreen extends StatefulWidget {
   @override

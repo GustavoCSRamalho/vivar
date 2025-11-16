@@ -1,8 +1,8 @@
 // screens/home/widgets/today_card.dart
 import 'package:flutter/material.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/text_styles.dart';
-import '../../../core/constants/spacing.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/text_styles.dart';
+import '../../../../core/constants/spacing.dart';
 
 class TodayCard extends StatelessWidget {
   final String title;

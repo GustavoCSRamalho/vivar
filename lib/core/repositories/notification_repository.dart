@@ -1,6 +1,6 @@
 // core/repositories/notification_repository.dart
 import '../database/database_helper.dart';
-import '../../models/notification_model.dart';
+import '../../screens/home/data/models/notification_model.dart';
 import 'base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 

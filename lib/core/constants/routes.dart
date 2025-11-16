@@ -4,7 +4,7 @@ import '../../screens/splash/splash_screen.dart';
 import '../../screens/onboarding/onboarding_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/location/location_permission_screen.dart';
-import '../../screens/home/home_screen.dart';
+import '../../screens/home/presentation/home_screen.dart';
 import '../../screens/discover/discover_screen.dart';
 import '../../screens/swipe/swipe_screen.dart';
 import '../../screens/map/map_screen.dart';

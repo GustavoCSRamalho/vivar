@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/database/database_seeder.dart';
-import 'package:vivar/models/place_model.dart';
+import 'package:vivar/injection/home_provider_injection.dart';
+import 'package:vivar/screens/home/data/models/place_model.dart';
 import 'app.dart';
 import 'providers/auth_provider.dart';
 import 'providers/places_provider.dart';
@@ -30,9 +31,12 @@ void main() async {
 
   await _testDatabaseDirectly();
 
+  final homeProvider = HomeProviderFactory.create();
+
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => homeProvider),
         // ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),

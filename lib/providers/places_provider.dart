@@ -1,6 +1,6 @@
 // providers/places_provider.dart
 import 'package:flutter/foundation.dart';
-import '../models/place_model.dart';
+import 'package:vivar/screens/home/data/models/place_model.dart';
 import '../core/repositories/place_repository.dart';
 import '../core/repositories/favorite_repository.dart';
 

@@ -1,8 +1,8 @@
 // screens/home/widgets/category_bar.dart
 import 'package:flutter/material.dart';
 import 'package:vivar/widgets/buttons/category_chip.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/text_styles.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/text_styles.dart';
 
 class CategoryBar extends StatelessWidget {
   final List<String> categories;
