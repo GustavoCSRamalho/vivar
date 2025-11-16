@@ -1,4 +1,6 @@
 // core/services/location_service.dart
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -38,7 +40,9 @@ class LocationService {
       } else if (status.isPermanentlyDenied) {
         debugPrint('❌ Permissão de localização permanentemente negada');
         // Abrir configurações
-        await openAppSettings();
+        if (!Platform.isIOS || !Platform.isMacOS) {
+          await openAppSettings();
+        }
         return false;
       }
 
