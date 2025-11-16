@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/database/database_seeder.dart';
+import 'package:vivar/factory/discover_provider_factory.dart';
 import 'package:vivar/factory/home_provider_factory.dart';
 import 'package:vivar/factory/map_provider_factory.dart';
 import 'package:vivar/factory/place_details_provider_factory.dart';
@@ -41,6 +42,7 @@ void main() async {
   final mapsProvider = MapProviderFactory.create();
   final placeDetailsProviderFactory = PlaceDetailsProviderFactory.create();
   final swipeProvider = SwipeProviderFactory.create();
+  final discoverProvider = DiscoverProviderFactory.create();
 
   runApp(
     MultiProvider(
@@ -50,6 +52,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => mapsProvider),
         ChangeNotifierProvider(create: (_) => placeDetailsProviderFactory),
         ChangeNotifierProvider(create: (_) => swipeProvider),
+        ChangeNotifierProvider(create: (_) => discoverProvider),
         // ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),
