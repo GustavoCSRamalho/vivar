@@ -2,13 +2,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/spacing.dart';
-import '../../core/constants/routes.dart';
-import '../../providers/user_provider.dart';
-import '../../providers/auth_provider.dart';
-import '../../widgets/buttons/custom_bottom_nav_bar.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/text_styles.dart';
+import '../../../core/constants/spacing.dart';
+import '../../../core/constants/routes.dart';
+import '../../../providers/user_provider.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../widgets/buttons/custom_bottom_nav_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override

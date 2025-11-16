@@ -1,8 +1,11 @@
-// splash_screen.dart
+// screens/splash/splash_screen.dart
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vivar/core/constants/routes.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/text_styles.dart';
+import 'package:vivar/screens/splash/presentation/providers/splash_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -29,10 +32,54 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Navegar após 2 segundos
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeApp();
     });
+  }
+
+  Future<void> _initializeApp() async {
+    final provider = context.read<SplashProvider>();
+    await provider.initialize();
+
+    await Future.delayed(Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    switch (provider.state) {
+      case SplashState.authenticated:
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        break;
+      case SplashState.unauthenticated:
+        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+        break;
+      case SplashState.error:
+        _showErrorDialog();
+        break;
+      default:
+        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+    }
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text('Erro'),
+        content: Text(
+          context.read<SplashProvider>().error ?? 'Erro ao inicializar o app',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _initializeApp();
+            },
+            child: Text('Tentar novamente'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -52,7 +99,6 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo
                 Container(
                   width: 120,
                   height: 120,
@@ -74,7 +120,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 SizedBox(height: 24),
-                // Nome do app
                 Text(
                   'Vivar',
                   style: AppTextStyles.h1.copyWith(
@@ -83,7 +128,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 SizedBox(height: 8),
-                // Tagline
                 Text(
                   'Descubra seu bairro',
                   style: AppTextStyles.body.copyWith(
@@ -91,14 +135,24 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 SizedBox(height: 40),
-                // Loading indicator
-                SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    strokeWidth: 3,
-                  ),
+                Consumer<SplashProvider>(
+                  builder: (context, provider, child) {
+                    if (provider.state == SplashState.error) {
+                      return Icon(
+                        Icons.error_outline,
+                        size: 40,
+                        color: Colors.white,
+                      );
+                    }
+                    return SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 3,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
