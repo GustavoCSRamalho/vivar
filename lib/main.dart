@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/database/database_seeder.dart';
 import 'package:vivar/factory/home_provider_factory.dart';
+import 'package:vivar/factory/map_provider_factory.dart';
+import 'package:vivar/factory/place_details_provider_factory.dart';
 import 'package:vivar/factory/profile_provider_factory.dart';
+import 'package:vivar/factory/swipe_provider_factory.dart';
 import 'package:vivar/screens/home/data/models/place_model.dart';
+import 'package:vivar/screens/swipe/presentation/providers/swipe_provider.dart';
 import 'app.dart';
 import 'providers/auth_provider.dart';
 import 'providers/places_provider.dart';
@@ -34,12 +38,18 @@ void main() async {
 
   final homeProvider = HomeProviderFactory.create();
   final profileProvider = ProfileProviderFactory.create();
+  final mapsProvider = MapProviderFactory.create();
+  final placeDetailsProviderFactory = PlaceDetailsProviderFactory.create();
+  final swipeProvider = SwipeProviderFactory.create();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => homeProvider),
         ChangeNotifierProvider(create: (_) => profileProvider),
+        ChangeNotifierProvider(create: (_) => mapsProvider),
+        ChangeNotifierProvider(create: (_) => placeDetailsProviderFactory),
+        ChangeNotifierProvider(create: (_) => swipeProvider),
         // ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),

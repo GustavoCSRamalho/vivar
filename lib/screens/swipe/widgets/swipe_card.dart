@@ -1,7 +1,8 @@
 // screens/swipe/widgets/swipe_card.dart
+
 import 'package:flutter/material.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/text_styles.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/text_styles.dart';
 
 class SwipeCard extends StatelessWidget {
   final Map<String, dynamic> place;
@@ -30,14 +31,10 @@ class SwipeCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           child: Column(
             children: [
-              // Imagem
               Expanded(
                 child: Stack(
                   children: [
-                    // Imagem de fundo
                     _buildImage(),
-
-                    // Gradient overlay
                     Positioned(
                       bottom: 0,
                       left: 0,
@@ -56,8 +53,6 @@ class SwipeCard extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // Badge de desconto
                     if (place['discount'] != null)
                       Positioned(
                         top: 16,
@@ -87,8 +82,6 @@ class SwipeCard extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                    // Status aberto/fechado
                     Positioned(
                       top: 16,
                       left: 16,
@@ -122,15 +115,12 @@ class SwipeCard extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Informações
               Padding(
                 padding: EdgeInsets.all(16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Nome e Rating
                     Row(
                       children: [
                         Expanded(
@@ -152,10 +142,7 @@ class SwipeCard extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 6),
-
-                    // Categoria e Distância
                     Row(
                       children: [
                         Flexible(
@@ -194,17 +181,14 @@ class SwipeCard extends StatelessWidget {
                         ),
                         SizedBox(width: 2),
                         Text(
-                          '${place['distance']}km',
+                          '${place['distance'].toStringAsFixed(1)}km',
                           style: AppTextStyles.bodySmall.copyWith(
                             color: AppColors.textSecondary,
                           ),
                         ),
                       ],
                     ),
-
                     SizedBox(height: 6),
-
-                    // Descrição
                     Text(
                       place['description'],
                       style: AppTextStyles.bodySmall.copyWith(
@@ -214,14 +198,11 @@ class SwipeCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-
                     SizedBox(height: 8),
-
-                    // Tags
                     Wrap(
                       spacing: 6,
                       runSpacing: 6,
-                      children: (place['tags'] as List<String>).take(3).map((
+                      children: (place['tags'] as List<dynamic>).take(3).map((
                         tag,
                       ) {
                         return Container(
@@ -254,7 +235,6 @@ class SwipeCard extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    // Verifica se tem imagens
     final images = place['images'] as List<dynamic>?;
     final imageUrl = images != null && images.isNotEmpty ? images[0] : null;
 
@@ -262,20 +242,16 @@ class SwipeCard extends StatelessWidget {
       return _buildPlaceholder();
     }
 
-    // Se a URL começa com 'assets/', usa Image.asset
     if (imageUrl.startsWith('assets/')) {
       return Image.asset(
         imageUrl,
         width: double.infinity,
         height: double.infinity,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholder();
-        },
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
       );
     }
 
-    // Caso contrário, tenta usar Image.network
     return Image.network(
       imageUrl,
       width: double.infinity,
@@ -285,9 +261,7 @@ class SwipeCard extends StatelessWidget {
         if (loadingProgress == null) return child;
         return _buildPlaceholder();
       },
-      errorBuilder: (context, error, stackTrace) {
-        return _buildPlaceholder();
-      },
+      errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
     );
   }
 

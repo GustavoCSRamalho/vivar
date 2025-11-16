@@ -5,7 +5,7 @@ class ReviewModel {
   final String id;
   final String placeId;
   final String userId;
-  final int rating;
+  final double rating;
   final String? comment;
   final List<String>? images;
   final DateTime createdAt;
