@@ -1,13 +1,13 @@
 // screens/place_details/place_details_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../providers/places_provider.dart';
-import '../../providers/user_provider.dart';
-import '../home/data/models/place_model.dart';
-import '../../widgets/buttons/primary_button.dart';
-import '../../widgets/buttons/secondary_button.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/text_styles.dart';
+import '../../../providers/places_provider.dart';
+import '../../../providers/user_provider.dart';
+import '../../home/data/models/place_model.dart';
+import '../../../widgets/buttons/primary_button.dart';
+import '../../../widgets/buttons/secondary_button.dart';
 
 class PlaceDetailsScreen extends StatefulWidget {
   final String placeId;

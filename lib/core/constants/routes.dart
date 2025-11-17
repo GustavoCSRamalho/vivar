@@ -1,22 +1,22 @@
 // core/constants/routes.dart
 import 'package:flutter/material.dart';
-import '../../screens/splash/splash_screen.dart';
-import '../../screens/onboarding/onboarding_screen.dart';
-import '../../screens/auth/login_screen.dart';
-import '../../screens/location/location_permission_screen.dart';
+import '../../screens/splash/presentation/splash_screen.dart';
+import '../../screens/onboarding/presentation/onboarding_screen.dart';
+import '../../screens/auth/presentation/login_screen.dart';
+import '../../screens/location/presentation/location_permission_screen.dart';
 import '../../screens/home/presentation/home_screen.dart';
-import '../../screens/discover/discover_screen.dart';
-import '../../screens/swipe/swipe_screen.dart';
-import '../../screens/map/map_screen.dart';
-import '../../screens/place_details/place_details_screen.dart';
-import '../../screens/profile/profile_screen.dart';
-import '../../screens/profile/edit_profile_screen.dart';
+import '../../screens/discover/presentation/discover_screen.dart';
+import '../../screens/swipe/presentation/swipe_screen.dart';
+import '../../screens/map/presentation/map_screen.dart';
+import '../../screens/place_details/presentation/place_details_screen.dart';
+import '../../screens/profile/presentation/profile_screen.dart';
+import '../../screens/profile/presentation/edit_profile_screen.dart';
 import '../../screens/profile/settings_screen.dart';
-import '../../screens/premium/vivar_plus_screen.dart';
+import '../../screens/premium/presentation/vivar_plus_screen.dart';
 import '../../screens/challenges/challenges_screen.dart';
 import '../../screens/loyalty_card/loyalty_card_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
-import '../../screens/merchant/merchant_register_screen.dart';
+import '../../screens/merchant/presentation/merchant_register_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';

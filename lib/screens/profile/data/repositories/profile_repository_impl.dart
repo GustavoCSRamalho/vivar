@@ -2,8 +2,8 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/auth/domain/entities/profile_entity.dart';
-import 'package:vivar/screens/auth/domain/repositories/profile_repository_protocol.dart';
+import 'package:vivar/screens/profile/domain/entities/profile_entity.dart';
+import 'package:vivar/screens/profile/domain/repositories/profile_repository_protocol.dart';
 import 'package:vivar/screens/home/data/models/user_model.dart';
 
 class ProfileRepositoryImpl implements ProfileRepositoryProtocol {

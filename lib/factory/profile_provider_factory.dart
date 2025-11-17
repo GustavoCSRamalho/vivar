@@ -1,11 +1,11 @@
 // presentation/providers/profile_provider_factory.dart
 
-import 'package:vivar/screens/auth/data/repositories/profile_repository_impl.dart';
-import 'package:vivar/screens/auth/domain/usecases/profile/get_profile_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/profile/get_recent_badges_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/profile/get_recent_checkins_count_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/profile/update_profile_usecase.dart';
-import '../screens/auth/presentation/providers/profile_provider.dart';
+import 'package:vivar/screens/profile/data/repositories/profile_repository_impl.dart';
+import 'package:vivar/screens/profile/domain/usecases/profile/get_profile_usecase.dart';
+import 'package:vivar/screens/profile/domain/usecases/profile/get_recent_badges_usecase.dart';
+import 'package:vivar/screens/profile/domain/usecases/profile/get_recent_checkins_count_usecase.dart';
+import 'package:vivar/screens/profile/domain/usecases/profile/update_profile_usecase.dart';
+import '../screens/profile/presentation/providers/profile_provider.dart';
 
 class ProfileProviderFactory {
   static ProfileProvider create() {

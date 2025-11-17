@@ -1,12 +1,16 @@
 // screens/merchant/merchant_register_screen.dart
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/text_styles.dart';
+import 'package:vivar/core/constants/spacing.dart';
+import 'package:vivar/screens/merchant/presentation/providers/merchant_register_provider.dart';
 import 'package:vivar/widgets/buttons/custom_text_field.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/spacing.dart';
-import '../../widgets/buttons/primary_button.dart';
-import '../../widgets/inputs/custom_text_field.dart';
+import 'package:vivar/widgets/buttons/primary_button.dart';
+import 'package:vivar/widgets/inputs/custom_text_field.dart';
+import 'dart:io';
 
 class MerchantRegisterScreen extends StatefulWidget {
   @override
@@ -21,12 +25,6 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _descriptionController = TextEditingController();
-
-  bool _isLoading = false;
-  List<String> _selectedImages = [];
-  List<String> _selectedAmenities = [];
-  Map<String, String> _schedule = {};
-  bool _acceptTerms = false;
 
   final List<String> _categories = [
     'Café',
@@ -53,23 +51,9 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeSchedule();
-  }
-
-  void _initializeSchedule() {
-    final days = [
-      'Segunda-feira',
-      'Terça-feira',
-      'Quarta-feira',
-      'Quinta-feira',
-      'Sexta-feira',
-      'Sábado',
-      'Domingo',
-    ];
-
-    for (var day in days) {
-      _schedule[day] = '08:00 - 18:00';
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MerchantRegisterProvider>().initialize();
+    });
   }
 
   @override
@@ -89,7 +73,6 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Header com SafeArea integrado
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -105,13 +88,8 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                 ),
               ],
             ),
-            child: SafeArea(
-              bottom: false, // ← Apenas top
-              child: _buildHeader(),
-            ),
+            child: SafeArea(bottom: false, child: _buildHeader()),
           ),
-
-          // Formulário
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(AppSpacing.horizontalPadding),
@@ -121,11 +99,8 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 24),
-
-                    // Informações Básicas
                     _buildSectionTitle('Informações básicas'),
                     SizedBox(height: 16),
-
                     CustomTextField(
                       controller: _nameController,
                       label: 'Nome do estabelecimento',
@@ -138,13 +113,9 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                         return null;
                       },
                     ),
-
                     SizedBox(height: 16),
-
                     _buildCategoryDropdown(),
-
                     SizedBox(height: 16),
-
                     CustomTextField(
                       controller: _addressController,
                       label: 'Endereço completo',
@@ -157,9 +128,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                         return null;
                       },
                     ),
-
                     SizedBox(height: 8),
-
                     TextButton.icon(
                       onPressed: _useCurrentLocation,
                       icon: Icon(Icons.my_location, size: 18),
@@ -168,9 +137,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                         foregroundColor: AppColors.secondary,
                       ),
                     ),
-
                     SizedBox(height: 16),
-
                     CustomTextField(
                       controller: _phoneController,
                       label: 'Telefone/WhatsApp',
@@ -184,23 +151,24 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                         return null;
                       },
                     ),
-
                     SizedBox(height: 8),
-
-                    CheckboxListTile(
-                      title: Text(
-                        'Este número é WhatsApp',
-                        style: AppTextStyles.bodySmall,
-                      ),
-                      value: true,
-                      onChanged: (value) {},
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      activeColor: AppColors.success,
+                    Consumer<MerchantRegisterProvider>(
+                      builder: (context, provider, child) {
+                        return CheckboxListTile(
+                          title: Text(
+                            'Este número é WhatsApp',
+                            style: AppTextStyles.bodySmall,
+                          ),
+                          value: provider.isWhatsapp,
+                          onChanged: (value) =>
+                              provider.setWhatsapp(value ?? true),
+                          contentPadding: EdgeInsets.zero,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          activeColor: AppColors.success,
+                        );
+                      },
                     ),
-
                     SizedBox(height: 16),
-
                     CustomTextField(
                       controller: _emailController,
                       label: 'Email do estabelecimento',
@@ -217,21 +185,15 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                         return null;
                       },
                     ),
-
                     SizedBox(height: 16),
-
                     CustomTextField(
                       controller: _descriptionController,
                       label: 'Descrição',
-                      hintText:
-                          'Conte sobre seu estabelecimento, especialidades, diferencial...',
+                      hintText: 'Conte sobre seu estabelecimento...',
                       maxLines: 4,
                       maxLength: 300,
                     ),
-
                     SizedBox(height: 32),
-
-                    // Fotos
                     _buildSectionTitle('Fotos do estabelecimento'),
                     SizedBox(height: 8),
                     Text(
@@ -241,43 +203,30 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-
                     _buildPhotoGrid(),
-
                     SizedBox(height: 32),
-
-                    // Horário de Funcionamento
                     _buildSectionTitle('Horário de funcionamento'),
                     SizedBox(height: 16),
-
                     _buildScheduleSection(),
-
                     SizedBox(height: 32),
-
-                    // Comodidades
                     _buildSectionTitle('Comodidades'),
                     SizedBox(height: 16),
-
                     _buildAmenitiesGrid(),
-
                     SizedBox(height: 32),
-
-                    // Termos
                     _buildTermsCheckbox(),
-
                     SizedBox(height: 24),
-
-                    // Botão de cadastro
-                    PrimaryButton(
-                      text: 'Cadastrar estabelecimento',
-                      onPressed: _acceptTerms ? () => _submitForm() : () {},
-                      isDisabled: !_acceptTerms,
-                      isLoading: _isLoading,
+                    Consumer<MerchantRegisterProvider>(
+                      builder: (context, provider, child) {
+                        return PrimaryButton(
+                          text: 'Cadastrar estabelecimento',
+                          onPressed: provider.canSubmit
+                              ? () => _submitForm()
+                              : () => (),
+                          isLoading: provider.isLoading,
+                        );
+                      },
                     ),
-
                     SizedBox(height: 16),
-
-                    // Texto de suporte
                     Center(
                       child: RichText(
                         textAlign: TextAlign.center,
@@ -298,7 +247,6 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                         ),
                       ),
                     ),
-
                     SizedBox(height: 40),
                   ],
                 ),
@@ -311,63 +259,33 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
   }
 
   Widget _buildHeader() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primary, AppColors.accent],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            AppSpacing.horizontalPadding,
-            16,
-            AppSpacing.horizontalPadding,
-            16,
-          ),
-          child: Stack(
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 24),
+      child: Column(
+        children: [
+          Row(
             children: [
-              Positioned(
-                top: 16,
-                left: 16,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.store, size: 80, color: Colors.white),
-                    SizedBox(height: 16),
-                    Text(
-                      'Aumente suas vendas',
-                      style: AppTextStyles.h2.copyWith(color: Colors.white),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Cadastre seu estabelecimento gratuitamente',
-                      style: AppTextStyles.body.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
-                ),
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-        ),
+          SizedBox(height: 16),
+          Icon(Icons.store, size: 64, color: Colors.white),
+          SizedBox(height: 16),
+          Text(
+            'Aumente suas vendas',
+            style: AppTextStyles.h2.copyWith(color: Colors.white),
+          ),
+          SizedBox(height: 4),
+          Text(
+            'Cadastre seu estabelecimento gratuitamente',
+            style: AppTextStyles.body.copyWith(
+              color: Colors.white.withOpacity(0.9),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -403,9 +321,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                 return DropdownMenuItem(value: category, child: Text(category));
               }).toList(),
               onChanged: (value) {
-                setState(() {
-                  _categoryController.text = value ?? '';
-                });
+                setState(() => _categoryController.text = value ?? '');
               },
             ),
           ),
@@ -415,26 +331,30 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
   }
 
   Widget _buildPhotoGrid() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        if (index < _selectedImages.length) {
-          return _buildPhotoItem(_selectedImages[index]);
-        } else {
-          return _buildPhotoPlaceholder();
-        }
+    return Consumer<MerchantRegisterProvider>(
+      builder: (context, provider, child) {
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+          ),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            if (index < provider.selectedImages.length) {
+              return _buildPhotoItem(provider.selectedImages[index], provider);
+            } else {
+              return _buildPhotoPlaceholder();
+            }
+          },
+        );
       },
     );
   }
 
-  Widget _buildPhotoItem(String imagePath) {
+  Widget _buildPhotoItem(String imagePath, provider) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.border,
@@ -444,8 +364,8 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              imagePath,
+            child: Image.file(
+              File(imagePath),
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
@@ -455,11 +375,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
             top: 4,
             right: 4,
             child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedImages.remove(imagePath);
-                });
-              },
+              onTap: () => provider.removeImage(imagePath),
               child: Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -481,11 +397,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.inputBackground,
-          border: Border.all(
-            color: AppColors.border,
-            width: 2,
-            style: BorderStyle.solid,
-          ),
+          border: Border.all(color: AppColors.border, width: 2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -510,179 +422,183 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
   }
 
   Widget _buildScheduleSection() {
-    return Column(
-      children: _schedule.keys.map((day) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Color(0xFFF3F4F6))),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Text(
-                  day,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+    return Consumer<MerchantRegisterProvider>(
+      builder: (context, provider, child) {
+        return Column(
+          children: provider.schedule.keys.map((day) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Color(0xFFF3F4F6))),
               ),
-              Expanded(
-                flex: 3,
-                child: GestureDetector(
-                  onTap: () => _editSchedule(day),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: AppColors.inputBackground,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _schedule[day] ?? '',
-                          style: AppTextStyles.bodySmall,
-                        ),
-                        Icon(
-                          Icons.edit,
-                          size: 16,
-                          color: AppColors.textSecondary,
-                        ),
-                      ],
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      day,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
+                  Expanded(
+                    flex: 3,
+                    child: GestureDetector(
+                      onTap: () => _editSchedule(day, provider),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.inputBackground,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              provider.schedule[day] ?? '',
+                              style: AppTextStyles.bodySmall,
+                            ),
+                            Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: AppColors.textSecondary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 
   Widget _buildAmenitiesGrid() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: _amenities.length,
-      itemBuilder: (context, index) {
-        final amenity = _amenities[index];
-        final isSelected = _selectedAmenities.contains(amenity);
+    return Consumer<MerchantRegisterProvider>(
+      builder: (context, provider, child) {
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+          ),
+          itemCount: _amenities.length,
+          itemBuilder: (context, index) {
+            final amenity = _amenities[index];
+            final isSelected = provider.selectedAmenities.contains(amenity);
 
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              if (isSelected) {
-                _selectedAmenities.remove(amenity);
-              } else {
-                _selectedAmenities.add(amenity);
-              }
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.primary.withOpacity(0.1)
-                  : Colors.white,
-              border: Border.all(
-                color: isSelected ? AppColors.primary : AppColors.border,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+            return GestureDetector(
+              onTap: () => provider.toggleAmenity(amenity),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
-                  size: 20,
+                      ? AppColors.primary.withOpacity(0.1)
+                      : Colors.white,
+                  border: Border.all(
+                    color: isSelected ? AppColors.primary : AppColors.border,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    amenity,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
+                child: Row(
+                  children: [
+                    Icon(
+                      isSelected
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
                       color: isSelected
                           ? AppColors.primary
-                          : AppColors.textPrimary,
+                          : AppColors.textSecondary,
+                      size: 20,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        amenity,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
   Widget _buildTermsCheckbox() {
-    return CheckboxListTile(
-      title: RichText(
-        text: TextSpan(
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.textSecondary,
+    return Consumer<MerchantRegisterProvider>(
+      builder: (context, provider, child) {
+        return CheckboxListTile(
+          title: RichText(
+            text: TextSpan(
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              children: [
+                TextSpan(text: 'Li e aceito os '),
+                TextSpan(
+                  text: 'Termos de Uso',
+                  style: TextStyle(
+                    color: AppColors.secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextSpan(text: ' e '),
+                TextSpan(
+                  text: 'Política de Privacidade',
+                  style: TextStyle(
+                    color: AppColors.secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextSpan(text: ' para comerciantes'),
+              ],
+            ),
           ),
-          children: [
-            TextSpan(text: 'Li e aceito os '),
-            TextSpan(
-              text: 'Termos de Uso',
-              style: TextStyle(
-                color: AppColors.secondary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextSpan(text: ' e '),
-            TextSpan(
-              text: 'Política de Privacidade',
-              style: TextStyle(
-                color: AppColors.secondary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextSpan(text: ' para comerciantes'),
-          ],
-        ),
-      ),
-      value: _acceptTerms,
-      onChanged: (value) {
-        setState(() {
-          _acceptTerms = value ?? false;
-        });
+          value: provider.acceptTerms,
+          onChanged: (value) => provider.setAcceptTerms(value ?? false),
+          contentPadding: EdgeInsets.zero,
+          controlAffinity: ListTileControlAffinity.leading,
+          activeColor: AppColors.primary,
+        );
       },
-      contentPadding: EdgeInsets.zero,
-      controlAffinity: ListTileControlAffinity.leading,
-      activeColor: AppColors.primary,
     );
   }
 
-  // ========== MÉTODOS ==========
-
   void _useCurrentLocation() {
-    // TODO: Implementar obtenção de localização
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('Obtendo localização...')));
   }
 
   Future<void> _pickImage() async {
-    if (_selectedImages.length >= 5) {
+    final provider = context.read<MerchantRegisterProvider>();
+
+    if (provider.selectedImages.length >= 5) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Máximo de 5 fotos')));
@@ -699,9 +615,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
       );
 
       if (image != null) {
-        setState(() {
-          _selectedImages.add(image.path);
-        });
+        provider.addImage(image.path);
       }
     } catch (e) {
       ScaffoldMessenger.of(
@@ -710,7 +624,9 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
     }
   }
 
-  void _editSchedule(String day) {
+  void _editSchedule(String day, provider) {
+    final controller = TextEditingController(text: provider.schedule[day]);
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -723,10 +639,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                 labelText: 'Horário',
                 hintText: '08:00 - 18:00',
               ),
-              controller: TextEditingController(text: _schedule[day]),
-              onChanged: (value) {
-                _schedule[day] = value;
-              },
+              controller: controller,
             ),
             SizedBox(height: 16),
             Row(
@@ -734,9 +647,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      setState(() {
-                        _schedule[day] = 'Fechado';
-                      });
+                      provider.updateSchedule(day, 'Fechado');
                       Navigator.pop(context);
                     },
                     child: Text('Fechado'),
@@ -746,9 +657,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      setState(() {
-                        _schedule[day] = '24 horas';
-                      });
+                      provider.updateSchedule(day, '24 horas');
                       Navigator.pop(context);
                     },
                     child: Text('24h'),
@@ -765,7 +674,7 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
           ),
           TextButton(
             onPressed: () {
-              setState(() {});
+              provider.updateSchedule(day, controller.text);
               Navigator.pop(context);
             },
             child: Text('Salvar'),
@@ -780,19 +689,19 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
       return;
     }
 
-    if (_selectedImages.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Adicione pelo menos 1 foto')));
-      return;
-    }
+    final provider = context.read<MerchantRegisterProvider>();
+    final success = await provider.registerMerchant(
+      name: _nameController.text,
+      category: _categoryController.text,
+      address: _addressController.text,
+      phone: _phoneController.text,
+      email: _emailController.text,
+      description: _descriptionController.text,
+    );
 
-    setState(() => _isLoading = true);
+    if (!mounted) return;
 
-    try {
-      // TODO: Implementar envio para o backend
-      await Future.delayed(Duration(seconds: 2));
-
+    if (success) {
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -811,23 +720,21 @@ class _MerchantRegisterScreenState extends State<MerchantRegisterScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Fecha dialog
-                Navigator.pop(context); // Volta para tela anterior
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: Text('OK'),
             ),
           ],
         ),
       );
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erro ao cadastrar: $e'),
+          content: Text(provider.error ?? 'Erro ao cadastrar'),
           backgroundColor: AppColors.error,
         ),
       );
-    } finally {
-      setState(() => _isLoading = false);
     }
   }
 }

@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/widgets/buttons/custom_bottom_nav_bar.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/spacing.dart';
-import '../../core/constants/routes.dart';
-import '../../providers/places_provider.dart';
-import '../../widgets/navigation/custom_bottom_nav_bar.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/text_styles.dart';
+import '../../../core/constants/spacing.dart';
+import '../../../core/constants/routes.dart';
+import '../../../providers/places_provider.dart';
+import '../../../widgets/navigation/custom_bottom_nav_bar.dart';
 import 'widgets/discover_card.dart';
 
 class DiscoverScreen extends StatefulWidget {

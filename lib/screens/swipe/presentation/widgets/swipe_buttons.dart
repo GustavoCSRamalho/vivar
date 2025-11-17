@@ -1,6 +1,6 @@
 // screens/swipe/widgets/swipe_buttons.dart
 import 'package:flutter/material.dart';
-import '../../../core/constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 
 class SwipeButtons extends StatelessWidget {
   final VoidCallback onDislike;

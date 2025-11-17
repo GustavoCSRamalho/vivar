@@ -4,10 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/database/database_seeder.dart';
 import 'package:vivar/factory/discover_provider_factory.dart';
+import 'package:vivar/factory/edit_profile_provider_factory.dart';
+import 'package:vivar/factory/forgot_password_provider_factory.dart';
 import 'package:vivar/factory/home_provider_factory.dart';
+import 'package:vivar/factory/location_permission_provider_factory.dart';
+import 'package:vivar/factory/login_provider_factory.dart';
 import 'package:vivar/factory/map_provider_factory.dart';
+import 'package:vivar/factory/merchant_register_provider_factory.dart';
+import 'package:vivar/factory/onboarding_provider_factory.dart';
 import 'package:vivar/factory/place_details_provider_factory.dart';
 import 'package:vivar/factory/profile_provider_factory.dart';
+import 'package:vivar/factory/register_provider_factory.dart';
+import 'package:vivar/factory/settings_provider_factory.dart';
 import 'package:vivar/factory/swipe_provider_factory.dart';
 import 'package:vivar/screens/home/data/models/place_model.dart';
 import 'package:vivar/screens/swipe/presentation/providers/swipe_provider.dart';
@@ -43,6 +51,16 @@ void main() async {
   final placeDetailsProviderFactory = PlaceDetailsProviderFactory.create();
   final swipeProvider = SwipeProviderFactory.create();
   final discoverProvider = DiscoverProviderFactory.create();
+  final onboardingProvider = OnboardingProviderFactory.create();
+  final merchantRegisterProviderFactory =
+      MerchantRegisterProviderFactory.create();
+  final locationPermissionProviderFactory =
+      LocationPermissionProviderFactory.create();
+  final loginProviderFactory = LoginProviderFactory.create();
+  final registerProviderFactory = RegisterProviderFactory.create();
+  final forgotPasswordProviderFactory = ForgotPasswordProviderFactory.create();
+  final editProfileProviderFactory = EditProfileProviderFactory.create();
+  final settingsProviderFactory = SettingsProviderFactory.create();
 
   runApp(
     MultiProvider(
@@ -53,6 +71,16 @@ void main() async {
         ChangeNotifierProvider(create: (_) => placeDetailsProviderFactory),
         ChangeNotifierProvider(create: (_) => swipeProvider),
         ChangeNotifierProvider(create: (_) => discoverProvider),
+        ChangeNotifierProvider(create: (_) => onboardingProvider),
+        ChangeNotifierProvider(create: (_) => merchantRegisterProviderFactory),
+        ChangeNotifierProvider(
+          create: (_) => locationPermissionProviderFactory,
+        ),
+        ChangeNotifierProvider(create: (_) => loginProviderFactory),
+        ChangeNotifierProvider(create: (_) => registerProviderFactory),
+        ChangeNotifierProvider(create: (_) => forgotPasswordProviderFactory),
+        ChangeNotifierProvider(create: (_) => editProfileProviderFactory),
+        ChangeNotifierProvider(create: (_) => settingsProviderFactory),
         // ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),

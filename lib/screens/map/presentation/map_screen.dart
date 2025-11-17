@@ -5,10 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/models/filters_bottom_sheet.dart';
 import 'package:vivar/screens/map/presentation/providers/map_provider.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/routes.dart';
-import '../../widgets/buttons/custom_bottom_nav_bar.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/text_styles.dart';
+import '../../../core/constants/routes.dart';
+import '../../../widgets/buttons/custom_bottom_nav_bar.dart';
 import 'widgets/place_preview_card.dart';
 
 class MapScreen extends StatefulWidget {

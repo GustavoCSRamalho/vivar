@@ -1,7 +1,7 @@
 // screens/swipe/widgets/swipe_info_chip.dart
 import 'package:flutter/material.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/text_styles.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/text_styles.dart';
 
 class SwipeInfoChip extends StatelessWidget {
   final int remainingCount;

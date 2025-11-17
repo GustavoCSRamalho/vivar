@@ -1,7 +1,7 @@
 // screens/discover/widgets/discover_card.dart
 import 'package:flutter/material.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/text_styles.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/text_styles.dart';
 
 class DiscoverCard extends StatelessWidget {
   final String imageUrl;
