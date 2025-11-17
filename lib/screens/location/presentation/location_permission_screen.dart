@@ -1,9 +1,9 @@
 // location_permission_screen.dart
 import 'package:flutter/material.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/spacing.dart';
-import '../../widgets/buttons/primary_button.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/text_styles.dart';
+import '../../../core/constants/spacing.dart';
+import '../../../widgets/buttons/primary_button.dart';
 
 class LocationPermissionScreen extends StatelessWidget {
   @override

@@ -16,6 +16,8 @@ import 'package:vivar/factory/place_details_provider_factory.dart';
 import 'package:vivar/factory/profile_provider_factory.dart';
 import 'package:vivar/factory/register_provider_factory.dart';
 import 'package:vivar/factory/settings_provider_factory.dart';
+import 'package:vivar/factory/splash_provider_factory.dart';
+import 'package:vivar/factory/subscription_provider_factory.dart';
 import 'package:vivar/factory/swipe_provider_factory.dart';
 import 'package:vivar/screens/home/data/models/place_model.dart';
 import 'package:vivar/screens/swipe/presentation/providers/swipe_provider.dart';
@@ -52,19 +54,21 @@ void main() async {
   final swipeProvider = SwipeProviderFactory.create();
   final discoverProvider = DiscoverProviderFactory.create();
   final onboardingProvider = OnboardingProviderFactory.create();
-  final merchantRegisterProviderFactory =
-      MerchantRegisterProviderFactory.create();
-  final locationPermissionProviderFactory =
-      LocationPermissionProviderFactory.create();
-  final loginProviderFactory = LoginProviderFactory.create();
-  final registerProviderFactory = RegisterProviderFactory.create();
-  final forgotPasswordProviderFactory = ForgotPasswordProviderFactory.create();
-  final editProfileProviderFactory = EditProfileProviderFactory.create();
-  final settingsProviderFactory = SettingsProviderFactory.create();
+  final merchantRegisterProvider = MerchantRegisterProviderFactory.create();
+  final locationPermissionProvider = LocationPermissionProviderFactory.create();
+  final loginProvider = LoginProviderFactory.create();
+  final registerProvider = RegisterProviderFactory.create();
+  final forgotPasswordProvider = ForgotPasswordProviderFactory.create();
+  final editProfileProvider = EditProfileProviderFactory.create();
+  final settingsProvider = SettingsProviderFactory.create();
+  final splashProvider = SplashProviderFactory.create();
+  final subscriptionProvider = SubscriptionProviderFactory.create();
 
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => splashProvider),
+        ChangeNotifierProvider(create: (_) => subscriptionProvider),
         ChangeNotifierProvider(create: (_) => homeProvider),
         ChangeNotifierProvider(create: (_) => profileProvider),
         ChangeNotifierProvider(create: (_) => mapsProvider),
@@ -72,16 +76,13 @@ void main() async {
         ChangeNotifierProvider(create: (_) => swipeProvider),
         ChangeNotifierProvider(create: (_) => discoverProvider),
         ChangeNotifierProvider(create: (_) => onboardingProvider),
-        ChangeNotifierProvider(create: (_) => merchantRegisterProviderFactory),
-        ChangeNotifierProvider(
-          create: (_) => locationPermissionProviderFactory,
-        ),
-        ChangeNotifierProvider(create: (_) => loginProviderFactory),
-        ChangeNotifierProvider(create: (_) => registerProviderFactory),
-        ChangeNotifierProvider(create: (_) => forgotPasswordProviderFactory),
-        ChangeNotifierProvider(create: (_) => editProfileProviderFactory),
-        ChangeNotifierProvider(create: (_) => settingsProviderFactory),
-        // ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => merchantRegisterProvider),
+        ChangeNotifierProvider(create: (_) => locationPermissionProvider),
+        ChangeNotifierProvider(create: (_) => loginProvider),
+        ChangeNotifierProvider(create: (_) => registerProvider),
+        ChangeNotifierProvider(create: (_) => forgotPasswordProvider),
+        ChangeNotifierProvider(create: (_) => editProfileProvider),
+        ChangeNotifierProvider(create: (_) => settingsProvider),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
