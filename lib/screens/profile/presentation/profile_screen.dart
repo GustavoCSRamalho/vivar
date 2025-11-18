@@ -1,7 +1,13 @@
 // screens/profile/profile_screen.dart
+import 'dart:ffi';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/screens/auth/domain/entities/auth_user_entity.dart';
+import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
+import 'package:vivar/screens/profile/domain/entities/profile_entity.dart';
+import 'package:vivar/screens/profile/presentation/providers/profile_provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../core/constants/spacing.dart';
@@ -23,22 +29,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
-    await context.read<UserProvider>().loadCurrentUser();
+    final user = await context.read<LoginProvider>().currentUser;
+    if (user != null) {
+      await context.read<ProfileProvider>().loadProfile(user.id);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      body: Consumer<UserProvider>(
-        builder: (context, userProvider, child) {
-          final user = userProvider.currentUser;
+      body: Consumer<ProfileProvider>(
+        builder: (context, profileProvider, child) {
+          final profile = profileProvider.profile;
 
-          if (userProvider.isLoading) {
+          if (profileProvider.isLoading) {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (user == null) {
+          if (profile == null) {
             return _buildNotLoggedIn();
           }
 
@@ -87,12 +96,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   child: CircleAvatar(
                                     backgroundColor: Colors.white,
-                                    backgroundImage: user.avatarUrl != null
-                                        ? NetworkImage(user.avatarUrl!)
+                                    backgroundImage: profile.avatarUrl != null
+                                        ? NetworkImage(profile.avatarUrl!)
                                         : null,
-                                    child: user.avatarUrl == null
+                                    child: profile.avatarUrl == null
                                         ? Text(
-                                            user.name[0].toUpperCase(),
+                                            profile.name[0].toUpperCase(),
                                             style: AppTextStyles.h2.copyWith(
                                               color: AppColors.primary,
                                             ),
@@ -124,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           // Nome
                           Text(
-                            user.name,
+                            profile.name,
                             style: AppTextStyles.h2.copyWith(
                               color: Colors.white,
                             ),
@@ -134,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           // Email
                           Text(
-                            user.email,
+                            profile.email,
                             style: AppTextStyles.body.copyWith(
                               color: Colors.white.withOpacity(0.8),
                             ),
@@ -147,11 +156,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _buildStatItem(
-                                '${user.placesVisited}',
+                                '${profile.placesVisited}',
                                 'Lugares',
                               ),
-                              _buildStatItem('${user.points}', 'Pontos'),
-                              _buildStatItem('${user.badgesCount}', 'Badges'),
+                              _buildStatItem('${profile.points}', 'Pontos'),
+                              _buildStatItem(
+                                '${profile.badgesCount}',
+                                'Badges',
+                              ),
                             ],
                           ),
                         ],
@@ -168,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Card Plano Atual
                     Padding(
                       padding: EdgeInsets.all(20),
-                      child: _buildPlanCard(user),
+                      child: _buildPlanCard(profile),
                     ),
 
                     // Conquistas

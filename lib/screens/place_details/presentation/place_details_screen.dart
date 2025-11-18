@@ -1,6 +1,8 @@
 // screens/place_details/place_details_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/screens/auth/data/repositories/auth_repository_impl.dart';
+import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../providers/places_provider.dart';
@@ -578,10 +580,10 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   }
 
   void _toggleFavorite() async {
-    final user = context.read<UserProvider>().currentUser;
+    final user = await context.read<LoginProvider>().currentUser;
     if (user != null) {
       await context.read<PlacesProvider>().toggleFavorite(
-        user.id,
+        user?.id ?? "",
         widget.placeId,
       );
       setState(() => _isFavorite = !_isFavorite);

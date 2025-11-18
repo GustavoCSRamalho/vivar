@@ -7,7 +7,6 @@ import '../../../core/constants/text_styles.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/constants/routes.dart';
 import '../../../providers/places_provider.dart';
-import '../../../widgets/navigation/custom_bottom_nav_bar.dart';
 import 'widgets/discover_card.dart';
 
 class DiscoverScreen extends StatefulWidget {
