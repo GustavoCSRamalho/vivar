@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:vivar/screens/home/domain/usecases/location/get_current_location_usecase.dart';
+import 'package:vivar/screens/home/domain/usecases/place/apply_advanced_filters_usecase.dart';
 import '../../domain/entities/place_entity.dart';
 import '../../domain/entities/position_entity.dart';
 import '../../domain/entities/user_entity.dart';
@@ -32,6 +33,7 @@ class HomeProvider with ChangeNotifier {
   final ToggleFavoritePlaceUseCase _toggleFavoritePlaceUseCase;
   final GetNotificationsUseCase _getNotificationsUseCase;
   final CheckUnreadNotificationsUseCase _checkUnreadNotificationsUseCase;
+  final ApplyAdvancedFiltersUseCase _applyAdvancedFiltersUseCase;
 
   HomeProvider({
     required GetCurrentLocationUseCase getCurrentLocationUseCase,
@@ -44,6 +46,7 @@ class HomeProvider with ChangeNotifier {
     required ToggleFavoritePlaceUseCase toggleFavoritePlaceUseCase,
     required GetNotificationsUseCase getNotificationsUseCase,
     required CheckUnreadNotificationsUseCase checkUnreadNotificationsUseCase,
+    required ApplyAdvancedFiltersUseCase applyAdvancedFiltersUseCase,
   }) : _getCurrentLocationUseCase = getCurrentLocationUseCase,
        _getAllPlacesUseCase = getAllPlacesUseCase,
        _getNearbyPlacesUseCase = getNearbyPlacesUseCase,
@@ -53,7 +56,8 @@ class HomeProvider with ChangeNotifier {
        _loadUserFavoritesUseCase = loadUserFavoritesUseCase,
        _toggleFavoritePlaceUseCase = toggleFavoritePlaceUseCase,
        _getNotificationsUseCase = getNotificationsUseCase,
-       _checkUnreadNotificationsUseCase = checkUnreadNotificationsUseCase;
+       _checkUnreadNotificationsUseCase = checkUnreadNotificationsUseCase,
+       _applyAdvancedFiltersUseCase = applyAdvancedFiltersUseCase;
 
   // Estado
   List<PlaceEntity> _allPlaces = [];
@@ -204,6 +208,23 @@ class HomeProvider with ChangeNotifier {
     _filteredPlaces = _filterPlacesByCategoryUseCase.execute(
       places: _allPlaces,
       category: _selectedCategory,
+    );
+    debugPrint('✅ Filtro aplicado: ${_filteredPlaces.length} lugares');
+  }
+
+  void applyAdvancedFilters({
+    List<String>? categories,
+    String? priceRange,
+    double? minRating,
+    List<String>? amenities,
+    bool? openNow,
+  }) async {
+    _filteredPlaces = await _applyAdvancedFiltersUseCase.execute(
+      categories: categories,
+      priceRange: priceRange,
+      minRating: minRating,
+      amenities: amenities,
+      openNow: openNow,
     );
     debugPrint('✅ Filtro aplicado: ${_filteredPlaces.length} lugares');
   }

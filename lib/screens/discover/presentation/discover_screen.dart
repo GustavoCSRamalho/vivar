@@ -1,6 +1,7 @@
 // screens/discover/discover_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 import 'package:vivar/widgets/buttons/custom_bottom_nav_bar.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -33,15 +34,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     try {
       debugPrint('🔄 DiscoverScreen: Carregando coleções...');
 
-      final placesProvider = context.read<PlacesProvider>();
+      // final placesProvider = context.read<PlacesProvider>();
+      final homeProvider = context.read<HomeProvider>();
 
-      // Carregar lugares se ainda não foram carregados
-      if (placesProvider.places.isEmpty) {
-        await placesProvider.loadPlaces();
-      }
+      // // Carregar lugares se ainda não foram carregados
+      // if (homeProvider.places.isEmpty) {
+      //   await homeProvider._loadPlaces;
+      // }
 
       // Gerar coleções baseadas nos lugares do banco
-      _collections = _generateCollections(placesProvider);
+      _collections = _generateCollections(homeProvider);
 
       setState(() => _isLoading = false);
 
@@ -53,7 +55,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   /// Gera coleções dinamicamente baseadas nos lugares
-  List<Map<String, dynamic>> _generateCollections(PlacesProvider provider) {
+  List<Map<String, dynamic>> _generateCollections(HomeProvider provider) {
     final places = provider.places;
 
     if (places.isEmpty) {

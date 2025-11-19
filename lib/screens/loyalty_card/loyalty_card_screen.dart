@@ -1,11 +1,12 @@
 // screens/loyalty_card/loyalty_card_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/spacing.dart';
-import '../../providers/user_provider.dart';
-import '../../providers/checkins_provider.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/text_styles.dart';
+import 'package:vivar/core/constants/spacing.dart';
+import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
+import 'package:vivar/screens/loyalty_card/presentation/providers/loyalty_card_provider.dart';
 
 class LoyaltyCardScreen extends StatefulWidget {
   @override
@@ -16,13 +17,17 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 
   Future<void> _loadData() async {
-    final user = context.read<UserProvider>().currentUser;
-    if (user != null) {
-      await context.read<CheckinsProvider>().loadUserCheckins(user.id);
+    final loginProvider = context.read<LoginProvider>();
+    final loyaltyProvider = context.read<LoyaltyCardProvider>();
+
+    if (loginProvider.currentUser != null) {
+      await loyaltyProvider.loadLoyaltyData(loginProvider.currentUser!.id);
     }
   }
 
@@ -33,15 +38,19 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
       appBar: AppBar(
         title: Text('Meu Cartão'),
         actions: [
-          IconButton(icon: Icon(Icons.qr_code), onPressed: () => _showQRCode()),
+          IconButton(icon: Icon(Icons.qr_code), onPressed: _showQRCode),
         ],
       ),
-      body: Consumer2<UserProvider, CheckinsProvider>(
-        builder: (context, userProvider, checkinsProvider, child) {
-          final user = userProvider.currentUser;
+      body: Consumer<LoyaltyCardProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading && provider.loyaltyCard == null) {
+            return Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
+          }
 
-          if (user == null) {
-            return Center(child: CircularProgressIndicator());
+          if (provider.loyaltyCard == null) {
+            return Center(child: Text('Cartão não encontrado'));
           }
 
           return RefreshIndicator(
@@ -50,25 +59,13 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
               padding: EdgeInsets.all(AppSpacing.horizontalPadding),
               children: [
                 SizedBox(height: 24),
-
-                // Cartão Virtual
-                _buildVirtualCard(user),
-
+                _buildVirtualCard(provider.loyaltyCard!),
                 SizedBox(height: 24),
-
-                // Stats
-                _buildStatsGrid(user),
-
+                _buildStatsGrid(provider.loyaltyCard!),
                 SizedBox(height: 32),
-
-                // Benefícios Ativos
-                _buildActiveBenefits(),
-
+                _buildActiveBenefits(provider),
                 SizedBox(height: 32),
-
-                // Histórico
-                _buildRecentActivity(),
-
+                _buildRecentActivity(provider),
                 SizedBox(height: 40),
               ],
             ),
@@ -78,7 +75,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
     );
   }
 
-  Widget _buildVirtualCard(user) {
+  Widget _buildVirtualCard(card) {
     return Container(
       height: 200,
       decoration: BoxDecoration(
@@ -115,7 +112,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    user.planType.toUpperCase(),
+                    card.planType.toUpperCase(),
                     style: AppTextStyles.caption.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -124,10 +121,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                 ),
               ],
             ),
-
             Spacer(),
-
-            // Código de barras estilizado
             Row(
               children: List.generate(
                 8,
@@ -142,9 +136,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                 ),
               ),
             ),
-
             SizedBox(height: 16),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -152,14 +144,14 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user.name,
+                      card.userName,
                       style: AppTextStyles.body.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
-                      '#${user.id.substring(0, 8)}',
+                      '#${card.cardNumber}',
                       style: AppTextStyles.caption.copyWith(
                         color: Colors.white.withOpacity(0.8),
                       ),
@@ -174,7 +166,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                         Icon(Icons.star, color: AppColors.accent, size: 20),
                         SizedBox(width: 4),
                         Text(
-                          '${user.points}',
+                          '${card.points}',
                           style: AppTextStyles.subtitle.copyWith(
                             color: Colors.white,
                           ),
@@ -197,23 +189,29 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
     );
   }
 
-  Widget _buildStatsGrid(user) {
+  Widget _buildStatsGrid(card) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
             '🏪',
-            '${user.placesVisited}',
+            '${card.placesVisited}',
             'Lugares\nvisitados',
           ),
         ),
         SizedBox(width: 12),
-        Expanded(child: _buildStatCard('🎟️', '8', 'Cupons\nativos')),
+        Expanded(
+          child: _buildStatCard(
+            '🎟️',
+            '${card.activeCoupons}',
+            'Cupons\nativos',
+          ),
+        ),
         SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
             '🏆',
-            '${user.badgesCount}',
+            '${card.badgesCount}',
             'Badges\nconquistados',
           ),
         ),
@@ -221,7 +219,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
         Expanded(
           child: _buildStatCard(
             '🔥',
-            '${user.streakDays}',
+            '${card.streakDays}',
             'Dias de\nsequência',
           ),
         ),
@@ -261,7 +259,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
     );
   }
 
-  Widget _buildActiveBenefits() {
+  Widget _buildActiveBenefits(provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -273,21 +271,24 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
           ],
         ),
         SizedBox(height: 16),
-        SizedBox(
-          height: 191,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return _buildBenefitCard(index);
-            },
+        if (provider.activeBenefits.isEmpty)
+          Center(child: Text('Nenhum benefício ativo'))
+        else
+          SizedBox(
+            height: 191,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: provider.activeBenefits.length,
+              itemBuilder: (context, index) {
+                return _buildBenefitCard(provider.activeBenefits[index]);
+              },
+            ),
           ),
-        ),
       ],
     );
   }
 
-  Widget _buildBenefitCard(int index) {
+  Widget _buildBenefitCard(benefit) {
     return Container(
       width: 280,
       margin: EdgeInsets.only(right: 12),
@@ -314,15 +315,15 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '15% OFF',
+              benefit.title,
               style: AppTextStyles.h3.copyWith(color: Colors.white),
             ),
           ),
           SizedBox(height: 16),
-          Text('Café Raiz', style: AppTextStyles.subtitle),
+          Text(benefit.merchantName, style: AppTextStyles.subtitle),
           SizedBox(height: 8),
           Text(
-            'Válido em todo o cardápio',
+            benefit.description,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -340,7 +341,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                 Icon(Icons.access_time, color: AppColors.primary, size: 16),
                 SizedBox(width: 4),
                 Text(
-                  'Válido até 31/12/2025',
+                  'Válido até ${benefit.validUntil.day}/${benefit.validUntil.month}/${benefit.validUntil.year}',
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w600,
@@ -354,17 +355,29 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
     );
   }
 
-  Widget _buildRecentActivity() {
+  Widget _buildRecentActivity(provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Atividade recente', style: AppTextStyles.h3),
         SizedBox(height: 16),
-        ...List.generate(5, (index) => _buildActivityItem(index)),
+        if (provider.recentActivities.isEmpty)
+          Center(child: Text('Nenhuma atividade recente'))
+        else
+          ...provider.recentActivities
+              .map((activity) => _buildActivityItem(activity))
+              .toList(),
         SizedBox(height: 16),
         Center(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              final loginProvider = context.read<LoginProvider>();
+              if (loginProvider.currentUser != null) {
+                await provider.loadMoreActivities(
+                  loginProvider.currentUser!.id,
+                );
+              }
+            },
             child: Text('Ver histórico completo'),
           ),
         ),
@@ -372,47 +385,8 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
     );
   }
 
-  Widget _buildActivityItem(int index) {
-    final activities = [
-      {
-        'type': 'checkin',
-        'title': 'Check-in',
-        'subtitle': 'Café Raiz',
-        'time': 'Há 2 horas',
-        'points': '+50',
-      },
-      {
-        'type': 'coupon',
-        'title': 'Cupom resgatado',
-        'subtitle': 'Bistrô Central',
-        'time': 'Ontem',
-        'points': '-200',
-      },
-      {
-        'type': 'checkin',
-        'title': 'Check-in',
-        'subtitle': 'Padaria Aurora',
-        'time': 'Há 3 dias',
-        'points': '+50',
-      },
-      {
-        'type': 'badge',
-        'title': 'Badge conquistado',
-        'subtitle': 'Café Explorer',
-        'time': 'Há 5 dias',
-        'points': '+500',
-      },
-      {
-        'type': 'checkin',
-        'title': 'Check-in',
-        'subtitle': 'Bar do João',
-        'time': 'Há 1 semana',
-        'points': '+50',
-      },
-    ];
-
-    final activity = activities[index];
-    final isPositive = activity['points']!.startsWith('+');
+  Widget _buildActivityItem(activity) {
+    final isPositive = activity.pointsChange > 0;
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12),
@@ -425,12 +399,12 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: _getActivityColor(activity['type']!).withOpacity(0.1),
+              color: _getActivityColor(activity.type).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
-              _getActivityIcon(activity['type']!),
-              color: _getActivityColor(activity['type']!),
+              _getActivityIcon(activity.type),
+              color: _getActivityColor(activity.type),
               size: 24,
             ),
           ),
@@ -440,19 +414,19 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  activity['title']!,
+                  activity.title,
                   style: AppTextStyles.bodySmall.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
-                  activity['subtitle']!,
+                  activity.subtitle,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
                 Text(
-                  activity['time']!,
+                  _getTimeAgo(activity.timestamp),
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -461,7 +435,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
             ),
           ),
           Text(
-            activity['points']!,
+            '${isPositive ? '+' : ''}${activity.pointsChange}',
             style: AppTextStyles.body.copyWith(
               color: isPositive ? AppColors.success : AppColors.primary,
               fontWeight: FontWeight.bold,
@@ -498,7 +472,32 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
     }
   }
 
-  void _showQRCode() {
+  String _getTimeAgo(DateTime timestamp) {
+    final difference = DateTime.now().difference(timestamp);
+
+    if (difference.inDays > 7) {
+      return 'Há ${(difference.inDays / 7).floor()} semana${difference.inDays > 14 ? 's' : ''}';
+    } else if (difference.inDays > 0) {
+      return 'Há ${difference.inDays} dia${difference.inDays > 1 ? 's' : ''}';
+    } else if (difference.inHours > 0) {
+      return 'Há ${difference.inHours} hora${difference.inHours > 1 ? 's' : ''}';
+    } else {
+      return 'Há ${difference.inMinutes} minuto${difference.inMinutes > 1 ? 's' : ''}';
+    }
+  }
+
+  Future<void> _showQRCode() async {
+    final loginProvider = context.read<LoginProvider>();
+    final loyaltyProvider = context.read<LoyaltyCardProvider>();
+
+    if (loginProvider.currentUser == null) return;
+
+    final qrCode = await loyaltyProvider.generateQRCode(
+      loginProvider.currentUser!.id,
+    );
+
+    if (!mounted || qrCode == null) return;
+
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -523,11 +522,13 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
                   color: AppColors.border,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Center(child: Text('QR CODE')),
+                child: Center(
+                  child: Text('QR CODE\n$qrCode', textAlign: TextAlign.center),
+                ),
               ),
               SizedBox(height: 16),
               Text(
-                '#VIZ-45821',
+                '#$qrCode',
                 style: AppTextStyles.subtitle.copyWith(letterSpacing: 2),
               ),
               SizedBox(height: 24),

@@ -87,6 +87,7 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
     return MapPlaceEntity(
       id: model.id,
       name: model.name,
+      description: model.description,
       category: model.category,
       latitude: model.latitude,
       longitude: model.longitude,

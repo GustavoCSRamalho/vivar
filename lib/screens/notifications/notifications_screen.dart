@@ -1,12 +1,13 @@
 // screens/notifications/notifications_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/text_styles.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/spacing.dart';
-import '../../providers/notifications_provider.dart';
-import '../../providers/user_provider.dart';
-import '../home/data/models/notification_model.dart';
+import 'package:vivar/core/constants/spacing.dart';
+
+import '../auth/presentation/providers/login_provider.dart';
+import 'presentation/providers/notifications_provider.dart';
 
 class NotificationsScreen extends StatefulWidget {
   @override
@@ -19,11 +20,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadNotifications();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotifications();
+    });
   }
 
   Future<void> _loadNotifications() async {
-    final user = context.read<UserProvider>().currentUser;
+    final user = context.read<LoginProvider>().currentUser;
     if (user != null) {
       await context.read<NotificationsProvider>().loadNotifications(user.id);
     }
@@ -40,7 +43,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             builder: (context, provider, child) {
               if (provider.hasUnread) {
                 return TextButton(
-                  onPressed: () => _markAllAsRead(),
+                  onPressed: _markAllAsRead,
                   child: Text('Marcar todas como lidas'),
                 );
               }
@@ -56,8 +59,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           Expanded(
             child: Consumer<NotificationsProvider>(
               builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return Center(child: CircularProgressIndicator());
+                if (provider.isLoading && provider.notifications.isEmpty) {
+                  return Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  );
                 }
 
                 final notifications = _getFilteredNotifications(provider);
@@ -125,57 +130,68 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildNotificationCard(NotificationModel notification) {
+  Widget _buildNotificationCard(notification) {
     final isUnread = !notification.isRead;
 
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: AppSpacing.horizontalPadding,
-        vertical: 4,
+    return Dismissible(
+      key: Key(notification.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        color: AppColors.error,
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        child: Icon(Icons.delete, color: Colors.white),
       ),
-      decoration: BoxDecoration(
-        color: isUnread ? Colors.white : AppColors.inputBackground,
-        border: Border(bottom: BorderSide(color: Color(0xFFF3F4F6))),
-      ),
-      child: ListTile(
-        leading: _buildNotificationIcon(notification.type),
-        title: Text(
-          notification.title,
-          style: AppTextStyles.bodySmall.copyWith(
-            fontWeight: isUnread ? FontWeight.w600 : FontWeight.normal,
+      onDismissed: (direction) => _deleteNotification(notification.id),
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: AppSpacing.horizontalPadding,
+          vertical: 4,
+        ),
+        decoration: BoxDecoration(
+          color: isUnread ? Colors.white : AppColors.inputBackground,
+          border: Border(bottom: BorderSide(color: Color(0xFFF3F4F6))),
+        ),
+        child: ListTile(
+          leading: _buildNotificationIcon(notification.type),
+          title: Text(
+            notification.title,
+            style: AppTextStyles.bodySmall.copyWith(
+              fontWeight: isUnread ? FontWeight.w600 : FontWeight.normal,
+            ),
           ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 4),
-            Text(
-              notification.message,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-                height: 1.4,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              _formatTime(notification.createdAt),
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        trailing: isUnread
-            ? Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 4),
+              Text(
+                notification.message,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.4,
                 ),
-              )
-            : null,
-        onTap: () => _handleNotificationTap(notification),
+              ),
+              SizedBox(height: 4),
+              Text(
+                _formatTime(notification.createdAt),
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          trailing: isUnread
+              ? Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                )
+              : null,
+          onTap: () => _handleNotificationTap(notification),
+        ),
       ),
     );
   }
@@ -242,16 +258,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  List<NotificationModel> _getFilteredNotifications(
-    NotificationsProvider provider,
-  ) {
+  List _getFilteredNotifications(provider) {
     final allNotifications = provider.notifications;
-
     if (_selectedTab == 0) return allNotifications;
 
     final typeMap = {1: 'offer', 2: 'checkin', 3: 'social', 4: 'system'};
-
     final filterType = typeMap[_selectedTab];
+
     return allNotifications.where((n) => n.type == filterType).toList();
   }
 
@@ -270,8 +283,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
-  void _handleNotificationTap(NotificationModel notification) async {
-    final user = context.read<UserProvider>().currentUser;
+  void _handleNotificationTap(notification) async {
+    final user = context.read<LoginProvider>().currentUser;
     if (user != null) {
       await context.read<NotificationsProvider>().markAsRead(
         notification.id,
@@ -279,7 +292,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       );
     }
 
-    // Navegar baseado no tipo de notificação
     if (notification.data != null) {
       final data = notification.data!;
       if (data.containsKey('placeId')) {
@@ -293,9 +305,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _markAllAsRead() async {
-    final user = context.read<UserProvider>().currentUser;
+    final user = context.read<LoginProvider>().currentUser;
     if (user != null) {
       await context.read<NotificationsProvider>().markAllAsRead(user.id);
+    }
+  }
+
+  Future<void> _deleteNotification(String notificationId) async {
+    final user = context.read<LoginProvider>().currentUser;
+    if (user != null) {
+      await context.read<NotificationsProvider>().deleteNotification(
+        notificationId,
+        user.id,
+      );
     }
   }
 }

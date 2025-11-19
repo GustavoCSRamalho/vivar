@@ -26,21 +26,34 @@ class MapProvider with ChangeNotifier {
        _getNearbyPlacesForMapUseCase = getNearbyPlacesForMapUseCase,
        _searchPlacesOnMapUseCase = searchPlacesOnMapUseCase;
 
+  GoogleMapController? _mapController;
   List<MapPlaceEntity> _places = [];
   Set<Marker> _markers = {};
   MapPlaceEntity? _selectedPlace;
   String _selectedCategory = 'Todos';
   bool _isLoading = false;
   String? _error;
+  bool _disposed = false;
 
+  // Getters
+  GoogleMapController? get mapController => _mapController;
   List<MapPlaceEntity> get places => _places;
   Set<Marker> get markers => _markers;
   MapPlaceEntity? get selectedPlace => _selectedPlace;
   String get selectedCategory => _selectedCategory;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isDisposed => _disposed;
+
+  void onMapCreated(GoogleMapController controller) {
+    if (_disposed) return;
+    _mapController = controller;
+    _safeNotify();
+  }
 
   Future<void> initialize() async {
+    if (_disposed) return;
+
     _setLoading(true);
     _error = null;
 
@@ -56,7 +69,31 @@ class MapProvider with ChangeNotifier {
     }
   }
 
+  Future<void> loadNearbyPlaces(double latitude, double longitude) async {
+    if (_disposed) return;
+
+    _setLoading(true);
+    _error = null;
+
+    try {
+      _places = await _getNearbyPlacesForMapUseCase.execute(
+        latitude: latitude,
+        longitude: longitude,
+        radiusKm: 5000,
+      );
+      _buildMarkers();
+      debugPrint('✅ ${_places.length} lugares próximos carregados');
+    } catch (e) {
+      _error = 'Erro ao carregar lugares próximos: $e';
+      debugPrint('❌ Erro ao carregar lugares próximos: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   Future<void> filterByCategory(String category) async {
+    if (_disposed) return;
+
     _setLoading(true);
     _selectedCategory = category;
 
@@ -72,9 +109,15 @@ class MapProvider with ChangeNotifier {
     }
   }
 
-  Future<void> searchPlaces(String query) async {
+  Future<void> searchPlaces(
+    String query,
+    double latitude,
+    double longitude,
+  ) async {
+    if (_disposed) return;
+
     if (query.trim().isEmpty) {
-      await initialize();
+      await loadNearbyPlaces(latitude, longitude);
       return;
     }
 
@@ -92,17 +135,36 @@ class MapProvider with ChangeNotifier {
     }
   }
 
-  void selectPlace(MapPlaceEntity place) {
+  void selectPlace(MapPlaceEntity? place) {
+    if (_disposed) return;
     _selectedPlace = place;
-    notifyListeners();
+    _safeNotify();
   }
 
   void clearSelection() {
+    if (_disposed) return;
     _selectedPlace = null;
-    notifyListeners();
+    _safeNotify();
+  }
+
+  Future<void> animateToPlace(MapPlaceEntity place) async {
+    if (_disposed || _mapController == null) return;
+
+    try {
+      await _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(
+          LatLng(place.latitude, place.longitude),
+          16.0,
+        ),
+      );
+    } catch (e) {
+      debugPrint('⚠️ Erro ao animar câmera: $e');
+    }
   }
 
   void _buildMarkers() {
+    if (_disposed) return;
+
     _markers = _places.map((place) {
       return Marker(
         markerId: MarkerId(place.id),
@@ -111,11 +173,39 @@ class MapProvider with ChangeNotifier {
         onTap: () => selectPlace(place),
       );
     }).toSet();
-    notifyListeners();
+    _safeNotify();
   }
 
   void _setLoading(bool value) {
+    if (_disposed) return;
     _isLoading = value;
-    notifyListeners();
+    _safeNotify();
+  }
+
+  void _safeNotify() {
+    if (!_disposed) {
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    debugPrint('🗑️ MapProvider dispose chamado');
+    _disposed = true;
+
+    // Dispose do controller de forma segura
+    try {
+      _mapController?.dispose();
+    } catch (e) {
+      debugPrint('⚠️ Erro ao fazer dispose do MapController: $e');
+    }
+
+    _mapController = null;
+    _markers.clear();
+    _places.clear();
+    _selectedPlace = null;
+
+    super.dispose();
+    debugPrint('✅ MapProvider disposed com sucesso');
   }
 }

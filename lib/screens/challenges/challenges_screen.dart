@@ -1,12 +1,14 @@
 // screens/challenges/challenges_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/text_styles.dart';
-import '../../core/constants/spacing.dart';
-import '../../providers/challenges_provider.dart';
-import '../../providers/user_provider.dart';
-import '../../models/challenge_model.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/text_styles.dart';
+import 'package:vivar/core/constants/spacing.dart';
+
+import '../auth/presentation/providers/login_provider.dart';
+import 'presentation/providers/challenges_provider.dart';
+import 'widgets/challenge_card.dart';
 
 class ChallengesScreen extends StatefulWidget {
   @override
@@ -21,11 +23,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadChallenges();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadChallenges();
+    });
   }
 
   Future<void> _loadChallenges() async {
-    final user = context.read<UserProvider>().currentUser;
+    final user = context.read<LoginProvider>().currentUser;
     if (user != null) {
       await context.read<ChallengesProvider>().loadChallenges(user.id);
     }
@@ -46,7 +50,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         actions: [
           IconButton(
             icon: Icon(Icons.info_outline),
-            onPressed: () => _showInfoDialog(),
+            onPressed: _showInfoDialog,
           ),
         ],
         bottom: TabBar(
@@ -106,8 +110,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   Widget _buildActiveChallenges() {
     return Consumer<ChallengesProvider>(
       builder: (context, provider, child) {
-        if (provider.isLoading) {
-          return Center(child: CircularProgressIndicator());
+        if (provider.isLoading && provider.activeChallenges.isEmpty) {
+          return Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         }
 
         final challenges = provider.activeChallenges;
@@ -125,7 +131,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             padding: EdgeInsets.all(AppSpacing.horizontalPadding),
             itemCount: challenges.length,
             itemBuilder: (context, index) {
-              return _buildChallengeCard(challenges[index], isActive: true);
+              return ChallengeCard(
+                challenge: challenges[index],
+                isActive: true,
+                onTap: () => _showChallengeDetails(challenges[index]),
+              );
             },
           ),
         );
@@ -136,8 +146,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   Widget _buildCompletedChallenges() {
     return Consumer<ChallengesProvider>(
       builder: (context, provider, child) {
-        if (provider.isLoading) {
-          return Center(child: CircularProgressIndicator());
+        if (provider.isLoading && provider.completedChallenges.isEmpty) {
+          return Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         }
 
         final challenges = provider.completedChallenges;
@@ -153,168 +165,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           padding: EdgeInsets.all(AppSpacing.horizontalPadding),
           itemCount: challenges.length,
           itemBuilder: (context, index) {
-            return _buildChallengeCard(challenges[index], isActive: false);
+            return ChallengeCard(
+              challenge: challenges[index],
+              isActive: false,
+              onTap: () => _showChallengeDetails(challenges[index]),
+            );
           },
         );
       },
-    );
-  }
-
-  Widget _buildChallengeCard(
-    ChallengeModel challenge, {
-    required bool isActive,
-  }) {
-    final progress = challenge.currentCount / challenge.targetCount;
-    final gradientColors = _getGradientColors(challenge.challengeType);
-
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Container(
-            height: 100,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: gradientColors),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    isActive ? 'EM ANDAMENTO' : 'CONCLUÍDO',
-                    style: AppTextStyles.caption.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  _getChallengeIcon(challenge.challengeType),
-                  style: TextStyle(fontSize: 32),
-                ),
-              ],
-            ),
-          ),
-
-          // Body
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(challenge.title, style: AppTextStyles.subtitle),
-                SizedBox(height: 4),
-                Text(
-                  challenge.description,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-
-                if (isActive) ...[
-                  SizedBox(height: 16),
-                  Text(
-                    '${challenge.currentCount} de ${challenge.targetCount} completo',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: AppColors.border,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary,
-                      ),
-                      minHeight: 8,
-                    ),
-                  ),
-                ],
-
-                SizedBox(height: 20),
-
-                // Recompensas
-                Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFBEB),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      if (challenge.rewardBadge != null)
-                        _buildReward('🏆', 'Badge\nExclusivo'),
-                      if (challenge.rewardPoints > 0)
-                        _buildReward('⭐', '${challenge.rewardPoints}\nPontos'),
-                      if (challenge.rewardDiscount != null)
-                        _buildReward('🎟️', challenge.rewardDiscount!),
-                    ],
-                  ),
-                ),
-
-                if (isActive) ...[
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: AppColors.textSecondary,
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        'Expira em ${_getDaysLeft(challenge.endDate)} dias',
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReward(String emoji, String text) {
-    return Column(
-      children: [
-        Text(emoji, style: TextStyle(fontSize: 32)),
-        SizedBox(height: 8),
-        Text(
-          text,
-          style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
-          textAlign: TextAlign.center,
-        ),
-      ],
     );
   }
 
@@ -342,35 +200,152 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
-  List<Color> _getGradientColors(String type) {
-    switch (type) {
-      case 'checkin':
-        return [Color(0xFFFF6B35), Color(0xFFFFC857)];
-      case 'explore':
-        return [Color(0xFF004E89), Color(0xFF0077B6)];
-      case 'social':
-        return [Color(0xFF9333EA), Color(0xFFC084FC)];
-      default:
-        return [AppColors.primary, AppColors.accent];
-    }
+  void _showChallengeDetails(challenge) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            SizedBox(height: 24),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(challenge.title, style: AppTextStyles.h2),
+                  SizedBox(height: 8),
+                  Text(
+                    challenge.description,
+                    style: AppTextStyles.body.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  if (challenge.isActive) ...[
+                    Text('Progresso', style: AppTextStyles.subtitle),
+                    SizedBox(height: 12),
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${challenge.currentCount}',
+                                style: AppTextStyles.h1.copyWith(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              Text('Completado'),
+                            ],
+                          ),
+                          Text('de', style: AppTextStyles.body),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '${challenge.targetCount}',
+                                style: AppTextStyles.h1.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              Text('Meta'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                  ],
+                  Text('Recompensas', style: AppTextStyles.subtitle),
+                  SizedBox(height: 12),
+                  if (challenge.rewardBadge != null)
+                    _buildDetailReward(
+                      Icons.emoji_events,
+                      'Badge Exclusivo',
+                      challenge.rewardBadge!,
+                    ),
+                  if (challenge.rewardPoints > 0)
+                    _buildDetailReward(
+                      Icons.star,
+                      'Pontos',
+                      '${challenge.rewardPoints} pontos',
+                    ),
+                  if (challenge.rewardDiscount != null)
+                    _buildDetailReward(
+                      Icons.local_offer,
+                      'Desconto',
+                      challenge.rewardDiscount!,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  String _getChallengeIcon(String type) {
-    switch (type) {
-      case 'checkin':
-        return '📍';
-      case 'explore':
-        return '🗺️';
-      case 'social':
-        return '👥';
-      default:
-        return '🎯';
-    }
-  }
-
-  int _getDaysLeft(DateTime endDate) {
-    final now = DateTime.now();
-    return endDate.difference(now).inDays;
+  Widget _buildDetailReward(IconData icon, String title, String value) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.inputBackground,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.primary),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: AppTextStyles.bodySmall),
+                SizedBox(height: 4),
+                Text(
+                  value,
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showInfoDialog() {

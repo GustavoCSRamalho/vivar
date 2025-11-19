@@ -3,14 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/database/database_seeder.dart';
+import 'package:vivar/factory/challenges_provider_factory.dart';
 import 'package:vivar/factory/discover_provider_factory.dart';
 import 'package:vivar/factory/edit_profile_provider_factory.dart';
 import 'package:vivar/factory/forgot_password_provider_factory.dart';
 import 'package:vivar/factory/home_provider_factory.dart';
 import 'package:vivar/factory/location_permission_provider_factory.dart';
 import 'package:vivar/factory/login_provider_factory.dart';
+import 'package:vivar/factory/loyalty_card_provider_factory.dart';
 import 'package:vivar/factory/map_provider_factory.dart';
 import 'package:vivar/factory/merchant_register_provider_factory.dart';
+import 'package:vivar/factory/notifications_provider_factory.dart';
 import 'package:vivar/factory/onboarding_provider_factory.dart';
 import 'package:vivar/factory/place_details_provider_factory.dart';
 import 'package:vivar/factory/profile_provider_factory.dart';
@@ -49,7 +52,6 @@ void main() async {
 
   final homeProvider = HomeProviderFactory.create();
   final profileProvider = ProfileProviderFactory.create();
-  final mapsProvider = MapProviderFactory.create();
   final placeDetailsProviderFactory = PlaceDetailsProviderFactory.create();
   final swipeProvider = SwipeProviderFactory.create();
   final discoverProvider = DiscoverProviderFactory.create();
@@ -63,6 +65,9 @@ void main() async {
   final settingsProvider = SettingsProviderFactory.create();
   final splashProvider = SplashProviderFactory.create();
   final subscriptionProvider = SubscriptionProviderFactory.create();
+  final loyaltyCardProvider = LoyaltyCardProviderFactory.create();
+  final notificationProvider = NotificationsProviderFactory.create();
+  final challengesProvider = ChallengesProviderFactory.create();
 
   runApp(
     MultiProvider(
@@ -71,7 +76,6 @@ void main() async {
         ChangeNotifierProvider(create: (_) => subscriptionProvider),
         ChangeNotifierProvider(create: (_) => homeProvider),
         ChangeNotifierProvider(create: (_) => profileProvider),
-        ChangeNotifierProvider(create: (_) => mapsProvider),
         ChangeNotifierProvider(create: (_) => placeDetailsProviderFactory),
         ChangeNotifierProvider(create: (_) => swipeProvider),
         ChangeNotifierProvider(create: (_) => discoverProvider),
@@ -83,13 +87,16 @@ void main() async {
         ChangeNotifierProvider(create: (_) => forgotPasswordProvider),
         ChangeNotifierProvider(create: (_) => editProfileProvider),
         ChangeNotifierProvider(create: (_) => settingsProvider),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => PlacesProvider()),
-        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
-        ChangeNotifierProvider(create: (_) => CheckinsProvider()),
-        ChangeNotifierProvider(create: (_) => BadgesProvider()),
-        ChangeNotifierProvider(create: (_) => ChallengesProvider()),
-        ChangeNotifierProvider(create: (_) => NotificationsProvider()),
+        ChangeNotifierProvider(create: (_) => loyaltyCardProvider),
+        ChangeNotifierProvider(create: (_) => notificationProvider),
+        ChangeNotifierProvider(create: (_) => challengesProvider),
+        // ChangeNotifierProvider(create: (_) => UserProvider()),
+        // ChangeNotifierProvider(create: (_) => PlacesProvider()),
+        // ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        // ChangeNotifierProvider(create: (_) => CheckinsProvider()),
+        // ChangeNotifierProvider(create: (_) => BadgesProvider()),
+        // ChangeNotifierProvider(create: (_) => ChallengesProvider()),
+        // ChangeNotifierProvider(create: (_) => NotificationsProvider()),
       ],
       child: VivarApp(),
     ),

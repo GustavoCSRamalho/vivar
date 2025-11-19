@@ -1,6 +1,7 @@
 // widgets/modals/filters_bottom_sheet.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/text_styles.dart';
 import '../../core/constants/spacing.dart';
@@ -361,7 +362,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
   }
 
   void _applyFilters() {
-    context.read<PlacesProvider>().applyAdvancedFilters(
+    context.read<HomeProvider>().applyAdvancedFilters(
       categories: _selectedCategories.isNotEmpty ? _selectedCategories : null,
       priceRange: _selectedPriceRange,
       minRating: _minRating,

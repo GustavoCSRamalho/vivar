@@ -122,4 +122,43 @@ class PlaceDetailsRepositoryImpl implements PlaceDetailsRepositoryProtocol {
       images: map['images'] != null ? List<String>.from(map['images']) : null,
     );
   }
+
+  @override
+  Future<PlaceDetailsEntity?> getPlaceById(String id) async {
+    final db = await _database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      _placeTableName,
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    if (maps.isEmpty) return null;
+    final model = PlaceModel.fromMap(maps.first);
+    return PlaceDetailsEntity(
+      id: model.id,
+      name: model.name,
+      category: model.category,
+      description: model.description,
+      address: model.address,
+      city: model.city,
+      state: model.state,
+      latitude: model.latitude,
+      longitude: model.longitude,
+      phone: model.phone,
+      whatsapp: model.whatsapp,
+      email: model.email,
+      website: model.website,
+      rating: model.rating,
+      reviewsCount: model.reviewsCount,
+      priceRange: model.priceRange,
+      isOpen: model.isOpen,
+      openingHours: model.openingHours,
+      amenities: model.amenities,
+      images: model.images,
+      discountText: model.discountText,
+      discountPercentage: model.discountPercentage,
+      isPremiumOnly: model.isPremiumOnly,
+      distance: model.distance,
+    );
+  }
 }

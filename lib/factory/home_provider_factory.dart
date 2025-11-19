@@ -21,6 +21,8 @@ import 'package:vivar/screens/home/domain/usecases/user/load_user_favorites_usec
 import 'package:vivar/screens/home/domain/usecases/user/toggle_favorite_place_usecase.dart';
 import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 
+import '../screens/home/domain/usecases/place/apply_advanced_filters_usecase.dart';
+
 class HomeProviderFactory {
   static HomeProvider create() {
     final locationService = LocationService();
@@ -42,6 +44,9 @@ class HomeProviderFactory {
       locationService,
     );
     final filterPlacesByCategoryUseCase = FilterPlacesByCategoryUseCase();
+    final applyAdvancedFiltersUseCase = ApplyAdvancedFiltersUseCase(
+      placeRepositoryImpl,
+    );
     final searchPlacesUseCase = SearchPlacesUseCase(placeRepositoryImpl);
     final getCurrentUserUseCase = GetCurrentUserUseCase(userRepositoryImpl);
     final loadUserFavoritesUseCase = LoadUserFavoritesUseCase(
@@ -69,6 +74,7 @@ class HomeProviderFactory {
       toggleFavoritePlaceUseCase: toggleFavoritePlaceUseCase,
       getNotificationsUseCase: getNotificationsUseCase,
       checkUnreadNotificationsUseCase: checkUnreadNotificationsUseCase,
+      applyAdvancedFiltersUseCase: applyAdvancedFiltersUseCase,
     );
   }
 }

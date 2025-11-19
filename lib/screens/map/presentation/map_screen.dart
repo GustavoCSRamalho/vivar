@@ -1,267 +1,302 @@
 // screens/map/map_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/models/filters_bottom_sheet.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/text_styles.dart';
 import 'package:vivar/screens/map/presentation/providers/map_provider.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/text_styles.dart';
-import '../../../core/constants/routes.dart';
-import '../../../widgets/buttons/custom_bottom_nav_bar.dart';
-import 'widgets/place_preview_card.dart';
 
-class MapScreen extends StatefulWidget {
+import '../../../factory/map_provider_factory.dart';
+
+class MapScreen extends StatelessWidget {
   @override
-  _MapScreenState createState() => _MapScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => MapProviderFactory.create(),
+      child: _MapScreenContent(),
+    );
+  }
 }
 
-class _MapScreenState extends State<MapScreen> {
-  GoogleMapController? _mapController;
-  int _selectedCategoryIndex = 0;
+class _MapScreenContent extends StatefulWidget {
+  @override
+  _MapScreenContentState createState() => _MapScreenContentState();
+}
 
-  final List<String> _categories = [
-    'Todos',
-    'Cafés',
-    'Restaurantes',
-    'Bares',
-    'Lojas',
-  ];
+class _MapScreenContentState extends State<_MapScreenContent> {
+  final TextEditingController _searchController = TextEditingController();
 
-  static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(-23.5505, -46.6333),
-    zoom: 14.0,
-  );
+  // Localização padrão (São Paulo)
+  static const LatLng _defaultLocation = LatLng(-23.5505, -46.6333);
+  LatLng _currentLocation = _defaultLocation;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MapProvider>().initialize();
+      _loadNearbyPlaces();
     });
+  }
+
+  Future<void> _loadNearbyPlaces() async {
+    final provider = context.read<MapProvider>();
+    if (!provider.isDisposed) {
+      await provider.loadNearbyPlaces(
+        _currentLocation.latitude,
+        _currentLocation.longitude,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    debugPrint('🗑️ MapScreen dispose chamado');
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [
-          Consumer<MapProvider>(
-            builder: (context, provider, child) {
-              return GoogleMap(
-                initialCameraPosition: _initialPosition,
-                markers: provider.markers,
-                onMapCreated: (controller) {
-                  _mapController = controller;
-                },
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                onTap: (_) {
-                  provider.clearSelection();
-                },
-              );
-            },
-          ),
-
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            right: 76,
-            child: _buildSearchBar(),
-          ),
-
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            right: 16,
-            child: _buildRecenterButton(),
-          ),
-
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 80,
-            left: 0,
-            right: 0,
-            child: _buildCategoryFilters(),
-          ),
-
-          Consumer<MapProvider>(
-            builder: (context, provider, child) {
-              if (provider.selectedPlace != null) {
-                return Positioned(
-                  bottom: 80,
-                  left: 0,
-                  right: 0,
-                  child: PlacePreviewCard(
-                    place: provider.selectedPlace!,
-                    onTap: () => _navigateToDetails(provider.selectedPlace!.id),
-                  ),
-                );
-              }
-              return SizedBox.shrink();
-            },
-          ),
-        ],
+        children: [_buildMap(), _buildSearchBar(), _buildSelectedPlaceCard()],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 3,
-        onTap: _onNavBarTap,
-      ),
+    );
+  }
+
+  Widget _buildMap() {
+    return Consumer<MapProvider>(
+      builder: (context, provider, child) {
+        return GoogleMap(
+          initialCameraPosition: CameraPosition(
+            target: _currentLocation,
+            zoom: 14.0,
+          ),
+          onMapCreated: (controller) {
+            if (!provider.isDisposed) {
+              provider.onMapCreated(controller);
+            }
+          },
+          markers: provider.markers,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: true,
+          zoomControlsEnabled: false,
+          mapToolbarEnabled: false,
+          onCameraMove: (position) {
+            _currentLocation = position.target;
+          },
+        );
+      },
     );
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(26),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 16,
+      left: 16,
+      right: 16,
+      child: Column(
         children: [
-          SizedBox(width: 16),
-          Icon(Icons.search, color: AppColors.textSecondary),
-          SizedBox(width: 12),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Buscar no mapa...',
-                hintStyle: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                border: InputBorder.none,
+          Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
               ),
-              onChanged: (value) {
-                context.read<MapProvider>().searchPlaces(value);
-              },
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Buscar lugares...',
+                        border: InputBorder.none,
+                        hintStyle: AppTextStyles.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      onSubmitted: _onSearch,
+                    ),
+                  ),
+                  Consumer<MapProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.isLoading) {
+                        return Padding(
+                          padding: EdgeInsets.all(12),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        );
+                      }
+                      return IconButton(
+                        icon: Icon(Icons.search, color: AppColors.primary),
+                        onPressed: () => _onSearch(_searchController.text),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.tune, color: AppColors.textSecondary),
-            onPressed: _openFilters,
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildRecenterButton() {
-    return Container(
-      width: 52,
-      height: 52,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(Icons.my_location, color: AppColors.primary),
-        onPressed: _recenterMap,
-      ),
-    );
-  }
+  Widget _buildSelectedPlaceCard() {
+    return Consumer<MapProvider>(
+      builder: (context, provider, child) {
+        final place = provider.selectedPlace;
+        if (place == null) return SizedBox.shrink();
 
-  Widget _buildCategoryFilters() {
-    return Container(
-      height: 40,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _categories.length,
-        itemBuilder: (context, index) {
-          final isSelected = _selectedCategoryIndex == index;
-          return Padding(
-            padding: EdgeInsets.only(right: 8),
-            child: GestureDetector(
-              onTap: () {
-                setState(() => _selectedCategoryIndex = index);
-                context.read<MapProvider>().filterByCategory(
-                  _categories[index],
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
+        return Positioned(
+          bottom: 16,
+          left: 16,
+          right: 16,
+          child: Material(
+            elevation: 8,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(place.name, style: AppTextStyles.subtitle),
+                            SizedBox(height: 4),
+                            Text(
+                              place.category,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close, color: AppColors.textSecondary),
+                        onPressed: () {
+                          if (!provider.isDisposed) {
+                            provider.clearSelection();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
+                      SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${place.latitude.toStringAsFixed(4)}, ${place.longitude.toStringAsFixed(4)}',
+                          style: AppTextStyles.caption,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (place.description != null &&
+                      place.description!.isNotEmpty) ...[
+                    SizedBox(height: 8),
+                    Text(
+                      place.description!,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                ),
-                child: Text(
-                  _categories[index],
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: isSelected ? Colors.white : AppColors.textPrimary,
-                    fontWeight: isSelected
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+                  SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/place-details',
+                              arguments: place.id,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text('Ver detalhes'),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            if (!provider.isDisposed) {
+                              provider.animateToPlace(place);
+                            }
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: AppColors.primary),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Como chegar',
+                            style: TextStyle(color: AppColors.primary),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
-  void _recenterMap() {
-    _mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(_initialPosition),
-    );
-  }
-
-  void _openFilters() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => FiltersBottomSheet(),
-    );
-  }
-
-  void _navigateToDetails(String placeId) {
-    AppRoutes.navigateToPlaceDetails(context, placeId);
-  }
-
-  void _onNavBarTap(int index) {
-    if (index == 3) return;
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-        break;
-      case 1:
-        Navigator.pushReplacementNamed(context, AppRoutes.discover);
-        break;
-      case 2:
-        Navigator.pushReplacementNamed(context, AppRoutes.swipe);
-        break;
-      case 4:
-        Navigator.pushReplacementNamed(context, AppRoutes.profile);
-        break;
+  Future<void> _onSearch(String query) async {
+    final provider = context.read<MapProvider>();
+    if (!provider.isDisposed) {
+      await provider.searchPlaces(
+        query,
+        _currentLocation.latitude,
+        _currentLocation.longitude,
+      );
     }
-  }
-
-  @override
-  void dispose() {
-    _mapController?.dispose();
-    super.dispose();
   }
 }

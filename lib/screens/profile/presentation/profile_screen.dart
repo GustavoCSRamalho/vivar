@@ -8,6 +8,7 @@ import 'package:vivar/screens/auth/domain/entities/auth_user_entity.dart';
 import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
 import 'package:vivar/screens/profile/domain/entities/profile_entity.dart';
 import 'package:vivar/screens/profile/presentation/providers/profile_provider.dart';
+import 'package:vivar/screens/profile/presentation/providers/settings_provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../core/constants/spacing.dart';
@@ -681,7 +682,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              context.read<UserProvider>().logout();
+              context.read<SettingsProvider>().logout();
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 AppRoutes.home,
