@@ -1,8 +1,8 @@
 // data/repositories/location_permission_repository_impl.dart
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:vivar/screens/location/domain/repositories/location_permission_repository_protocol.dart';
-import 'package:vivar/screens/location/domain/usecases/location/request_location_permission_usecase.dart';
+import 'package:vivar/domain/interface/location/location_permission_repository_protocol.dart';
+import 'package:vivar/domain/interface/location/request_location_permission_protocol.dart';
 
 class LocationPermissionRepositoryImpl
     implements LocationPermissionRepositoryProtocol {

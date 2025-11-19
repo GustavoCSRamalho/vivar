@@ -1,8 +1,9 @@
 // presentation/providers/splash_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/splash/domain/usecases/splash/check_authentication_usecase.dart';
-import 'package:vivar/screens/splash/domain/usecases/splash/initialize_app_usecase.dart';
+import 'package:vivar/domain/usecases/splash/check_authentication_usecase.dart';
+import 'package:vivar/domain/usecases/splash/check_authentication_usecase.dart';
+import 'package:vivar/domain/usecases/splash/initialize_app_usecase.dart';
 
 enum SplashState { initial, loading, authenticated, unauthenticated, error }
 

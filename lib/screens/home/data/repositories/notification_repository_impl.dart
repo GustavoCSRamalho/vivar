@@ -2,9 +2,9 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/home/data/models/notification_model.dart';
-import 'package:vivar/screens/home/domain/entities/notification_entity.dart';
-import 'package:vivar/screens/home/domain/repositories/notification_repository_protocol.dart';
+import 'package:vivar/models/notification_model.dart';
+import 'package:vivar/domain/entity/notification_entity.dart';
+import 'package:vivar/domain/interface/notification/notification_repository_protocol.dart';
 
 class NotificationRepositoryImpl implements NotificationRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

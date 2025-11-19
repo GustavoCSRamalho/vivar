@@ -2,14 +2,14 @@
 
 import 'package:flutter/foundation.dart';
 
-import 'package:vivar/screens/place_details/domain/entities/place_details_entity.dart';
-import 'package:vivar/screens/place_details/domain/entities/review_entity.dart';
-import 'package:vivar/screens/place_details/domain/usecases/place_details/add_review_usecase.dart';
-import 'package:vivar/screens/place_details/domain/usecases/place_details/check_user_reviewed_usecase.dart';
-import 'package:vivar/screens/place_details/domain/usecases/place_details/get_place_details_usecase.dart';
-import 'package:vivar/screens/place_details/domain/usecases/place_details/get_place_reviews_usecase.dart';
+import 'package:vivar/domain/entity/place_details_entity.dart';
+import 'package:vivar/domain/entity/review_entity.dart';
+import 'package:vivar/domain/usecases/place_details/add_review_usecase.dart';
+import 'package:vivar/domain/usecases/place_details/check_user_reviewed_usecase.dart';
+import 'package:vivar/domain/usecases/place_details/get_place_details_usecase.dart';
+import 'package:vivar/domain/usecases/place_details/get_place_reviews_usecase.dart';
 
-import '../../domain/usecases/place_details/get_place_by_Id_usecase.dart';
+import '../../../../domain/usecases/place_details/get_place_by_Id_usecase.dart';
 
 class PlaceDetailsProvider with ChangeNotifier {
   final GetPlaceDetailsUseCase _getPlaceDetailsUseCase;

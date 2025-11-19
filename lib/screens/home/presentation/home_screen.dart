@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/routes.dart';
 import 'package:vivar/models/filters_bottom_sheet.dart';
-import 'package:vivar/screens/home/domain/entities/place_entity.dart';
+import 'package:vivar/domain/entity/place_entity.dart';
 import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 import 'package:vivar/widgets/buttons/custom_bottom_nav_bar.dart';
 import 'package:vivar/widgets/buttons/place_card.dart';

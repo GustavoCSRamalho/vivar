@@ -1,11 +1,11 @@
 // presentation/providers/register_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/auth/domain/entities/auth_user_entity.dart';
-import 'package:vivar/screens/auth/domain/entities/register_user_entity.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/login_with_apple_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/login_with_google_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/register_user_usecase.dart';
+import 'package:vivar/domain/entity/auth_user_entity.dart';
+import 'package:vivar/domain/entity/register_user_entity.dart';
+import 'package:vivar/domain/usecases/auth/login_with_apple_usecase.dart';
+import 'package:vivar/domain/usecases/auth/login_with_google_usecase.dart';
+import 'package:vivar/domain/usecases/auth/register_user_usecase.dart';
 
 class RegisterProvider with ChangeNotifier {
   final RegisterUserUseCase _registerUserUseCase;

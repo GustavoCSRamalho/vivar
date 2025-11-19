@@ -1,8 +1,8 @@
 // data/repositories/location_repository_impl.dart
 
-import 'package:vivar/screens/home/domain/entities/position_entity.dart';
+import 'package:vivar/domain/entity/position_entity.dart';
 
-import '../../domain/repositories/location_repository_protocol.dart';
+import '../../../../domain/interface/location/location_repository_protocol.dart';
 
 import 'package:geolocator/geolocator.dart' as geo;
 

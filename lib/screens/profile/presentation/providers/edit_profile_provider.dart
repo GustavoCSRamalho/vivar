@@ -1,12 +1,13 @@
 // presentation/providers/edit_profile_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/profile/domain/entities/profile_entity.dart';
-import 'package:vivar/screens/profile/domain/entities/user_profile_update_entity.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/get_profile_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/remove_avatar_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/update_user_profile_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/upload_avatar_usecase.dart';
+import 'package:vivar/domain/entity/profile_entity.dart';
+import 'package:vivar/domain/entity/user_profile_update_entity.dart';
+
+import '../../../../domain/usecases/profile/get_profile_usecase.dart';
+import '../../../../domain/usecases/profile/remove_avatar_usecase.dart';
+import '../../../../domain/usecases/profile/update_user_profile_usecase.dart';
+import '../../../../domain/usecases/profile/upload_avatar_usecase.dart';
 
 class EditProfileProvider with ChangeNotifier {
   final GetProfileUseCase _getProfileUseCase;

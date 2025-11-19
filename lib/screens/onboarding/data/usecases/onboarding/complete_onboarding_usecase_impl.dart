@@ -1,7 +1,7 @@
 // data/usecases/onboarding/complete_onboarding_usecase_impl.dart
 
-import 'package:vivar/screens/onboarding/domain/repositories/onboarding_repository_protocol.dart';
-import 'package:vivar/screens/onboarding/domain/usecases/onboarding/complete_onboarding_usecase.dart';
+import 'package:vivar/domain/interface/onboarding/onboarding_repository_protocol.dart';
+import 'package:vivar/domain/usecases/onboarding/complete_onboarding_usecase.dart';
 
 class CompleteOnboardingUseCaseImpl implements CompleteOnboardingUseCase {
   final OnboardingRepositoryProtocol _repository;

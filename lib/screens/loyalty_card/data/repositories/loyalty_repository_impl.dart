@@ -2,10 +2,10 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/loyalty_card/domain/entities/activity_entity.dart';
-import 'package:vivar/screens/loyalty_card/domain/entities/benefit_entity.dart';
-import 'package:vivar/screens/loyalty_card/domain/entities/loyalty_card_entity.dart';
-import 'package:vivar/screens/loyalty_card/domain/repositories/loyalty_repository_protocol.dart';
+import 'package:vivar/domain/entity/activity_entity.dart';
+import 'package:vivar/domain/entity/benefit_entity.dart';
+import 'package:vivar/domain/entity/loyalty_card_entity.dart';
+import 'package:vivar/domain/interface/loyalty/loyalty_repository_protocol.dart';
 
 class LoyaltyRepositoryImpl implements LoyaltyRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

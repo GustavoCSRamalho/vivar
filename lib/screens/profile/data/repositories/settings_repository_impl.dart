@@ -2,8 +2,8 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:vivar/screens/profile/domain/entities/app_settings_entity.dart';
-import 'package:vivar/screens/profile/domain/repositories/settings_repository_protocol.dart';
+import 'package:vivar/domain/entity/app_settings_entity.dart';
+import 'package:vivar/domain/interface/settings/settings_repository_protocol.dart';
 
 class SettingsRepositoryImpl implements SettingsRepositoryProtocol {
   static const String _darkModeKey = 'dark_mode';

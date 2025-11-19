@@ -9,8 +9,9 @@ class LocationPermissionProviderFactory {
   static LocationPermissionProvider create() {
     final repository = LocationPermissionRepositoryImpl();
 
-    final requestLocationPermissionUseCase =
-        RequestLocationPermissionUseCaseImpl(repository);
+    final requestLocationPermissionUseCase = RequestLocationPermissionUseCase(
+      repository,
+    );
     final checkLocationPermissionUseCase = CheckLocationPermissionUseCaseImpl(
       repository,
     );

@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:vivar/screens/auth/data/repositories/auth_repository_impl.dart';
 import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
 import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
-import 'package:vivar/screens/place_details/domain/entities/place_details_entity.dart';
+import 'package:vivar/domain/entity/place_details_entity.dart';
 import 'package:vivar/screens/place_details/presentation/providers/place_details_provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../providers/places_provider.dart';
 import '../../../providers/user_provider.dart';
-import '../../home/data/models/place_model.dart';
+import '../../../models/place_model.dart';
 import '../../../widgets/buttons/primary_button.dart';
 import '../../../widgets/buttons/secondary_button.dart';
 

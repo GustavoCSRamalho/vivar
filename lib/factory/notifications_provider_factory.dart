@@ -1,13 +1,13 @@
 // presentation/providers/notifications_provider_factory.dart
 
-import 'package:vivar/screens/notifications/domain/usecases/notifications/get_notifications_by_type_usecase.dart';
+import 'package:vivar/domain/usecases/notifications/get_notifications_by_type_usecase.dart';
 
 import '../screens/notifications/data/repositories/notifications_repository_impl.dart';
-import '../screens/notifications/domain/usecases/notifications/delete_notification_usecase.dart';
-import '../screens/notifications/domain/usecases/notifications/get_notifications_usecase.dart';
-import '../screens/notifications/domain/usecases/notifications/get_unread_count_usecase.dart';
-import '../screens/notifications/domain/usecases/notifications/mark_all_as_read_usecase.dart';
-import '../screens/notifications/domain/usecases/notifications/mark_notification_as_read_usecase.dart';
+import '../domain/usecases/notifications/delete_notification_usecase.dart';
+import '../domain/usecases/notifications/get_notifications_usecase.dart';
+import '../domain/usecases/notifications/get_unread_count_usecase.dart';
+import '../domain/usecases/notifications/mark_all_as_read_usecase.dart';
+import '../domain/usecases/notifications/mark_notification_as_read_usecase.dart';
 import '../screens/notifications/presentation/providers/notifications_provider.dart';
 
 class NotificationsProviderFactory {

@@ -1,21 +1,21 @@
 // presentation/providers/home_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/home/domain/usecases/location/get_current_location_usecase.dart';
-import 'package:vivar/screens/home/domain/usecases/place/apply_advanced_filters_usecase.dart';
-import '../../domain/entities/place_entity.dart';
-import '../../domain/entities/position_entity.dart';
-import '../../domain/entities/user_entity.dart';
-import '../../domain/usecases/place/get_all_places_usecase.dart';
-import '../../domain/usecases/place/get_nearby_places_usecase.dart';
-import '../../domain/usecases/place/filter_places_by_category_usecase.dart';
-import '../../domain/usecases/place/search_places_usecase.dart';
-import '../../domain/usecases/user/get_current_user_usecase.dart';
-import '../../domain/usecases/user/load_user_favorites_usecase.dart';
-import '../../domain/usecases/user/toggle_favorite_place_usecase.dart';
-import '../../domain/usecases/notification/get_notifications_usecase.dart';
-import '../../domain/usecases/notification/check_unread_notifications_usecase.dart';
-import '../../domain/repositories/location_repository_protocol.dart';
+import 'package:vivar/domain/usecases/location/get_current_location_usecase.dart';
+import 'package:vivar/domain/usecases/place/apply_advanced_filters_usecase.dart';
+import '../../../../domain/entity/place_entity.dart';
+import '../../../../domain/entity/position_entity.dart';
+import '../../../../domain/entity/user_entity.dart';
+import '../../../../domain/usecases/place/get_all_places_usecase.dart';
+import '../../../../domain/usecases/place/get_nearby_places_usecase.dart';
+import '../../../../domain/usecases/place/filter_places_by_category_usecase.dart';
+import '../../../../domain/usecases/place/search_places_usecase.dart';
+import '../../../../domain/usecases/user/get_current_user_usecase.dart';
+import '../../../../domain/usecases/user/load_user_favorites_usecase.dart';
+import '../../../../domain/usecases/user/toggle_favorite_place_usecase.dart';
+import '../../../../domain/usecases/notification/get_notifications_usecase.dart';
+import '../../../../domain/usecases/notification/check_unread_notifications_usecase.dart';
+import '../../../../domain/interface/location/location_repository_protocol.dart';
 
 /// Provider para a Home Screen
 ///

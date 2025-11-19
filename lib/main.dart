@@ -22,7 +22,7 @@ import 'package:vivar/factory/settings_provider_factory.dart';
 import 'package:vivar/factory/splash_provider_factory.dart';
 import 'package:vivar/factory/subscription_provider_factory.dart';
 import 'package:vivar/factory/swipe_provider_factory.dart';
-import 'package:vivar/screens/home/data/models/place_model.dart';
+import 'package:vivar/models/place_model.dart';
 import 'package:vivar/screens/swipe/presentation/providers/swipe_provider.dart';
 import 'app.dart';
 import 'providers/auth_provider.dart';

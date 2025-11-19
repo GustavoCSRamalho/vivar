@@ -1,7 +1,7 @@
 // data/usecases/location/check_location_permission_usecase_impl.dart
 
-import 'package:vivar/screens/location/domain/repositories/location_permission_repository_protocol.dart';
-import 'package:vivar/screens/location/domain/usecases/location/check_location_permission_usecase.dart';
+import 'package:vivar/domain/interface/location/location_permission_repository_protocol.dart';
+import 'package:vivar/domain/interface/check/check_location_permission_usecase.dart';
 
 class CheckLocationPermissionUseCaseImpl
     implements CheckLocationPermissionUseCase {

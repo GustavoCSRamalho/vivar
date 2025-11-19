@@ -1,11 +1,11 @@
 // presentation/providers/loyalty_card_provider_factory.dart
 
 import 'package:vivar/screens/loyalty_card/data/repositories/loyalty_repository_impl.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/generate_qr_code_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/get_active_benefits_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/get_loyalty_card_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/get_recent_activities_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/redeem_benefit_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/generate_qr_code_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/get_active_benefits_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/get_loyalty_card_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/get_recent_activities_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/redeem_benefit_usecase.dart';
 import 'package:vivar/screens/loyalty_card/presentation/providers/loyalty_card_provider.dart';
 
 class LoyaltyCardProviderFactory {

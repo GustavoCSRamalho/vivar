@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../repositories/place_repository.dart';
 import '../repositories/user_repository.dart';
-import '../../screens/home/data/models/place_model.dart';
-import '../../screens/home/data/models/user_model.dart';
+import '../../models/place_model.dart';
+import '../../models/user_model.dart';
 
 class DatabaseSeeder {
   static const String _seedKey = 'database_seeded';

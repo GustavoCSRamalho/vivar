@@ -1,9 +1,10 @@
 // presentation/providers/location_permission_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/location/domain/repositories/location_permission_repository_protocol.dart';
-import 'package:vivar/screens/location/domain/usecases/location/check_location_permission_usecase.dart';
-import 'package:vivar/screens/location/domain/usecases/location/request_location_permission_usecase.dart';
+import 'package:vivar/domain/interface/location/location_permission_repository_protocol.dart';
+import 'package:vivar/domain/interface/check/check_location_permission_usecase.dart';
+import 'package:vivar/domain/interface/location/request_location_permission_protocol.dart';
+import 'package:vivar/screens/location/data/usecases/location/request_location_permission_usecase_impl.dart';
 
 class LocationPermissionProvider with ChangeNotifier {
   final RequestLocationPermissionUseCase _requestLocationPermissionUseCase;

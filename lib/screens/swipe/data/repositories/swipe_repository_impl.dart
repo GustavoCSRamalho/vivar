@@ -2,9 +2,9 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/home/data/models/place_model.dart';
-import 'package:vivar/screens/swipe/domain/entities/swipe_place_entity.dart';
-import 'package:vivar/screens/swipe/domain/repositories/swipe_repository_protocol.dart';
+import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
+import 'package:vivar/models/place_model.dart';
+import 'package:vivar/domain/entity/swipe_place_entity.dart';
 
 class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

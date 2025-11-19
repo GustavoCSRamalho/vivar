@@ -1,11 +1,11 @@
 // presentation/providers/edit_profile_provider_factory.dart
 
+import 'package:vivar/domain/usecases/profile/get_profile_usecase.dart';
+import 'package:vivar/domain/usecases/profile/remove_avatar_usecase.dart';
+import 'package:vivar/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:vivar/domain/usecases/profile/upload_avatar_usecase.dart';
 import 'package:vivar/screens/profile/data/repositories/profile_repository_impl.dart';
 import 'package:vivar/screens/profile/data/repositories/user_profile_repository_impl.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/get_profile_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/remove_avatar_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/update_user_profile_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/upload_avatar_usecase.dart';
 import 'package:vivar/screens/profile/presentation/providers/edit_profile_provider.dart';
 
 class EditProfileProviderFactory {

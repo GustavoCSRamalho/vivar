@@ -1,14 +1,14 @@
 // presentation/providers/loyalty_card_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/loyalty_card/domain/entities/activity_entity.dart';
-import 'package:vivar/screens/loyalty_card/domain/entities/benefit_entity.dart';
-import 'package:vivar/screens/loyalty_card/domain/entities/loyalty_card_entity.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/generate_qr_code_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/get_active_benefits_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/get_loyalty_card_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/get_recent_activities_usecase.dart';
-import 'package:vivar/screens/loyalty_card/domain/usecases/loyalty/redeem_benefit_usecase.dart';
+import 'package:vivar/domain/entity/activity_entity.dart';
+import 'package:vivar/domain/entity/benefit_entity.dart';
+import 'package:vivar/domain/entity/loyalty_card_entity.dart';
+import 'package:vivar/domain/usecases/loyalty/generate_qr_code_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/get_active_benefits_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/get_loyalty_card_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/get_recent_activities_usecase.dart';
+import 'package:vivar/domain/usecases/loyalty/redeem_benefit_usecase.dart';
 
 class LoyaltyCardProvider with ChangeNotifier {
   final GetLoyaltyCardUseCase _getLoyaltyCardUseCase;

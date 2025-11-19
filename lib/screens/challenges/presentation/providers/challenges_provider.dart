@@ -2,12 +2,12 @@
 
 import 'package:flutter/foundation.dart';
 
-import '../../domain/entities/challenge_entity.dart';
-import '../../domain/usecases/challenges/complete_challenge_usecase.dart';
-import '../../domain/usecases/challenges/get_active_challenges_usecase.dart';
-import '../../domain/usecases/challenges/get_challenges_usecase.dart';
-import '../../domain/usecases/challenges/get_completed_challenges_usecase.dart';
-import '../../domain/usecases/challenges/update_challenge_progress_usecase.dart';
+import '../../../../domain/entity/challenge_entity.dart';
+import '../../../../domain/usecases/challenges/complete_challenge_usecase.dart';
+import '../../../../domain/usecases/challenges/get_active_challenges_usecase.dart';
+import '../../../../domain/usecases/challenges/get_challenges_usecase.dart';
+import '../../../../domain/usecases/challenges/get_completed_challenges_usecase.dart';
+import '../../../../domain/usecases/challenges/update_challenge_progress_usecase.dart';
 
 class ChallengesProvider with ChangeNotifier {
   final GetChallengesUseCase _getChallengesUseCase;

@@ -1,11 +1,11 @@
 // presentation/providers/login_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/auth/domain/entities/auth_user_entity.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/login_with_apple_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/login_with_email_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/login_with_google_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/send_password_reset_usecase.dart';
+import 'package:vivar/domain/entity/auth_user_entity.dart';
+import 'package:vivar/domain/usecases/auth/login_with_apple_usecase.dart';
+import 'package:vivar/domain/usecases/auth/login_with_email_usecase.dart';
+import 'package:vivar/domain/usecases/auth/login_with_google_usecase.dart';
+import 'package:vivar/domain/usecases/auth/send_password_reset_usecase.dart';
 
 class LoginProvider with ChangeNotifier {
   final LoginWithEmailUseCase _loginWithEmailUseCase;

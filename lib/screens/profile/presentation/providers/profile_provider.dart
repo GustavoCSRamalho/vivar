@@ -1,11 +1,12 @@
 // presentation/providers/profile_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/profile/domain/entities/profile_entity.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/get_profile_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/get_recent_badges_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/get_recent_checkins_count_usecase.dart';
-import 'package:vivar/screens/profile/domain/usecases/profile/update_profile_usecase.dart';
+import 'package:vivar/domain/entity/profile_entity.dart';
+
+import '../../../../domain/usecases/profile/get_profile_usecase.dart';
+import '../../../../domain/usecases/profile/get_recent_badges_usecase.dart';
+import '../../../../domain/usecases/profile/get_recent_checkins_count_usecase.dart';
+import '../../../../domain/usecases/profile/update_profile_usecase.dart';
 
 class ProfileProvider with ChangeNotifier {
   final GetProfileUseCase _getProfileUseCase;

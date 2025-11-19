@@ -2,9 +2,9 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/premium/domain/entities/subscription_plan_entity.dart';
-import 'package:vivar/screens/premium/domain/entities/user_subscription_entity.dart';
-import 'package:vivar/screens/premium/domain/repositories/subscription_repository_protocol.dart';
+import 'package:vivar/domain/entity/subscription_plan_entity.dart';
+import 'package:vivar/domain/entity/user_subscription_entity.dart';
+import 'package:vivar/domain/interface/subscription/subscription_repository_protocol.dart';
 
 class SubscriptionRepositoryImpl implements SubscriptionRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

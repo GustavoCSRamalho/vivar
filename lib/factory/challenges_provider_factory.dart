@@ -1,11 +1,11 @@
 // presentation/providers/challenges_provider_factory.dart
 
 import '../screens/challenges/data/repositories/challenges_repository_impl.dart';
-import '../screens/challenges/domain/usecases/challenges/complete_challenge_usecase.dart';
-import '../screens/challenges/domain/usecases/challenges/get_active_challenges_usecase.dart';
-import '../screens/challenges/domain/usecases/challenges/get_challenges_usecase.dart';
-import '../screens/challenges/domain/usecases/challenges/get_completed_challenges_usecase.dart';
-import '../screens/challenges/domain/usecases/challenges/update_challenge_progress_usecase.dart';
+import '../domain/usecases/challenges/complete_challenge_usecase.dart';
+import '../domain/usecases/challenges/get_active_challenges_usecase.dart';
+import '../domain/usecases/challenges/get_challenges_usecase.dart';
+import '../domain/usecases/challenges/get_completed_challenges_usecase.dart';
+import '../domain/usecases/challenges/update_challenge_progress_usecase.dart';
 import '../screens/challenges/presentation/providers/challenges_provider.dart';
 
 class ChallengesProviderFactory {

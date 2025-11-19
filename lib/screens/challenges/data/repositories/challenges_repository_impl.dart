@@ -3,8 +3,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
 
-import '../../domain/entities/challenge_entity.dart';
-import '../../domain/repositories/challenges_repository_protocol.dart';
+import '../../../../domain/entity/challenge_entity.dart';
+import '../../../../domain/interface/challenges/challenges_repository_protocol.dart';
 
 class ChallengesRepositoryImpl implements ChallengesRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

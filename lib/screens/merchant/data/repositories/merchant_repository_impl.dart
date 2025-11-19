@@ -2,10 +2,10 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/merchant/domain/entities/merchant_entity.dart';
+import 'package:vivar/domain/entity/merchant_entity.dart';
 import 'dart:convert';
 
-import 'package:vivar/screens/merchant/domain/repositories/merchant_repository_protocol.dart';
+import 'package:vivar/domain/interface/merchant/merchant_repository_protocol.dart';
 
 class MerchantRepositoryImpl implements MerchantRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

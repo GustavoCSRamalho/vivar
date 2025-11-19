@@ -2,9 +2,9 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/home/data/models/user_model.dart';
-import 'package:vivar/screens/home/domain/entities/user_entity.dart';
-import 'package:vivar/screens/home/domain/repositories/user_repository_protocol.dart';
+import 'package:vivar/models/user_model.dart';
+import 'package:vivar/domain/entity/user_entity.dart';
+import 'package:vivar/domain/interface/user/user_repository_protocol.dart';
 
 class UserRepositoryImpl implements UserRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

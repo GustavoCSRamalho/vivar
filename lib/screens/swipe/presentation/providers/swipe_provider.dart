@@ -1,11 +1,11 @@
 // presentation/providers/swipe_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/swipe/domain/entities/swipe_place_entity.dart';
-import 'package:vivar/screens/swipe/domain/usecases/swipe/dislike_place_usecase.dart';
-import 'package:vivar/screens/swipe/domain/usecases/swipe/get_swipe_places_usecase.dart';
-import 'package:vivar/screens/swipe/domain/usecases/swipe/like_place_usecase.dart';
-import 'package:vivar/screens/swipe/domain/usecases/swipe/super_like_place_usecase.dart';
+import 'package:vivar/domain/entity/swipe_place_entity.dart';
+import 'package:vivar/domain/usecases/swipe/dislike_place_usecase.dart';
+import 'package:vivar/domain/usecases/swipe/get_swipe_places_usecase.dart';
+import 'package:vivar/domain/usecases/swipe/like_place_usecase.dart';
+import 'package:vivar/domain/usecases/swipe/super_like_place_usecase.dart';
 
 class SwipeProvider with ChangeNotifier {
   final GetSwipePlacesUseCase _getSwipePlacesUseCase;

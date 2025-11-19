@@ -1,14 +1,14 @@
 // presentation/providers/notifications_provider.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:vivar/domain/entity/notification_entity.dart';
 
-import '../../domain/entities/notification_entity.dart';
-import '../../domain/usecases/notifications/delete_notification_usecase.dart';
-import '../../domain/usecases/notifications/get_notifications_by_type_usecase.dart';
-import '../../domain/usecases/notifications/get_notifications_usecase.dart';
-import '../../domain/usecases/notifications/get_unread_count_usecase.dart';
-import '../../domain/usecases/notifications/mark_all_as_read_usecase.dart';
-import '../../domain/usecases/notifications/mark_notification_as_read_usecase.dart';
+import '../../../../domain/usecases/notifications/delete_notification_usecase.dart';
+import '../../../../domain/usecases/notifications/get_notifications_by_type_usecase.dart';
+import '../../../../domain/usecases/notifications/get_notifications_usecase.dart';
+import '../../../../domain/usecases/notifications/get_unread_count_usecase.dart';
+import '../../../../domain/usecases/notifications/mark_all_as_read_usecase.dart';
+import '../../../../domain/usecases/notifications/mark_notification_as_read_usecase.dart';
 
 class NotificationsProvider with ChangeNotifier {
   final GetNotificationsUseCase _getNotificationsUseCase;

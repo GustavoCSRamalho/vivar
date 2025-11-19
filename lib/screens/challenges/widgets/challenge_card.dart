@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/text_styles.dart';
 
-import '../domain/entities/challenge_entity.dart';
+import '../../../domain/entity/challenge_entity.dart';
 
 class ChallengeCard extends StatelessWidget {
   final ChallengeEntity challenge;

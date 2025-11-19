@@ -1,8 +1,8 @@
 // presentation/providers/forgot_password_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/send_password_reset_usecase.dart';
-import 'package:vivar/screens/auth/domain/usecases/auth/verify_email_exists_usecase.dart';
+import 'package:vivar/domain/usecases/auth/send_password_reset_usecase.dart';
+import 'package:vivar/domain/usecases/auth/verify_email_exists_usecase.dart';
 
 enum ForgotPasswordStep { enterEmail, emailSent }
 

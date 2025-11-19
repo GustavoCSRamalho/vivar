@@ -2,12 +2,12 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/auth/domain/entities/auth_user_entity.dart';
-import 'package:vivar/screens/auth/domain/entities/login_credentials_entity.dart';
-import 'package:vivar/screens/auth/domain/entities/register_user_entity.dart';
-import 'package:vivar/screens/home/data/models/user_model.dart';
+import 'package:vivar/domain/entity/auth_user_entity.dart';
+import 'package:vivar/domain/entity/login_credentials_entity.dart';
+import 'package:vivar/domain/entity/register_user_entity.dart';
+import 'package:vivar/models/user_model.dart';
 
-import '../../domain/repositories/auth_repository_protocol.dart';
+import '../../../../domain/interface/auth/auth_repository_protocol.dart';
 
 class AuthRepositoryImpl implements AuthRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();

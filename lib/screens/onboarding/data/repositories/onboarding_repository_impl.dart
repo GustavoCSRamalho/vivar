@@ -1,7 +1,7 @@
 // data/repositories/onboarding_repository_impl.dart
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vivar/screens/onboarding/domain/repositories/onboarding_repository_protocol.dart';
+import 'package:vivar/domain/interface/onboarding/onboarding_repository_protocol.dart';
 
 class OnboardingRepositoryImpl implements OnboardingRepositoryProtocol {
   static const String _onboardingKey = 'has_completed_onboarding';

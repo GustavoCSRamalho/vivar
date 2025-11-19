@@ -2,9 +2,9 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/home/data/models/place_model.dart';
-import 'package:vivar/screens/home/domain/entities/place_entity.dart';
-import 'package:vivar/screens/home/domain/repositories/place_repository_protocol.dart';
+import 'package:vivar/models/place_model.dart';
+import 'package:vivar/domain/entity/place_entity.dart';
+import 'package:vivar/domain/interface/place/place_repository_protocol.dart';
 
 class PlaceRepositoryImpl implements PlaceRepositoryProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();
