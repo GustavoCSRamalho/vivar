@@ -9,7 +9,16 @@ import 'package:vivar/models/user_model.dart';
 
 import '../../../../domain/interface/auth/auth_repository_protocol.dart';
 
-class AuthRepositoryImpl implements AuthRepositoryProtocol {
+class AuthRepositoryImpl
+    implements
+        EmailLoginProtocol,
+        GoogleLoginProtocol,
+        AppleLoginProtocol,
+        RegisterUserProtocol,
+        LogoutProtocol,
+        PasswordResetProtocol,
+        EmailVerificationProtocol,
+        UserLoggedInProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   final String _userTableName = 'users';
 
@@ -116,12 +125,6 @@ class AuthRepositoryImpl implements AuthRepositoryProtocol {
       phone: model.phone,
       createdAt: model.createdAt,
     );
-  }
-
-  @override
-  Future<String?> getCurrentUserId() {
-    // TODO: implement getCurrentUserId
-    throw UnimplementedError();
   }
 
   @override

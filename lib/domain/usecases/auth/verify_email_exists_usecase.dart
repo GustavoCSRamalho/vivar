@@ -3,7 +3,7 @@
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class VerifyEmailExistsUseCase {
-  final AuthRepositoryProtocol _repository;
+  final EmailVerificationProtocol _repository;
 
   VerifyEmailExistsUseCase(this._repository);
 

@@ -4,7 +4,7 @@ import '../../entity/auth_user_entity.dart';
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class LoginWithAppleUseCase {
-  final AuthRepositoryProtocol _repository;
+  final AppleLoginProtocol _repository;
 
   LoginWithAppleUseCase(this._repository);
 

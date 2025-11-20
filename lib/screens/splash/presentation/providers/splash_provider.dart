@@ -8,13 +8,13 @@ import 'package:vivar/domain/usecases/splash/initialize_app_usecase.dart';
 enum SplashState { initial, loading, authenticated, unauthenticated, error }
 
 class SplashProvider with ChangeNotifier {
-  final CheckAuthenticationUseCase _checkAuthenticationUseCase;
+  final UserLoggedInUseCase _userLoggedInUseCase;
   final InitializeAppUseCase _initializeAppUseCase;
 
   SplashProvider({
-    required CheckAuthenticationUseCase checkAuthenticationUseCase,
+    required UserLoggedInUseCase userLoggedInUseCase,
     required InitializeAppUseCase initializeAppUseCase,
-  }) : _checkAuthenticationUseCase = checkAuthenticationUseCase,
+  }) : _userLoggedInUseCase = userLoggedInUseCase,
        _initializeAppUseCase = initializeAppUseCase;
 
   SplashState _state = SplashState.initial;
@@ -30,7 +30,7 @@ class SplashProvider with ChangeNotifier {
     try {
       await _initializeAppUseCase.execute();
 
-      final isAuthenticated = await _checkAuthenticationUseCase.execute();
+      final isAuthenticated = await _userLoggedInUseCase.execute();
 
       if (isAuthenticated) {
         _setState(SplashState.authenticated);

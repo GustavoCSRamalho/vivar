@@ -5,7 +5,7 @@ import '../../entity/register_user_entity.dart';
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class RegisterUserUseCase {
-  final AuthRepositoryProtocol _repository;
+  final RegisterUserProtocol _repository;
 
   RegisterUserUseCase(this._repository);
 

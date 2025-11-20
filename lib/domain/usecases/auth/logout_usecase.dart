@@ -3,7 +3,7 @@
 import 'package:vivar/domain/interface/auth/auth_repository_protocol.dart';
 
 class LogoutUseCase {
-  final AuthRepositoryProtocol _repository;
+  final LogoutProtocol _repository;
 
   LogoutUseCase(this._repository);
 

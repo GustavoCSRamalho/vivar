@@ -4,7 +4,7 @@ import '../../entity/auth_user_entity.dart';
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class LoginWithGoogleUseCase {
-  final AuthRepositoryProtocol _repository;
+  final GoogleLoginProtocol _repository;
 
   LoginWithGoogleUseCase(this._repository);
 

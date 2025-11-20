@@ -1,5 +1,5 @@
-// domain/usecases/splash/check_authentication_usecase.dart
+// domain/usecases/splash/user_logged_in_usecase.dart
 
-abstract class CheckAuthenticationProtocol {
+abstract class UserLoggedInProtocol {
   Future<bool> execute();
 }

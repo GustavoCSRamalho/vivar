@@ -3,7 +3,7 @@
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class SendPasswordResetUseCase {
-  final AuthRepositoryProtocol _repository;
+  final PasswordResetProtocol _repository;
 
   SendPasswordResetUseCase(this._repository);
 

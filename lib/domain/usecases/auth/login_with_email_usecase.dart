@@ -5,7 +5,7 @@ import '../../entity/login_credentials_entity.dart';
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class LoginWithEmailUseCase {
-  final AuthRepositoryProtocol _repository;
+  final EmailLoginProtocol _repository;
 
   LoginWithEmailUseCase(this._repository);
 
