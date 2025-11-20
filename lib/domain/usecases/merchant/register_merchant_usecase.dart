@@ -1,6 +1,6 @@
 // domain/usecases/merchant/register_merchant_usecase.dart
 
-import '../../entity/merchant_entity.dart';
+import '../../entity/merchant/merchant_entity.dart';
 import '../../interface/merchant/merchant_repository_protocol.dart';
 
 class RegisterMerchantUseCase {

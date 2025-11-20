@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/text_styles.dart';
-import 'package:vivar/domain/entity/map_place_entity.dart';
+import 'package:vivar/domain/entity/map/map_place_entity.dart';
 
 class PlacePreviewCard extends StatelessWidget {
   final MapPlaceEntity place;

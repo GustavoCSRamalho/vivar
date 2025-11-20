@@ -1,7 +1,7 @@
 // domain/usecases/auth/register_user_usecase.dart
 
-import '../../entity/auth_user_entity.dart';
-import '../../entity/register_user_entity.dart';
+import '../../entity/auth/auth_user_entity.dart';
+import '../../entity/register/register_user_entity.dart';
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class RegisterUserUseCase {

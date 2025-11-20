@@ -1,16 +1,20 @@
 // data/repositories/onboarding_repository_impl.dart
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vivar/domain/interface/onboarding/onboarding_repository_protocol.dart';
+import 'package:vivar/screens/onboarding/data/datasource/onboarding_datasource.dart';
 
+/// Implementação do repositório de onboarding
+/// Delega operações de dados para o datasource
 class OnboardingRepositoryImpl implements OnboardingRepositoryProtocol {
-  static const String _onboardingKey = 'has_completed_onboarding';
+  final OnboardingDatasourceProtocol _datasource;
+
+  OnboardingRepositoryImpl({required OnboardingDatasourceProtocol datasource})
+    : _datasource = datasource;
 
   @override
   Future<void> markOnboardingComplete() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_onboardingKey, true);
+      await _datasource.setOnboardingComplete(true);
       print('✅ Onboarding marcado como completo');
     } catch (e) {
       print('❌ Erro ao marcar onboarding: $e');
@@ -19,13 +23,7 @@ class OnboardingRepositoryImpl implements OnboardingRepositoryProtocol {
   }
 
   @override
-  Future<bool> hasCompletedOnboarding() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getBool(_onboardingKey) ?? false;
-    } catch (e) {
-      print('❌ Erro ao verificar onboarding: $e');
-      return false;
-    }
+  Future<bool> hasCompletedOnboarding() {
+    return _datasource.isOnboardingComplete();
   }
 }

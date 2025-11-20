@@ -1,7 +1,7 @@
 // presentation/providers/notifications_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/entity/notification_entity.dart';
+import 'package:vivar/domain/entity/notification/notification_entity.dart';
 
 import '../../../../domain/usecases/notifications/delete_notification_usecase.dart';
 import '../../../../domain/usecases/notifications/get_notifications_by_type_usecase.dart';

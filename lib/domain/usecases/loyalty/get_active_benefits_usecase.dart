@@ -1,6 +1,6 @@
 // domain/usecases/loyalty/get_active_benefits_usecase.dart
 
-import '../../entity/benefit_entity.dart';
+import '../../entity/benefit/benefit_entity.dart';
 import '../../interface/loyalty/loyalty_repository_protocol.dart';
 
 class GetActiveBenefitsUseCase {

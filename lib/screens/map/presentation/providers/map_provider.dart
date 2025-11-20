@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:vivar/core/constants/colors.dart';
-import 'package:vivar/domain/entity/map_place_entity.dart';
+import 'package:vivar/domain/entity/map/map_place_entity.dart';
 import 'package:vivar/domain/usecases/map/get_nearby_places_for_map_usecase.dart';
 import 'package:vivar/domain/usecases/map/get_places_by_category_usecase.dart';
 import 'package:vivar/domain/usecases/map/get_places_for_map_usecase.dart';

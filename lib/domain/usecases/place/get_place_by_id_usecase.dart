@@ -1,8 +1,7 @@
 // domain/usecases/place/get_place_by_id_usecase.dart
 
+import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/domain/interface/place/place_repository_protocol.dart';
-
-import '../../entity/place_entity.dart';
 
 class GetPlaceByIdUseCase {
   final PlaceRepositoryProtocol _placeRepository;

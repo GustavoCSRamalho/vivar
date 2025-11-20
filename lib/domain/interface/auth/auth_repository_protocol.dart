@@ -1,9 +1,9 @@
 // domain/repositories/auth_repository_protocol.dart
 
-import 'package:vivar/domain/entity/register_user_entity.dart';
+import 'package:vivar/domain/entity/register/register_user_entity.dart';
 
-import '../../entity/auth_user_entity.dart';
-import '../../entity/login_credentials_entity.dart';
+import '../../entity/auth/auth_user_entity.dart';
+import '../../entity/login/login_credentials_entity.dart';
 
 // ===============================================
 // LOGIN PROTOCOLS

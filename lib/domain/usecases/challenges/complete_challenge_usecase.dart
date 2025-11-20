@@ -3,7 +3,7 @@
 import '../../interface/challenges/challenges_repository_protocol.dart';
 
 class CompleteChallengeUseCase {
-  final ChallengesRepositoryProtocol _repository;
+  final CompleteChallengeProtocol _repository;
 
   CompleteChallengeUseCase(this._repository);
 

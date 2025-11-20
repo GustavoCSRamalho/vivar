@@ -1,6 +1,6 @@
 // domain/usecases/map/search_places_on_map_usecase.dart
 
-import '../../entity/map_place_entity.dart';
+import '../../entity/map/map_place_entity.dart';
 import '../../interface/map/map_repository_protocol.dart';
 
 class SearchPlacesOnMapUseCase {

@@ -1,6 +1,6 @@
 // domain/usecases/place/apply_advanced_filters_usecase.dart
 
-import '../../entity/place_entity.dart';
+import '../../entity/place/place_entity.dart';
 import '../../interface/place/place_repository_protocol.dart';
 
 class ApplyAdvancedFiltersUseCase {

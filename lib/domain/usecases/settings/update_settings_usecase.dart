@@ -1,6 +1,6 @@
 // domain/usecases/settings/update_settings_usecase.dart
 
-import '../../../../../domain/entity/app_settings_entity.dart';
+import '../../entity/settings/app_settings_entity.dart';
 import '../../interface/settings/settings_repository_protocol.dart';
 
 class UpdateSettingsUseCase {

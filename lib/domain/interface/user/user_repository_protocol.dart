@@ -1,6 +1,6 @@
 // domain/repositories/user_repository_protocol.dart
 
-import '../../entity/user_entity.dart';
+import '../../entity/user/user_entity.dart';
 
 abstract class UserRepositoryProtocol {
   Future<UserEntity?> getCurrentUser();

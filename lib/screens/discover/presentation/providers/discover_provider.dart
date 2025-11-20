@@ -1,12 +1,12 @@
 // presentation/providers/discover_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/entity/discover_collection_entity.dart';
+import 'package:vivar/domain/entity/discover/discover_collection_entity.dart';
 import 'package:vivar/domain/usecases/discover/get_collection_places_usecase.dart';
 import 'package:vivar/domain/usecases/discover/get_collections_usecase.dart';
 import 'package:vivar/domain/usecases/discover/get_near_you_places_usecase.dart';
 import 'package:vivar/domain/usecases/discover/get_trending_places_usecase.dart';
-import 'package:vivar/domain/entity/place_entity.dart';
+import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/domain/usecases/place/get_top_rated_places_usecase.dart';
 
 class DiscoverProvider with ChangeNotifier {

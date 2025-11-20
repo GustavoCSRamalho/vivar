@@ -1,6 +1,6 @@
 // domain/usecases/place_details/get_place_details_usecase.dart
 
-import '../../entity/place_details_entity.dart';
+import '../../entity/place/place_details_entity.dart';
 import '../../interface/place/place_details_repository_protocol.dart';
 
 class GetPlaceDetailsUseCase {

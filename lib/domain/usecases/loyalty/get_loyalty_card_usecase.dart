@@ -1,6 +1,6 @@
 // domain/usecases/loyalty/get_loyalty_card_usecase.dart
 
-import '../../entity/loyalty_card_entity.dart';
+import '../../entity/loyalt/loyalty_card_entity.dart';
 import '../../interface/loyalty/loyalty_repository_protocol.dart';
 
 class GetLoyaltyCardUseCase {

@@ -1,7 +1,7 @@
 // presentation/providers/swipe_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/entity/swipe_place_entity.dart';
+import 'package:vivar/domain/entity/swipe/swipe_place_entity.dart';
 import 'package:vivar/domain/usecases/swipe/dislike_place_usecase.dart';
 import 'package:vivar/domain/usecases/swipe/get_swipe_places_usecase.dart';
 import 'package:vivar/domain/usecases/swipe/like_place_usecase.dart';

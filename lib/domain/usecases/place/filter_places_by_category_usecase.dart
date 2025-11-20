@@ -1,6 +1,6 @@
 // domain/usecases/place/filter_places_by_category_usecase.dart
 
-import '../../entity/place_entity.dart';
+import '../../entity/place/place_entity.dart';
 
 class FilterPlacesByCategoryUseCase {
   FilterPlacesByCategoryUseCase();

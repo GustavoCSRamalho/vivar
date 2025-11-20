@@ -1,6 +1,6 @@
 // domain/usecases/profile/update_profile_usecase.dart
 
-import '../../../../../domain/entity/profile_entity.dart';
+import '../../entity/profile/profile_entity.dart';
 import '../../interface/profile/profile_repository_protocol.dart';
 
 class UpdateProfileUseCase {

@@ -2,7 +2,7 @@
 
 import 'package:vivar/core/services/location_service.dart';
 
-import '../../entity/place_entity.dart';
+import '../../entity/place/place_entity.dart';
 import '../../interface/place/place_repository_protocol.dart';
 
 class GetNearbyPlacesUseCase {

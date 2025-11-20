@@ -1,6 +1,6 @@
 // domain/usecases/discover/get_trending_places_usecase.dart
 
-import 'package:vivar/domain/entity/place_entity.dart';
+import 'package:vivar/domain/entity/place/place_entity.dart';
 
 import '../../interface/discover/discover_repository_protocol.dart';
 

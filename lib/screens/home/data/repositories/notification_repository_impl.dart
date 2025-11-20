@@ -1,100 +1,59 @@
 // data/repositories/notification_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/models/notification_model.dart';
-import 'package:vivar/domain/entity/notification_entity.dart';
+import 'package:vivar/domain/entity/notification/notification_entity.dart';
 import 'package:vivar/domain/interface/notification/notification_repository_protocol.dart';
+import 'package:vivar/screens/home/data/datasource/notification_datasource.dart';
 
+/// Implementação do repositório de notificações
+/// Delega operações de dados para o datasource
+/// Responsável por converter entre Model (data layer) e Entity (domain layer)
 class NotificationRepositoryImpl implements NotificationRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String tableName = 'notifications';
+  final NotificationDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  NotificationRepositoryImpl({
+    required NotificationDatasourceProtocol datasource,
+  }) : _datasource = datasource;
 
   @override
   Future<List<NotificationEntity>> getUserNotifications(String userId) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'created_at DESC',
-    );
-    return maps
-        .map((map) => _modelToEntity(NotificationModel.fromMap(map)))
-        .toList();
+    final models = await _datasource.getUserNotifications(userId);
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<NotificationEntity>> getUnreadNotifications(String userId) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'user_id = ? AND is_read = 0',
-      whereArgs: [userId],
-    );
-    return maps
-        .map((map) => _modelToEntity(NotificationModel.fromMap(map)))
-        .toList();
+    final models = await _datasource.getUnreadNotifications(userId);
+    return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<int> getUnreadCount(String userId) async {
-    final db = await _database;
-    final result = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM $tableName WHERE user_id = ? AND is_read = 0',
-      [userId],
-    );
-    return Sqflite.firstIntValue(result) ?? 0;
+  Future<int> getUnreadCount(String userId) {
+    return _datasource.getUnreadCount(userId);
   }
 
   @override
-  Future<void> markAsRead(String notificationId) async {
-    final db = await _database;
-    await db.update(
-      tableName,
-      {'is_read': 1},
-      where: 'id = ?',
-      whereArgs: [notificationId],
-    );
+  Future<void> markAsRead(String notificationId) {
+    return _datasource.markAsRead(notificationId);
   }
 
   @override
-  Future<void> markAllAsRead(String userId) async {
-    final db = await _database;
-    await db.update(
-      tableName,
-      {'is_read': 1},
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
+  Future<void> markAllAsRead(String userId) {
+    return _datasource.markAllAsRead(userId);
   }
 
   @override
   Future<void> addNotification(NotificationEntity notification) async {
-    final db = await _database;
     final model = _entityToModel(notification);
-    await db.insert(
-      tableName,
-      model.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await _datasource.addNotification(model);
   }
 
   @override
-  Future<void> deleteOldNotifications(String userId) async {
-    final db = await _database;
-    final thirtyDaysAgo = DateTime.now()
-        .subtract(Duration(days: 30))
-        .toIso8601String();
-    await db.delete(
-      tableName,
-      where: 'user_id = ? AND created_at < ?',
-      whereArgs: [userId, thirtyDaysAgo],
-    );
+  Future<void> deleteOldNotifications(String userId) {
+    return _datasource.deleteOldNotifications(userId);
   }
 
+  /// Converte NotificationModel (data layer) para NotificationEntity (domain layer)
   NotificationEntity _modelToEntity(NotificationModel model) {
     return NotificationEntity(
       id: model.id,
@@ -108,6 +67,7 @@ class NotificationRepositoryImpl implements NotificationRepositoryProtocol {
     );
   }
 
+  /// Converte NotificationEntity (domain layer) para NotificationModel (data layer)
   NotificationModel _entityToModel(NotificationEntity entity) {
     return NotificationModel(
       id: entity.id,

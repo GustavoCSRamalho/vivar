@@ -1,6 +1,6 @@
 // domain/usecases/discover/get_collections_usecase.dart
 
-import '../../entity/discover_collection_entity.dart';
+import '../../entity/discover/discover_collection_entity.dart';
 import '../../interface/discover/discover_repository_protocol.dart';
 
 class GetCollectionsUseCase {

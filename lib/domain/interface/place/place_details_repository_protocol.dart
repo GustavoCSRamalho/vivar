@@ -1,7 +1,7 @@
 // domain/repositories/place_details_repository_protocol.dart
 
-import '../../entity/place_details_entity.dart';
-import '../../entity/review_entity.dart';
+import '../../entity/place/place_details_entity.dart';
+import '../../entity/review/review_entity.dart';
 
 abstract class PlaceDetailsRepositoryProtocol {
   Future<PlaceDetailsEntity?> getPlaceDetails(String placeId);

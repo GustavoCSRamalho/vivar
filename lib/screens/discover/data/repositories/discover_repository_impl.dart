@@ -1,21 +1,73 @@
 // data/repositories/discover_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/domain/entity/discover_collection_entity.dart';
+import 'package:vivar/domain/entity/discover/discover_collection_entity.dart';
 import 'package:vivar/domain/interface/discover/discover_repository_protocol.dart';
 import 'package:vivar/models/place_model.dart';
-import 'package:vivar/domain/entity/place_entity.dart';
+import 'package:vivar/domain/entity/place/place_entity.dart';
+import 'package:vivar/screens/discover/data/datasource/discover_datasource.dart';
 
+/// Implementação do repositório de descoberta
+/// Delega operações de busca de lugares para o datasource
+/// Gerencia as coleções de descoberta e converte Model para Entity
 class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _placeTableName = 'places';
+  final DiscoverDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  DiscoverRepositoryImpl({required DiscoverDatasourceProtocol datasource})
+    : _datasource = datasource;
 
   @override
   Future<List<DiscoverCollectionEntity>> getCollections() async {
-    final collections = <DiscoverCollectionEntity>[
+    // Retorna as coleções disponíveis
+    // Em uma implementação futura, isso poderia vir de uma API ou banco
+    return _buildCollections();
+  }
+
+  @override
+  Future<List<PlaceEntity>> getCollectionPlaces(String collectionId) async {
+    final models = await _getPlaceModelsForCollection(collectionId);
+    return models.map(_modelToEntity).toList();
+  }
+
+  @override
+  Future<List<PlaceEntity>> getTrendingPlaces() async {
+    final models = await _datasource.getTrendingPlaces();
+    return models.map(_modelToEntity).toList();
+  }
+
+  @override
+  Future<List<PlaceEntity>> getNearYouPlaces() async {
+    final models = await _datasource.getNearYouPlaces();
+    return models.map(_modelToEntity).toList();
+  }
+
+  @override
+  Future<List<PlaceEntity>> getTopRatedPlaces() async {
+    final models = await _datasource.getTopRatedPlaces();
+    return models.map(_modelToEntity).toList();
+  }
+
+  /// Busca os lugares de acordo com o ID da coleção
+  Future<List<PlaceModel>> _getPlaceModelsForCollection(
+    String collectionId,
+  ) async {
+    switch (collectionId) {
+      case 'trending':
+        return await _datasource.getTrendingPlaces();
+      case 'near_you':
+        return await _datasource.getNearYouPlaces();
+      case 'top_rated':
+        return await _datasource.getTopRatedPlaces();
+      case 'new':
+        return await _datasource.getNewPlaces();
+      default:
+        return [];
+    }
+  }
+
+  /// Constrói a lista de coleções disponíveis
+  /// Em uma implementação futura, isso poderia ser configurável ou vir de uma API
+  List<DiscoverCollectionEntity> _buildCollections() {
+    return [
       DiscoverCollectionEntity(
         id: 'trending',
         title: 'Em Alta',
@@ -49,71 +101,9 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
         placesCount: 6,
       ),
     ];
-
-    return collections;
   }
 
-  @override
-  Future<List<PlaceEntity>> getCollectionPlaces(String collectionId) async {
-    switch (collectionId) {
-      case 'trending':
-        return await getTrendingPlaces();
-      case 'near_you':
-        return await getNearYouPlaces();
-      case 'top_rated':
-        return await getTopRatedPlaces();
-      case 'new':
-        return await _getNewPlaces();
-      default:
-        return [];
-    }
-  }
-
-  @override
-  Future<List<PlaceEntity>> getTrendingPlaces() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _placeTableName,
-      orderBy: 'reviews_count DESC',
-      limit: 12,
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
-  }
-
-  @override
-  Future<List<PlaceEntity>> getNearYouPlaces() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _placeTableName,
-      orderBy: 'distance ASC',
-      limit: 8,
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
-  }
-
-  @override
-  Future<List<PlaceEntity>> getTopRatedPlaces() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _placeTableName,
-      where: 'rating >= ?',
-      whereArgs: [4.5],
-      orderBy: 'rating DESC, reviews_count DESC',
-      limit: 15,
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
-  }
-
-  Future<List<PlaceEntity>> _getNewPlaces() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _placeTableName,
-      orderBy: 'created_at DESC',
-      limit: 6,
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
-  }
-
+  /// Converte PlaceModel (data layer) para PlaceEntity (domain layer)
   PlaceEntity _modelToEntity(PlaceModel model) {
     return PlaceEntity(
       id: model.id,

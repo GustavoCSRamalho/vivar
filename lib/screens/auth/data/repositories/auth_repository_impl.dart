@@ -1,14 +1,15 @@
 // data/repositories/auth_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/domain/entity/auth_user_entity.dart';
-import 'package:vivar/domain/entity/login_credentials_entity.dart';
-import 'package:vivar/domain/entity/register_user_entity.dart';
+import 'package:vivar/domain/entity/auth/auth_user_entity.dart';
+import 'package:vivar/domain/entity/login/login_credentials_entity.dart';
+import 'package:vivar/domain/entity/register/register_user_entity.dart';
+import 'package:vivar/domain/interface/auth/auth_repository_protocol.dart';
 import 'package:vivar/models/user_model.dart';
+import 'package:vivar/screens/auth/data/datasource/auth_datasource.dart';
 
-import '../../../../domain/interface/auth/auth_repository_protocol.dart';
-
+/// Implementação do repositório de autenticação
+/// Delega operações de dados para o datasource
+/// Implementa múltiplos protocolos de autenticação
 class AuthRepositoryImpl
     implements
         EmailLoginProtocol,
@@ -19,30 +20,23 @@ class AuthRepositoryImpl
         PasswordResetProtocol,
         EmailVerificationProtocol,
         UserLoggedInProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _userTableName = 'users';
+  final AuthDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  AuthRepositoryImpl({required AuthDatasourceProtocol datasource})
+    : _datasource = datasource;
 
   @override
   Future<AuthUserEntity> loginWithEmail(
     LoginCredentialsEntity credentials,
   ) async {
-    final db = await _database;
+    final user = await _datasource.getUserByEmail(credentials.email);
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      _userTableName,
-      where: 'email = ?',
-      whereArgs: [credentials.email],
-      limit: 1,
-    );
-
-    if (maps.isEmpty) {
-      final newUser = await _createUser(credentials.email);
+    if (user == null) {
+      final newUser = await _datasource.createUser(email: credentials.email);
       return _modelToEntity(newUser);
     }
 
-    return _modelToEntity(UserModel.fromMap(maps.first));
+    return _modelToEntity(user);
   }
 
   @override
@@ -66,9 +60,8 @@ class AuthRepositoryImpl
   }
 
   @override
-  Future<void> logout() async {
-    final db = await _database;
-    await db.delete(_userTableName);
+  Future<void> logout() {
+    return _datasource.deleteAllUsers();
   }
 
   @override
@@ -79,14 +72,8 @@ class AuthRepositoryImpl
 
   @override
   Future<AuthUserEntity?> getCurrentUser() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _userTableName,
-      limit: 1,
-    );
-
-    if (maps.isEmpty) return null;
-    return _modelToEntity(UserModel.fromMap(maps.first));
+    final user = await _datasource.getCurrentUser();
+    return user != null ? _modelToEntity(user) : null;
   }
 
   @override
@@ -95,27 +82,31 @@ class AuthRepositoryImpl
     return user != null;
   }
 
-  Future<UserModel> _createUser(String email) async {
-    final db = await _database;
-    final now = DateTime.now();
-
-    final user = UserModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      email: email,
-      name: email.split('@').first,
-      createdAt: now,
-      updatedAt: now,
+  @override
+  Future<AuthUserEntity> registerUser(RegisterUserEntity registerData) async {
+    final emailAlreadyExists = await _datasource.emailExists(
+      registerData.email,
     );
 
-    await db.insert(
-      _userTableName,
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+    if (emailAlreadyExists) {
+      throw Exception('Este email já está cadastrado');
+    }
+
+    final user = await _datasource.createUser(
+      email: registerData.email,
+      name: registerData.name,
+      phone: registerData.phone,
     );
 
-    return user;
+    return _modelToEntity(user);
   }
 
+  @override
+  Future<bool> verifyEmailExists(String email) {
+    return _datasource.emailExists(email);
+  }
+
+  /// Converte UserModel (data layer) para AuthUserEntity (domain layer)
   AuthUserEntity _modelToEntity(UserModel model) {
     return AuthUserEntity(
       id: model.id,
@@ -125,54 +116,5 @@ class AuthRepositoryImpl
       phone: model.phone,
       createdAt: model.createdAt,
     );
-  }
-
-  @override
-  Future<AuthUserEntity> registerUser(RegisterUserEntity registerData) async {
-    final db = await _database;
-
-    // Verificar se email já existe
-    final existingUsers = await db.query(
-      _userTableName,
-      where: 'email = ?',
-      whereArgs: [registerData.email],
-      limit: 1,
-    );
-
-    if (existingUsers.isNotEmpty) {
-      throw Exception('Este email já está cadastrado');
-    }
-
-    final now = DateTime.now();
-    final user = UserModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      email: registerData.email.trim(),
-      name: registerData.name.trim(),
-      phone: registerData.phone?.trim(),
-      createdAt: now,
-      updatedAt: now,
-    );
-
-    await db.insert(
-      _userTableName,
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-
-    return _modelToEntity(user);
-  }
-
-  @override
-  Future<bool> verifyEmailExists(String email) async {
-    final db = await _database;
-
-    final List<Map<String, dynamic>> maps = await db.query(
-      _userTableName,
-      where: 'email = ?',
-      whereArgs: [email],
-      limit: 1,
-    );
-
-    return maps.isNotEmpty;
   }
 }

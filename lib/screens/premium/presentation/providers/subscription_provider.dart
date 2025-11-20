@@ -1,8 +1,8 @@
 // presentation/providers/subscription_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/entity/subscription_plan_entity.dart';
-import 'package:vivar/domain/entity/user_subscription_entity.dart';
+import 'package:vivar/domain/entity/subscription/subscription_plan_entity.dart';
+import 'package:vivar/domain/entity/user/user_subscription_entity.dart';
 import 'package:vivar/domain/usecases/subscription/cancel_subscription_usecase.dart';
 import 'package:vivar/domain/usecases/subscription/get_available_plans_usecase.dart';
 import 'package:vivar/domain/usecases/subscription/get_user_subscription_usecase.dart';

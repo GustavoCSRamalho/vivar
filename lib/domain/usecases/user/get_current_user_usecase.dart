@@ -1,6 +1,6 @@
 // domain/usecases/user/get_current_user_usecase.dart
 
-import '../../entity/user_entity.dart';
+import '../../entity/user/user_entity.dart';
 import '../../interface/user/user_repository_protocol.dart';
 
 class GetCurrentUserUseCase {

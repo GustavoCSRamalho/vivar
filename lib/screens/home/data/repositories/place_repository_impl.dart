@@ -1,22 +1,23 @@
 // data/repositories/place_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/models/place_model.dart';
-import 'package:vivar/domain/entity/place_entity.dart';
+import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/domain/interface/place/place_repository_protocol.dart';
+import 'package:vivar/screens/home/data/datasource/place_datasource.dart';
 
+/// Implementação do repositório de lugares
+/// Delega operações de dados para o datasource
+/// Responsável por converter entre Model (data layer) e Entity (domain layer)
 class PlaceRepositoryImpl implements PlaceRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String tableName = 'places';
+  final PlaceDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  PlaceRepositoryImpl({required PlaceDatasourceProtocol datasource})
+    : _datasource = datasource;
 
   @override
   Future<List<PlaceEntity>> getAllPlaces() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(tableName);
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getAllPlaces();
+    return models.map(_modelToEntity).toList();
   }
 
   @override
@@ -25,87 +26,42 @@ class PlaceRepositoryImpl implements PlaceRepositoryProtocol {
     required double longitude,
     required double radiusKm,
   }) async {
-    final db = await _database;
-    final query =
-        '''
-      SELECT *
-      FROM (
-        SELECT *,
-          (6371 * acos(
-            cos(radians(?)) * cos(radians(latitude)) *
-            cos(radians(longitude) - radians(?)) +
-            sin(radians(?)) * sin(radians(latitude))
-          )) AS distance
-        FROM $tableName
-      )
-      WHERE distance < ?
-      ORDER BY distance
-    ''';
-
-    final List<Map<String, dynamic>> maps = await db.rawQuery(query, [
-      latitude,
-      longitude,
-      latitude,
-      radiusKm,
-    ]);
-
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getNearbyPlaces(
+      latitude: latitude,
+      longitude: longitude,
+      radiusKm: radiusKm,
+    );
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<PlaceEntity>> getPlacesByCategory(String category) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'category = ?',
-      whereArgs: [category],
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getPlacesByCategory(category);
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<PlaceEntity>> searchPlaces(String query) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'name LIKE ? OR description LIKE ? OR category LIKE ?',
-      whereArgs: ['%$query%', '%$query%', '%$query%'],
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.searchPlaces(query);
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<PlaceEntity?> getPlaceById(String id) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-    if (maps.isEmpty) return null;
-    return _modelToEntity(PlaceModel.fromMap(maps.first));
+    final model = await _datasource.getPlaceById(id);
+    return model != null ? _modelToEntity(model) : null;
   }
 
   @override
   Future<List<PlaceEntity>> getPlacesWithDiscount() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'discount_percentage IS NOT NULL AND discount_percentage > 0',
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getPlacesWithDiscount();
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<PlaceEntity>> getTopRatedPlaces({int limit = 10}) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      orderBy: 'rating DESC, reviews_count DESC',
-      limit: limit,
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getTopRatedPlaces(limit: limit);
+    return models.map(_modelToEntity).toList();
   }
 
   @override
@@ -116,38 +72,17 @@ class PlaceRepositoryImpl implements PlaceRepositoryProtocol {
     List<String>? amenities,
     bool? openNow,
   }) async {
-    final db = await _database;
-    String where = '1=1';
-    List<dynamic> whereArgs = [];
-
-    if (categories != null && categories.isNotEmpty) {
-      where += ' AND category IN (${categories.map((_) => '?').join(',')})';
-      whereArgs.addAll(categories);
-    }
-
-    if (priceRange != null) {
-      where += ' AND price_range = ?';
-      whereArgs.add(priceRange);
-    }
-
-    if (minRating != null) {
-      where += ' AND rating >= ?';
-      whereArgs.add(minRating);
-    }
-
-    if (openNow != null && openNow) {
-      where += ' AND is_open = 1';
-    }
-
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: where,
-      whereArgs: whereArgs,
+    final models = await _datasource.getFilteredPlaces(
+      categories: categories,
+      priceRange: priceRange,
+      minRating: minRating,
+      amenities: amenities,
+      openNow: openNow,
     );
-
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    return models.map(_modelToEntity).toList();
   }
 
+  /// Converte PlaceModel (data layer) para PlaceEntity (domain layer)
   PlaceEntity _modelToEntity(PlaceModel model) {
     return PlaceEntity(
       id: model.id,

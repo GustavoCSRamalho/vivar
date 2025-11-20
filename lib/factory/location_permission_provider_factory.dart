@@ -1,5 +1,6 @@
 // presentation/providers/location_permission_provider_factory.dart
 
+import 'package:vivar/screens/location/data/datasource/location_permission_datasource.dart';
 import 'package:vivar/screens/location/data/repositories/location_permission_repository_impl.dart';
 import 'package:vivar/screens/location/data/usecases/location/check_location_permission_usecase_impl.dart';
 import 'package:vivar/screens/location/data/usecases/location/request_location_permission_usecase_impl.dart';
@@ -7,7 +8,8 @@ import 'package:vivar/screens/location/presentation/providers/location_permissio
 
 class LocationPermissionProviderFactory {
   static LocationPermissionProvider create() {
-    final repository = LocationPermissionRepositoryImpl();
+    final datasource = LocationPermissionDatasourceImpl();
+    final repository = LocationPermissionRepositoryImpl(datasource: datasource);
 
     final requestLocationPermissionUseCase = RequestLocationPermissionUseCase(
       repository,

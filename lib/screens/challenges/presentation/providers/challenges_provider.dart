@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 
-import '../../../../domain/entity/challenge_entity.dart';
+import '../../../../domain/entity/challenge/challenge_entity.dart';
 import '../../../../domain/usecases/challenges/complete_challenge_usecase.dart';
 import '../../../../domain/usecases/challenges/get_active_challenges_usecase.dart';
 import '../../../../domain/usecases/challenges/get_challenges_usecase.dart';

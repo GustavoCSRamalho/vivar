@@ -1,6 +1,6 @@
 // domain/repositories/place_repository_protocol.dart
 
-import '../../entity/place_entity.dart';
+import '../../entity/place/place_entity.dart';
 
 abstract class PlaceRepositoryProtocol {
   Future<List<PlaceEntity>> getAllPlaces();

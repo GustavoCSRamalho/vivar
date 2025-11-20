@@ -1,6 +1,6 @@
 // domain/repositories/notification_repository_protocol.dart
 
-import '../../entity/notification_entity.dart';
+import '../../entity/notification/notification_entity.dart';
 
 /// Protocolo (interface) para operações de Notification
 abstract class NotificationRepositoryProtocol {

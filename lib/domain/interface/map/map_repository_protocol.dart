@@ -1,6 +1,6 @@
 // domain/repositories/map_repository_protocol.dart
 
-import '../../entity/map_place_entity.dart';
+import '../../entity/map/map_place_entity.dart';
 
 abstract class MapRepositoryProtocol {
   Future<List<MapPlaceEntity>> getPlacesForMap();

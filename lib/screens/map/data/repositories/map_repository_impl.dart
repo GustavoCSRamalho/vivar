@@ -1,33 +1,29 @@
 // data/repositories/map_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/models/place_model.dart';
-import 'package:vivar/domain/entity/map_place_entity.dart';
+import 'package:vivar/domain/entity/map/map_place_entity.dart';
 import 'package:vivar/domain/interface/map/map_repository_protocol.dart';
+import 'package:vivar/screens/map/data/datasource/map_datasource.dart';
 
+/// Implementação do repositório de mapa
+/// Delega operações de dados para o datasource
+/// Converte PlaceModel para MapPlaceEntity (entidade específica do mapa)
 class MapRepositoryImpl implements MapRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String tableName = 'places';
+  final MapDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  MapRepositoryImpl({required MapDatasourceProtocol datasource})
+    : _datasource = datasource;
 
   @override
   Future<List<MapPlaceEntity>> getPlacesForMap() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(tableName);
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getPlacesForMap();
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<MapPlaceEntity>> getPlacesByCategory(String category) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'category = ?',
-      whereArgs: [category],
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getPlacesByCategory(category);
+    return models.map(_modelToEntity).toList();
   }
 
   @override
@@ -36,53 +32,24 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
     required double longitude,
     required double radiusKm,
   }) async {
-    final db = await _database;
-    final query =
-        '''
-      SELECT *
-      FROM (
-        SELECT *,
-          (6371 * acos(
-            cos(radians(?)) * cos(radians(latitude)) *
-            cos(radians(longitude) - radians(?)) +
-            sin(radians(?)) * sin(radians(latitude))
-          )) AS distance
-        FROM $tableName
-      )
-      WHERE distance < ?
-      ORDER BY distance
-    ''';
-
-    final List<Map<String, dynamic>> maps = await db.rawQuery(query, [
-      latitude,
-      longitude,
-      latitude,
-      radiusKm,
-    ]);
-
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.getNearbyPlacesForMap(
+      latitude: latitude,
+      longitude: longitude,
+      radiusKm: radiusKm,
+    );
+    return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<MapPlaceEntity>> searchPlacesOnMap(String query) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'name LIKE ? OR description LIKE ? OR category LIKE ?',
-      whereArgs: ['%$query%', '%$query%', '%$query%'],
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await _datasource.searchPlacesOnMap(query);
+    return models.map(_modelToEntity).toList();
   }
 
+  /// Converte PlaceModel (data layer) para MapPlaceEntity (domain layer)
+  /// Também formata a distância de metros para string legível
   MapPlaceEntity _modelToEntity(PlaceModel model) {
-    String? formattedDistance;
-    if (model.distance != null) {
-      if (model.distance! < 1000) {
-        formattedDistance = '${model.distance!.toStringAsFixed(0)}m';
-      } else {
-        formattedDistance = '${(model.distance! / 1000).toStringAsFixed(1)}km';
-      }
-    }
+    final formattedDistance = _formatDistance(model.distance);
 
     return MapPlaceEntity(
       id: model.id,
@@ -97,5 +64,16 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
       isOpen: model.isOpen,
       imageUrl: model.images?.isNotEmpty == true ? model.images!.first : null,
     );
+  }
+
+  /// Formata a distância em metros para string legível (m ou km)
+  String? _formatDistance(double? distance) {
+    if (distance == null) return null;
+
+    if (distance < 1000) {
+      return '${distance.toStringAsFixed(0)}m';
+    } else {
+      return '${(distance / 1000).toStringAsFixed(1)}km';
+    }
   }
 }

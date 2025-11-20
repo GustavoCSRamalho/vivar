@@ -1,5 +1,6 @@
 // presentation/providers/subscription_provider_factory.dart
 
+import 'package:vivar/screens/premium/data/datasource/subscription_local_datasource.dart';
 import 'package:vivar/screens/premium/data/repositories/subscription_repository_impl.dart';
 import 'package:vivar/domain/usecases/subscription/cancel_subscription_usecase.dart';
 import 'package:vivar/domain/usecases/subscription/get_available_plans_usecase.dart';
@@ -9,7 +10,8 @@ import 'package:vivar/screens/premium/presentation/providers/subscription_provid
 
 class SubscriptionProviderFactory {
   static SubscriptionProvider create() {
-    final repository = SubscriptionRepositoryImpl();
+    final datasource = SubscriptionLocalDataSource();
+    final repository = SubscriptionRepositoryImpl(datasource: datasource);
 
     final getAvailablePlansUseCase = GetAvailablePlansUseCase(repository);
     final getUserSubscriptionUseCase = GetUserSubscriptionUseCase(repository);

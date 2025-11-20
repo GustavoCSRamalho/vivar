@@ -1,6 +1,6 @@
 // domain/usecases/place/get_place_by_id_usecase.dart
 
-import 'package:vivar/domain/entity/place_details_entity.dart';
+import 'package:vivar/domain/entity/place/place_details_entity.dart';
 import 'package:vivar/domain/interface/place/place_details_repository_protocol.dart';
 
 class GetPlaceByIdUseCase {

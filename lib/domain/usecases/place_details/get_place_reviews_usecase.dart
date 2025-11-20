@@ -1,6 +1,6 @@
 // domain/usecases/place_details/get_place_reviews_usecase.dart
 
-import '../../entity/review_entity.dart';
+import '../../entity/review/review_entity.dart';
 import '../../interface/place/place_details_repository_protocol.dart';
 
 class GetPlaceReviewsUseCase {

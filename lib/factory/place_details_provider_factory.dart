@@ -1,5 +1,6 @@
 // presentation/providers/place_details_provider_factory.dart
 
+import 'package:vivar/screens/place_details/data/datasource/place_details_datasource.dart';
 import 'package:vivar/screens/place_details/data/repositories/place_details_repository_impl.dart';
 import 'package:vivar/domain/usecases/place_details/add_review_usecase.dart';
 import 'package:vivar/domain/usecases/place_details/check_user_reviewed_usecase.dart';
@@ -10,7 +11,8 @@ import '../screens/place_details/presentation/providers/place_details_provider.d
 
 class PlaceDetailsProviderFactory {
   static PlaceDetailsProvider create() {
-    final repository = PlaceDetailsRepositoryImpl();
+    final datasource = PlaceDetailsDatasource();
+    final repository = PlaceDetailsRepositoryImpl(datasource: datasource);
 
     final getPlaceDetailsUseCase = GetPlaceDetailsUseCase(repository);
     final getPlaceReviewsUseCase = GetPlaceReviewsUseCase(repository);

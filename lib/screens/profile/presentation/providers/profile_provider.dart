@@ -1,7 +1,7 @@
 // presentation/providers/profile_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/entity/profile_entity.dart';
+import 'package:vivar/domain/entity/profile/profile_entity.dart';
 
 import '../../../../domain/usecases/profile/get_profile_usecase.dart';
 import '../../../../domain/usecases/profile/get_recent_badges_usecase.dart';

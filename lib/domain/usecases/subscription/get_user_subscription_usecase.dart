@@ -1,6 +1,6 @@
 // domain/usecases/subscription/get_user_subscription_usecase.dart
 
-import '../../entity/user_subscription_entity.dart';
+import '../../entity/user/user_subscription_entity.dart';
 import '../../interface/subscription/subscription_repository_protocol.dart';
 
 class GetUserSubscriptionUseCase {

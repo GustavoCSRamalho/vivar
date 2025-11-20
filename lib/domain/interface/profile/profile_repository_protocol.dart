@@ -1,6 +1,6 @@
 // domain/repositories/profile_repository_protocol.dart
 
-import '../../entity/profile_entity.dart';
+import '../../entity/profile/profile_entity.dart';
 
 abstract class ProfileRepositoryProtocol {
   Future<ProfileEntity?> getProfile(String userId);

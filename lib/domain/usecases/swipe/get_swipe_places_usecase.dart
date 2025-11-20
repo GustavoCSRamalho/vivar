@@ -1,6 +1,6 @@
 // domain/usecases/swipe/get_swipe_places_usecase.dart
 
-import 'package:vivar/domain/entity/swipe_place_entity.dart';
+import 'package:vivar/domain/entity/swipe/swipe_place_entity.dart';
 import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
 
 class GetSwipePlacesUseCase {

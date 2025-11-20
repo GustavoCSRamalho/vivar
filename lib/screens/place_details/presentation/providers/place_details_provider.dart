@@ -2,8 +2,8 @@
 
 import 'package:flutter/foundation.dart';
 
-import 'package:vivar/domain/entity/place_details_entity.dart';
-import 'package:vivar/domain/entity/review_entity.dart';
+import 'package:vivar/domain/entity/place/place_details_entity.dart';
+import 'package:vivar/domain/entity/review/review_entity.dart';
 import 'package:vivar/domain/usecases/place_details/add_review_usecase.dart';
 import 'package:vivar/domain/usecases/place_details/check_user_reviewed_usecase.dart';
 import 'package:vivar/domain/usecases/place_details/get_place_details_usecase.dart';

@@ -1,8 +1,8 @@
 // domain/repositories/loyalty_repository_protocol.dart
 
-import '../../entity/loyalty_card_entity.dart';
-import '../../entity/benefit_entity.dart';
-import '../../entity/activity_entity.dart';
+import '../../entity/loyalt/loyalty_card_entity.dart';
+import '../../entity/benefit/benefit_entity.dart';
+import '../../entity/acitivty/activity_entity.dart';
 
 abstract class LoyaltyRepositoryProtocol {
   Future<LoyaltyCardEntity?> getLoyaltyCard(String userId);

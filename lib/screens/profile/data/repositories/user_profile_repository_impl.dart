@@ -1,106 +1,57 @@
-// data/repositories/user_profile_repository_impl.dart
-
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/models/user_model.dart';
-import 'package:vivar/domain/entity/profile_entity.dart';
-import 'package:vivar/domain/entity/user_profile_update_entity.dart';
 import 'dart:convert';
-
+import 'package:vivar/domain/entity/profile/profile_entity.dart';
+import 'package:vivar/domain/entity/user/user_profile_update_entity.dart';
+import 'package:vivar/models/user_model.dart';
 import 'package:vivar/domain/interface/user/user_profile_repository_protocol.dart';
+import 'package:vivar/screens/profile/data/datasource/user_local_datasource.dart';
 
 class UserProfileRepositoryImpl implements UserProfileRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _userTableName = 'users';
+  final UserLocalDataSourceProtocol datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  UserProfileRepositoryImpl({required this.datasource});
 
   @override
   Future<ProfileEntity?> getUserProfile(String userId) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _userTableName,
-      where: 'id = ?',
-      whereArgs: [userId],
-      limit: 1,
-    );
+    final model = await datasource.getUser(userId);
+    if (model == null) return null;
 
-    if (maps.isEmpty) return null;
-    return _modelToEntity(UserModel.fromMap(maps.first));
+    return _modelToEntity(model);
   }
 
   @override
   Future<void> updateUserProfile(UserProfileUpdateEntity profile) async {
-    final db = await _database;
-
     final updateData = <String, dynamic>{
       'name': profile.name.trim(),
       'updated_at': DateTime.now().toIso8601String(),
     };
 
-    if (profile.username != null) {
-      updateData['username'] = profile.username!.trim();
-    }
-
-    if (profile.bio != null) {
-      updateData['bio'] = profile.bio!.trim();
-    }
-
-    if (profile.phone != null) {
-      updateData['phone'] = profile.phone!.trim();
-    }
-
-    if (profile.location != null) {
-      updateData['location'] = profile.location!.trim();
-    }
-
-    if (profile.avatarUrl != null) {
-      updateData['avatar_url'] = profile.avatarUrl;
-    }
-
-    if (profile.interests != null) {
+    if (profile.username != null) updateData['username'] = profile.username;
+    if (profile.bio != null) updateData['bio'] = profile.bio;
+    if (profile.phone != null) updateData['phone'] = profile.phone;
+    if (profile.location != null) updateData['location'] = profile.location;
+    if (profile.avatarUrl != null) updateData['avatar_url'] = profile.avatarUrl;
+    if (profile.interests != null)
       updateData['interests'] = jsonEncode(profile.interests);
-    }
-
     if (profile.privacySettings != null) {
       updateData['privacy_settings'] = jsonEncode(profile.privacySettings);
     }
 
-    await db.update(
-      _userTableName,
-      updateData,
-      where: 'id = ?',
-      whereArgs: [profile.userId],
-    );
+    await datasource.updateUser(updateData, profile.userId);
   }
 
   @override
   Future<String> uploadAvatar(String userId, String imagePath) async {
-    // Simular upload - em produção, seria upload para cloud storage
     await Future.delayed(Duration(seconds: 1));
+    final url = "https://example.com/avatars/$userId.jpg";
 
-    final avatarUrl = 'https://example.com/avatars/$userId.jpg';
+    await datasource.updateAvatar(userId, url);
 
-    final db = await _database;
-    await db.update(
-      _userTableName,
-      {'avatar_url': avatarUrl, 'updated_at': DateTime.now().toIso8601String()},
-      where: 'id = ?',
-      whereArgs: [userId],
-    );
-
-    return avatarUrl;
+    return url;
   }
 
   @override
   Future<void> removeAvatar(String userId) async {
-    final db = await _database;
-    await db.update(
-      _userTableName,
-      {'avatar_url': null, 'updated_at': DateTime.now().toIso8601String()},
-      where: 'id = ?',
-      whereArgs: [userId],
-    );
+    await datasource.removeAvatar(userId);
   }
 
   ProfileEntity _modelToEntity(UserModel model) {

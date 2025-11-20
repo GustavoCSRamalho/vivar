@@ -1,52 +1,32 @@
 // data/repositories/location_permission_repository_impl.dart
 
-import 'package:permission_handler/permission_handler.dart';
 import 'package:vivar/domain/interface/location/location_permission_repository_protocol.dart';
 import 'package:vivar/domain/interface/location/request_location_permission_protocol.dart';
+import 'package:vivar/screens/location/data/datasource/location_permission_datasource.dart';
 
+/// Implementação do repositório de permissões de localização
+/// Delega todas as operações para o datasource
+/// Responsável apenas por orquestrar a comunicação entre domain e data layers
 class LocationPermissionRepositoryImpl
     implements LocationPermissionRepositoryProtocol {
-  @override
-  Future<LocationPermissionResult> requestPermission() async {
-    try {
-      final status = await Permission.location.request();
+  final LocationPermissionDatasourceProtocol _datasource;
 
-      switch (status) {
-        case PermissionStatus.granted:
-        case PermissionStatus.limited:
-          return LocationPermissionResult.granted;
-        case PermissionStatus.denied:
-          return LocationPermissionResult.denied;
-        case PermissionStatus.permanentlyDenied:
-          return LocationPermissionResult.permanentlyDenied;
-        case PermissionStatus.restricted:
-          return LocationPermissionResult.restricted;
-        default:
-          return LocationPermissionResult.denied;
-      }
-    } catch (e) {
-      print('❌ Erro ao solicitar permissão de localização: $e');
-      return LocationPermissionResult.denied;
-    }
+  LocationPermissionRepositoryImpl({
+    required LocationPermissionDatasourceProtocol datasource,
+  }) : _datasource = datasource;
+
+  @override
+  Future<LocationPermissionResult> requestPermission() {
+    return _datasource.requestPermission();
   }
 
   @override
-  Future<bool> hasPermission() async {
-    try {
-      final status = await Permission.location.status;
-      return status.isGranted || status.isLimited;
-    } catch (e) {
-      print('❌ Erro ao verificar permissão: $e');
-      return false;
-    }
+  Future<bool> hasPermission() {
+    return _datasource.checkPermissionStatus();
   }
 
   @override
-  Future<void> openSettings() async {
-    try {
-      await openAppSettings();
-    } catch (e) {
-      print('❌ Erro ao abrir configurações: $e');
-    }
+  Future<void> openSettings() {
+    return _datasource.openAppSettings();
   }
 }

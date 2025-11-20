@@ -1,6 +1,6 @@
 // domain/usecases/notification/get_notifications_usecase.dart
 
-import '../../entity/notification_entity.dart';
+import '../../entity/notification/notification_entity.dart';
 import '../../interface/notification/notification_repository_protocol.dart';
 
 /// Use Case: Obter notificações

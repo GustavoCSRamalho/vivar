@@ -1,6 +1,6 @@
 // domain/usecases/loyalty/get_recent_activities_usecase.dart
 
-import '../../entity/activity_entity.dart';
+import '../../entity/acitivty/activity_entity.dart';
 import '../../interface/loyalty/loyalty_repository_protocol.dart';
 
 class GetRecentActivitiesUseCase {

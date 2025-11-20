@@ -1,172 +1,58 @@
 // data/repositories/notifications_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/domain/entity/notification_entity.dart';
-import 'dart:convert';
+import 'package:vivar/domain/entity/notification/notification_entity.dart';
+import 'package:vivar/domain/interface/notification/notifications_repository_protocol.dart';
+import 'package:vivar/screens/notifications/data/datasource/notifications_datasource.dart';
 
-import '../../../../domain/interface/notification/notifications_repository_protocol.dart';
-
+/// Implementação do repositório de notificações
+/// Delega operações de dados para o datasource
 class NotificationsRepositoryImpl implements NotificationsRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _tableName = 'notifications';
+  final NotificationsDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  NotificationsRepositoryImpl({
+    required NotificationsDatasourceProtocol datasource,
+  }) : _datasource = datasource;
 
   @override
-  Future<List<NotificationEntity>> getNotifications(String userId) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _tableName,
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'created_at DESC',
-    );
-
-    return maps.map((map) => _mapToEntity(map)).toList();
+  Future<List<NotificationEntity>> getNotifications(String userId) {
+    return _datasource.getNotifications(userId);
   }
 
   @override
   Future<List<NotificationEntity>> getNotificationsByType(
     String userId,
     String type,
-  ) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _tableName,
-      where: 'user_id = ? AND type = ?',
-      whereArgs: [userId, type],
-      orderBy: 'created_at DESC',
-    );
-
-    return maps.map((map) => _mapToEntity(map)).toList();
+  ) {
+    return _datasource.getNotificationsByType(userId, type);
   }
 
   @override
-  Future<void> markAsRead(String notificationId, String userId) async {
-    final db = await _database;
-    await db.update(
-      _tableName,
-      {'is_read': 1},
-      where: 'id = ? AND user_id = ?',
-      whereArgs: [notificationId, userId],
-    );
+  Future<void> markAsRead(String notificationId, String userId) {
+    return _datasource.markAsRead(notificationId, userId);
   }
 
   @override
-  Future<void> markAllAsRead(String userId) async {
-    final db = await _database;
-    await db.update(
-      _tableName,
-      {'is_read': 1},
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
+  Future<void> markAllAsRead(String userId) {
+    return _datasource.markAllAsRead(userId);
   }
 
   @override
-  Future<void> deleteNotification(String notificationId, String userId) async {
-    final db = await _database;
-    await db.delete(
-      _tableName,
-      where: 'id = ? AND user_id = ?',
-      whereArgs: [notificationId, userId],
-    );
+  Future<void> deleteNotification(String notificationId, String userId) {
+    return _datasource.deleteNotification(notificationId, userId);
   }
 
   @override
-  Future<void> deleteAllNotifications(String userId) async {
-    final db = await _database;
-    await db.delete(_tableName, where: 'user_id = ?', whereArgs: [userId]);
+  Future<void> deleteAllNotifications(String userId) {
+    return _datasource.deleteAllNotifications(userId);
   }
 
   @override
-  Future<int> getUnreadCount(String userId) async {
-    final db = await _database;
-    final result = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM $_tableName WHERE user_id = ? AND is_read = 0',
-      [userId],
-    );
-    return result.first['count'] as int? ?? 0;
+  Future<int> getUnreadCount(String userId) {
+    return _datasource.getUnreadCount(userId);
   }
 
-  NotificationEntity _mapToEntity(Map<String, dynamic> map) {
-    return NotificationEntity(
-      id: map['id'] as String,
-      userId: map['user_id'] as String,
-      type: map['type'] as String,
-      title: map['title'] as String,
-      message: map['message'] as String,
-      isRead: (map['is_read'] as int) == 1,
-      createdAt: DateTime.parse(map['created_at'] as String),
-      data: map['data'] != null ? jsonDecode(map['data'] as String) : null,
-    );
-  }
-
-  // Método auxiliar para criar notificações de exemplo
-  Future<void> createSampleNotifications(String userId) async {
-    final db = await _database;
-    final now = DateTime.now();
-
-    final notifications = [
-      {
-        'id': '1',
-        'user_id': userId,
-        'type': 'offer',
-        'title': '🎉 Oferta especial!',
-        'message': 'Café Raiz está com 20% de desconto hoje!',
-        'is_read': 0,
-        'created_at': now.subtract(Duration(hours: 1)).toIso8601String(),
-        'data': jsonEncode({'placeId': 'place_1'}),
-      },
-      {
-        'id': '2',
-        'user_id': userId,
-        'type': 'checkin',
-        'title': 'Check-in realizado!',
-        'message': 'Você ganhou 50 pontos no Café Raiz',
-        'is_read': 1,
-        'created_at': now.subtract(Duration(hours: 3)).toIso8601String(),
-        'data': null,
-      },
-      {
-        'id': '3',
-        'user_id': userId,
-        'type': 'badge',
-        'title': '🏆 Novo badge conquistado!',
-        'message': 'Você ganhou o badge "Café Explorer"',
-        'is_read': 0,
-        'created_at': now.subtract(Duration(days: 1)).toIso8601String(),
-        'data': jsonEncode({'badgeId': 'badge_1'}),
-      },
-      {
-        'id': '4',
-        'user_id': userId,
-        'type': 'social',
-        'title': 'Novo seguidor',
-        'message': 'Maria Silva começou a seguir você',
-        'is_read': 1,
-        'created_at': now.subtract(Duration(days: 2)).toIso8601String(),
-        'data': jsonEncode({'userId': 'user_2'}),
-      },
-      {
-        'id': '5',
-        'user_id': userId,
-        'type': 'system',
-        'title': 'Atualização disponível',
-        'message': 'Nova versão do app disponível com melhorias',
-        'is_read': 0,
-        'created_at': now.subtract(Duration(days: 3)).toIso8601String(),
-        'data': null,
-      },
-    ];
-
-    for (var notification in notifications) {
-      await db.insert(
-        _tableName,
-        notification,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
+  /// Método auxiliar para criar notificações de exemplo
+  Future<void> createSampleNotifications(String userId) {
+    return _datasource.createSampleNotifications(userId);
   }
 }

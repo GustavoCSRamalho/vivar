@@ -1,7 +1,7 @@
 // domain/usecases/auth/login_with_email_usecase.dart
 
-import '../../entity/auth_user_entity.dart';
-import '../../entity/login_credentials_entity.dart';
+import '../../entity/auth/auth_user_entity.dart';
+import '../../entity/login/login_credentials_entity.dart';
 import '../../interface/auth/auth_repository_protocol.dart';
 
 class LoginWithEmailUseCase {

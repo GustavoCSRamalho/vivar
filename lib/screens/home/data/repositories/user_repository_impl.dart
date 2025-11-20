@@ -1,114 +1,58 @@
 // data/repositories/user_repository_impl.dart
 
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/models/user_model.dart';
-import 'package:vivar/domain/entity/user_entity.dart';
+import 'package:vivar/domain/entity/user/user_entity.dart';
 import 'package:vivar/domain/interface/user/user_repository_protocol.dart';
+import 'package:vivar/screens/home/data/datasource/user_datasource.dart';
 
+/// Implementação do repositório de usuário
+/// Delega operações de dados para o datasource
+/// Responsável por converter entre Model (data layer) e Entity (domain layer)
 class UserRepositoryImpl implements UserRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _userTableName = 'users';
-  final String _favoriteTableName = 'favorites';
+  final UserDatasourceProtocol _datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  UserRepositoryImpl({required UserDatasourceProtocol datasource})
+    : _datasource = datasource;
 
   @override
   Future<UserEntity?> getCurrentUser() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _userTableName,
-      limit: 1,
-    );
-    if (maps.isEmpty) return null;
-    return _modelToEntity(UserModel.fromMap(maps.first));
+    final model = await _datasource.getCurrentUser();
+    return model != null ? _modelToEntity(model) : null;
   }
 
   @override
   Future<UserEntity?> getUserById(String id) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _userTableName,
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-    if (maps.isEmpty) return null;
-    return _modelToEntity(UserModel.fromMap(maps.first));
+    final model = await _datasource.getUserById(id);
+    return model != null ? _modelToEntity(model) : null;
   }
 
   @override
   Future<void> updateUser(UserEntity user) async {
-    final db = await _database;
     final model = _entityToModel(user);
-    await db.update(
-      _userTableName,
-      model.toMap(),
-      where: 'id = ?',
-      whereArgs: [model.id],
-    );
+    await _datasource.updateUser(model);
   }
 
   @override
-  Future<List<String>> getUserFavoritePlaceIds(String userId) async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _favoriteTableName,
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
-    return maps.map((m) => m['place_id'] as String).toList();
+  Future<List<String>> getUserFavoritePlaceIds(String userId) {
+    return _datasource.getUserFavoritePlaceIds(userId);
   }
 
   @override
-  Future<void> addFavorite(String userId, String placeId) async {
-    final db = await _database;
-    await db.insert(_favoriteTableName, {
-      'id': DateTime.now().millisecondsSinceEpoch.toString(),
-      'user_id': userId,
-      'place_id': placeId,
-      'created_at': DateTime.now().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<void> addFavorite(String userId, String placeId) {
+    return _datasource.addFavorite(userId, placeId);
   }
 
   @override
-  Future<void> removeFavorite(String userId, String placeId) async {
-    final db = await _database;
-    await db.delete(
-      _favoriteTableName,
-      where: 'user_id = ? AND place_id = ?',
-      whereArgs: [userId, placeId],
-    );
+  Future<void> removeFavorite(String userId, String placeId) {
+    return _datasource.removeFavorite(userId, placeId);
   }
 
   @override
-  Future<bool> toggleFavorite(String userId, String placeId) async {
-    final db = await _database;
-
-    final existing = await db.query(
-      _favoriteTableName,
-      where: 'user_id = ? AND place_id = ?',
-      whereArgs: [userId, placeId],
-    );
-
-    if (existing.isNotEmpty) {
-      await db.delete(
-        _favoriteTableName,
-        where: 'user_id = ? AND place_id = ?',
-        whereArgs: [userId, placeId],
-      );
-      return false;
-    } else {
-      await db.insert(_favoriteTableName, {
-        'id': DateTime.now().millisecondsSinceEpoch.toString(),
-        'user_id': userId,
-        'place_id': placeId,
-        'created_at': DateTime.now().toIso8601String(),
-      });
-      return true;
-    }
+  Future<bool> toggleFavorite(String userId, String placeId) {
+    return _datasource.toggleFavorite(userId, placeId);
   }
 
+  /// Converte UserModel (data layer) para UserEntity (domain layer)
   UserEntity _modelToEntity(UserModel model) {
     return UserEntity(
       id: model.id,
@@ -130,6 +74,7 @@ class UserRepositoryImpl implements UserRepositoryProtocol {
     );
   }
 
+  /// Converte UserEntity (domain layer) para UserModel (data layer)
   UserModel _entityToModel(UserEntity entity) {
     return UserModel(
       id: entity.id,

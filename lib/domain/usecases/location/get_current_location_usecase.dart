@@ -1,5 +1,5 @@
 import 'package:vivar/core/services/location_service.dart';
-import '../../entity/position_entity.dart';
+import '../../entity/position/position_entity.dart';
 import '../../interface/location/location_repository_protocol.dart';
 
 class GetCurrentLocationUseCase {

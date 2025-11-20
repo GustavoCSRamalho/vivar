@@ -1,10 +1,10 @@
 // domain/usecases/challenges/get_challenges_usecase.dart
 
-import '../../entity/challenge_entity.dart';
+import '../../entity/challenge/challenge_entity.dart';
 import '../../interface/challenges/challenges_repository_protocol.dart';
 
 class GetChallengesUseCase {
-  final ChallengesRepositoryProtocol _repository;
+  final GetChallengesProtocol _repository;
 
   GetChallengesUseCase(this._repository);
 

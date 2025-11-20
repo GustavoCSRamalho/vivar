@@ -1,7 +1,7 @@
 // domain/repositories/subscription_repository_protocol.dart
 
-import '../../entity/subscription_plan_entity.dart';
-import '../../entity/user_subscription_entity.dart';
+import '../../entity/subscription/subscription_plan_entity.dart';
+import '../../entity/user/user_subscription_entity.dart';
 
 abstract class SubscriptionRepositoryProtocol {
   Future<List<SubscriptionPlanEntity>> getAvailablePlans();

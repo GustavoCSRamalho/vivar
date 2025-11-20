@@ -3,9 +3,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:vivar/domain/usecases/location/get_current_location_usecase.dart';
 import 'package:vivar/domain/usecases/place/apply_advanced_filters_usecase.dart';
-import '../../../../domain/entity/place_entity.dart';
-import '../../../../domain/entity/position_entity.dart';
-import '../../../../domain/entity/user_entity.dart';
+import '../../../../domain/entity/place/place_entity.dart';
+import '../../../../domain/entity/position/position_entity.dart';
+import '../../../../domain/entity/user/user_entity.dart';
 import '../../../../domain/usecases/place/get_all_places_usecase.dart';
 import '../../../../domain/usecases/place/get_nearby_places_usecase.dart';
 import '../../../../domain/usecases/place/filter_places_by_category_usecase.dart';

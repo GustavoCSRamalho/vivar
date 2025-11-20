@@ -1,6 +1,6 @@
 // domain/repositories/settings_repository_protocol.dart
 
-import '../../entity/app_settings_entity.dart';
+import '../../entity/settings/app_settings_entity.dart';
 
 abstract class SettingsRepositoryProtocol {
   Future<AppSettingsEntity> getSettings();

@@ -1,7 +1,7 @@
 // presentation/providers/merchant_register_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/entity/merchant_entity.dart';
+import 'package:vivar/domain/entity/merchant/merchant_entity.dart';
 import 'package:vivar/domain/usecases/merchant/register_merchant_usecase.dart';
 import 'package:vivar/domain/usecases/merchant/validate_merchant_data_usecase.dart';
 

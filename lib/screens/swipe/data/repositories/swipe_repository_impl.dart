@@ -1,55 +1,32 @@
-// data/repositories/swipe_repository_impl.dart
-
-import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
 import 'package:vivar/models/place_model.dart';
-import 'package:vivar/domain/entity/swipe_place_entity.dart';
+import 'package:vivar/domain/entity/swipe/swipe_place_entity.dart';
+import 'package:vivar/screens/swipe/data/datasource/swipe_local_datasource.dart';
 
 class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _placeTableName = 'places';
-  final String _favoriteTableName = 'favorites';
+  final SwipeLocalDataSourceProtocol datasource;
 
-  Future<Database> get _database async => await _dbHelper.database;
+  SwipeRepositoryImpl({required this.datasource});
 
   @override
   Future<List<SwipePlaceEntity>> getSwipePlaces() async {
-    final db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      _placeTableName,
-      orderBy: 'RANDOM()',
-      limit: 50,
-    );
-    return maps.map((map) => _modelToEntity(PlaceModel.fromMap(map))).toList();
+    final models = await datasource.getSwipePlaces();
+    return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<void> likePlace(String userId, String placeId) async {
-    final db = await _database;
-    await db.insert(_favoriteTableName, {
-      'id': DateTime.now().millisecondsSinceEpoch.toString(),
-      'user_id': userId,
-      'place_id': placeId,
-      'created_at': DateTime.now().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<void> likePlace(String userId, String placeId) {
+    return datasource.likePlace(userId, placeId);
   }
 
   @override
-  Future<void> dislikePlace(String userId, String placeId) async {
-    // Implementar lógica de dislike se necessário
+  Future<void> dislikePlace(String userId, String placeId) {
+    return datasource.dislikePlace(userId, placeId);
   }
 
   @override
-  Future<void> superLikePlace(String userId, String placeId) async {
-    final db = await _database;
-    await db.insert(_favoriteTableName, {
-      'id': DateTime.now().millisecondsSinceEpoch.toString(),
-      'user_id': userId,
-      'place_id': placeId,
-      'is_super_like': 1,
-      'created_at': DateTime.now().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<void> superLikePlace(String userId, String placeId) {
+    return datasource.superLikePlace(userId, placeId);
   }
 
   SwipePlaceEntity _modelToEntity(PlaceModel model) {
@@ -58,18 +35,15 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
       tags.addAll(model.amenities!.take(3));
     }
 
-    double distance = 0.0;
-    if (model.distance != null) {
-      distance = model.distance! / 1000;
-    }
+    final distance = (model.distance ?? 0) / 1000;
 
     return SwipePlaceEntity(
       id: model.id,
       name: model.name,
       category: model.category,
-      description: model.description ?? 'Sem descrição',
+      description: model.description ?? "Sem descrição",
       rating: model.rating,
-      priceRange: model.priceRange ?? '\$\$',
+      priceRange: model.priceRange ?? "\$\$",
       distance: distance,
       tags: tags,
       images: model.images,

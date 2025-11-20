@@ -13,7 +13,7 @@ import '../../screens/profile/presentation/profile_screen.dart';
 import '../../screens/profile/presentation/edit_profile_screen.dart';
 import '../../screens/profile/presentation/settings_screen.dart';
 import '../../screens/premium/presentation/vivar_plus_screen.dart';
-import '../../screens/challenges/challenges_screen.dart';
+import '../../screens/challenges/presentation/challenges_screen.dart';
 import '../../screens/loyalty_card/presentation/loyalty_card_screen.dart';
 import '../../screens/notifications/presentation/notifications_screen.dart';
 import '../../screens/merchant/presentation/merchant_register_screen.dart';

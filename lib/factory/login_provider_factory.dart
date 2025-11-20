@@ -1,5 +1,6 @@
 // presentation/providers/login_provider_factory.dart
 
+import 'package:vivar/screens/auth/data/datasource/auth_datasource.dart';
 import 'package:vivar/screens/auth/data/repositories/auth_repository_impl.dart';
 import 'package:vivar/domain/usecases/auth/login_with_apple_usecase.dart';
 import 'package:vivar/domain/usecases/auth/login_with_email_usecase.dart';
@@ -9,7 +10,8 @@ import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
 
 class LoginProviderFactory {
   static LoginProvider create() {
-    final repository = AuthRepositoryImpl();
+    final datasource = AuthDatasource();
+    final repository = AuthRepositoryImpl(datasource: datasource);
 
     final loginWithEmailUseCase = LoginWithEmailUseCase(repository);
     final loginWithGoogleUseCase = LoginWithGoogleUseCase(repository);
