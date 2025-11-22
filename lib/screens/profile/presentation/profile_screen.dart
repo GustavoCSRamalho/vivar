@@ -1,20 +1,13 @@
 // screens/profile/profile_screen.dart
-import 'dart:ffi';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/domain/entity/auth/auth_user_entity.dart';
 import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
-import 'package:vivar/domain/entity/profile/profile_entity.dart';
 import 'package:vivar/screens/profile/presentation/providers/profile_provider.dart';
 import 'package:vivar/screens/profile/presentation/providers/settings_provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
-import '../../../core/constants/spacing.dart';
 import '../../../core/constants/routes.dart';
-import '../../../providers/user_provider.dart';
-import '../../../providers/auth_provider.dart';
 import '../../../widgets/buttons/custom_bottom_nav_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -221,18 +214,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             title: 'Editar perfil',
                             onTap: _editProfile,
                           ),
-                          SizedBox(height: 8),
-                          _buildMenuItem(
-                            icon: Icons.credit_card,
-                            title: 'Cartão fidelidade',
-                            onTap: _openLoyaltyCard,
-                          ),
-                          SizedBox(height: 8),
-                          _buildMenuItem(
-                            icon: Icons.emoji_events,
-                            title: 'Desafios',
-                            onTap: _openChallenges,
-                          ),
+                          // SizedBox(height: 8),
+                          // _buildMenuItem(
+                          //   icon: Icons.credit_card,
+                          //   title: 'Cartão fidelidade',
+                          //   onTap: _openLoyaltyCard,
+                          // ),
+                          // SizedBox(height: 8),
+                          // _buildMenuItem(
+                          //   icon: Icons.emoji_events,
+                          //   title: 'Desafios',
+                          //   onTap: _openChallenges,
+                          // ),
                           SizedBox(height: 8),
                           _buildMenuItem(
                             icon: Icons.bookmark,
@@ -268,18 +261,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             title: 'Notificações',
                             onTap: _openNotifications,
                           ),
-                          SizedBox(height: 8),
-                          _buildMenuItem(
-                            icon: Icons.help_outline,
-                            title: 'Ajuda e suporte',
-                            onTap: _openHelp,
-                          ),
-                          SizedBox(height: 8),
-                          _buildMenuItem(
-                            icon: Icons.info_outline,
-                            title: 'Sobre o app',
-                            onTap: _openAbout,
-                          ),
+                          // SizedBox(height: 8),
+                          // _buildMenuItem(
+                          //   icon: Icons.help_outline,
+                          //   title: 'Ajuda e suporte',
+                          //   onTap: _openHelp,
+                          // ),
+                          // SizedBox(height: 8),
+                          // _buildMenuItem(
+                          //   icon: Icons.info_outline,
+                          //   title: 'Sobre o app',
+                          //   onTap: _openAbout,
+                          // ),
                           SizedBox(height: 8),
                           _buildMenuItem(
                             icon: Icons.store,

@@ -59,8 +59,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _loadProfile() async {
     final provider = context.read<EditProfileProvider>();
-    final auth = context.read<AuthRepositoryImpl>();
-    userId = await auth.getCurrentUserId();
     await provider.loadProfile(userId);
 
     if (provider.profile != null) {

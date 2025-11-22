@@ -42,20 +42,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context,
                 title: 'CONTA',
                 items: [
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.lock_outline,
-                    title: 'Senha e segurança',
-                    subtitle: 'Alterar senha, 2FA',
-                    onTap: () {},
-                  ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.credit_card,
-                    title: 'Pagamentos',
-                    subtitle: 'Cartões e métodos',
-                    onTap: () {},
-                  ),
+                  // _buildMenuItem(
+                  //   context,
+                  //   icon: Icons.lock_outline,
+                  //   title: 'Senha e segurança',
+                  //   subtitle: 'Alterar senha, 2FA',
+                  //   onTap: () {},
+                  // ),
+                  // _buildMenuItem(
+                  //   context,
+                  //   icon: Icons.credit_card,
+                  //   title: 'Pagamentos',
+                  //   subtitle: 'Cartões e métodos',
+                  //   onTap: () {},
+                  // ),
                   _buildMenuItem(
                     context,
                     icon: Icons.location_on_outlined,
@@ -70,14 +70,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context,
                 title: 'PREFERÊNCIAS',
                 items: [
-                  _buildSwitchItem(
-                    context,
-                    provider: provider,
-                    icon: Icons.dark_mode_outlined,
-                    title: 'Tema escuro',
-                    value: provider.settings.darkMode,
-                    onChanged: provider.toggleDarkMode,
-                  ),
+                  // _buildSwitchItem(
+                  //   context,
+                  //   provider: provider,
+                  //   icon: Icons.dark_mode_outlined,
+                  //   title: 'Tema escuro',
+                  //   value: provider.settings.darkMode,
+                  //   onChanged: provider.toggleDarkMode,
+                  // ),
                   _buildMenuItem(
                     context,
                     icon: Icons.language,
@@ -116,30 +116,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context,
                 title: 'SUPORTE',
                 items: [
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.help_outline,
-                    title: 'Central de ajuda',
-                    onTap: () {},
-                  ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.chat_bubble_outline,
-                    title: 'Falar com suporte',
-                    onTap: () {},
-                  ),
+                  // _buildMenuItem(
+                  //   context,
+                  //   icon: Icons.help_outline,
+                  //   title: 'Central de ajuda',
+                  //   onTap: () {},
+                  // ),
+                  // _buildMenuItem(
+                  //   context,
+                  //   icon: Icons.chat_bubble_outline,
+                  //   title: 'Falar com suporte',
+                  //   onTap: () {},
+                  // ),
                   _buildMenuItem(
                     context,
                     icon: Icons.star_outline,
                     title: 'Avaliar o app',
                     onTap: () {},
                   ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.feedback_outlined,
-                    title: 'Enviar feedback',
-                    onTap: () {},
-                  ),
+                  // _buildMenuItem(
+                  //   context,
+                  //   icon: Icons.feedback_outlined,
+                  //   title: 'Enviar feedback',
+                  //   onTap: () {},
+                  // ),
                   _buildMenuItem(
                     context,
                     icon: Icons.bug_report_outlined,
@@ -199,16 +199,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subtitle: 'Versão ${provider.appVersion}',
                     onTap: () {},
                   ),
-                  _buildMenuItem(
-                    context,
-                    icon: Icons.store,
-                    title: 'Sou um comerciante',
-                    subtitle: 'Cadastre seu negócio',
-                    onTap: () => Navigator.pushNamed(
-                      context,
-                      AppRoutes.merchantRegister,
-                    ),
-                  ),
+                  // _buildMenuItem(
+                  //   context,
+                  //   icon: Icons.store,
+                  //   title: 'Sou um comerciante',
+                  //   subtitle: 'Cadastre seu negócio',
+                  //   onTap: () => Navigator.pushNamed(
+                  //     context,
+                  //     AppRoutes.merchantRegister,
+                  //   ),
+                  // ),
                 ],
               ),
               SizedBox(height: 32),

@@ -5,6 +5,10 @@ import 'package:vivar/core/repositories/notification_repository.dart';
 import 'package:vivar/core/repositories/place_repository.dart';
 import 'package:vivar/core/repositories/user_repository.dart';
 import 'package:vivar/core/services/location_service.dart';
+import 'package:vivar/screens/home/data/datasource/location_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/notification_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/place_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/user_datasource.dart';
 import 'package:vivar/screens/home/data/repositories/location_repository_impl.dart';
 import 'package:vivar/screens/home/data/repositories/notification_repository_impl.dart';
 import 'package:vivar/screens/home/data/repositories/place_repository_impl.dart';
@@ -28,10 +32,21 @@ class HomeProviderFactory {
     final locationService = LocationService();
 
     // Repository Implementations
-    final placeRepositoryImpl = PlaceRepositoryImpl();
-    final userRepositoryImpl = UserRepositoryImpl();
-    final locationRepositoryImpl = LocationRepositoryImpl();
-    final notificationRepositoryImpl = NotificationRepositoryImpl();
+    final placeDatasource = PlaceDatasourceImpl();
+    final userDatasource = UserDatasourceImpl();
+    final locationDatasource = LocationDatasourceImpl();
+    final notificationDatasource = NotificationDatasource();
+
+    final placeRepositoryImpl = PlaceRepositoryImpl(
+      datasource: placeDatasource,
+    );
+    final userRepositoryImpl = UserRepositoryImpl(datasource: userDatasource);
+    final locationRepositoryImpl = LocationRepositoryImpl(
+      datasource: locationDatasource,
+    );
+    final notificationRepositoryImpl = NotificationRepositoryImpl(
+      datasource: notificationDatasource,
+    );
 
     // Use Cases
     final getCurrentLocationUseCase = GetCurrentLocationUseCase(

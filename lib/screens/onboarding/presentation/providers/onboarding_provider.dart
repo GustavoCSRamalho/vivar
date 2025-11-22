@@ -1,7 +1,7 @@
 // presentation/providers/onboarding_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/usecases/onboarding/complete_onboarding_usecase.dart';
+import 'package:vivar/domain/usecases/onboarding/complete_onboarding_interface.dart';
 
 class OnboardingProvider with ChangeNotifier {
   final CompleteOnboardingUseCase _completeOnboardingUseCase;

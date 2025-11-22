@@ -14,8 +14,6 @@ class PlacePreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(place);
-    debugPrint('❌ Ver: Place! ${place.imageUrl}');
     return GestureDetector(
       onTap: onTap,
       child: Container(

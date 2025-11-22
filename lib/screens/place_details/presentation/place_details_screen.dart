@@ -96,7 +96,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint(
-      '🎨 PlaceDetailsScreen build - isLoading: $_isLoading, place: ${_place?.name}',
+      '🎨 PlaceDetailsScreen build - isLoading: $_isLoading, place: ${_place?.name}, image: ${_place?.images}',
     );
 
     // Loading state

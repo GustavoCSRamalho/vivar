@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vivar/core/constants/colors.dart';
+import 'package:vivar/core/constants/routes.dart';
 import 'package:vivar/core/constants/text_styles.dart';
 import 'package:vivar/screens/map/presentation/providers/map_provider.dart';
+import 'package:vivar/screens/map/presentation/widgets/place_preview_card.dart';
 
 import '../../../factory/map_provider_factory.dart';
 
@@ -164,125 +166,13 @@ class _MapScreenContentState extends State<_MapScreenContent> {
 
         return Positioned(
           bottom: 16,
-          left: 16,
-          right: 16,
-          child: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(place.name, style: AppTextStyles.subtitle),
-                            SizedBox(height: 4),
-                            Text(
-                              place.category,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close, color: AppColors.textSecondary),
-                        onPressed: () {
-                          if (!provider.isDisposed) {
-                            provider.clearSelection();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-                      SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          '${place.latitude.toStringAsFixed(4)}, ${place.longitude.toStringAsFixed(4)}',
-                          style: AppTextStyles.caption,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (place.description != null &&
-                      place.description!.isNotEmpty) ...[
-                    SizedBox(height: 8),
-                    Text(
-                      place.description!,
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/place-details',
-                              arguments: place.id,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text('Ver detalhes'),
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            if (!provider.isDisposed) {
-                              provider.animateToPlace(place);
-                            }
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(
-                            'Como chegar',
-                            style: TextStyle(color: AppColors.primary),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+          left: 0,
+          right: 0,
+          child: PlacePreviewCard(
+            place: place,
+            onTap: () {
+              AppRoutes.navigateToPlaceDetails(context, place.id);
+            },
           ),
         );
       },
