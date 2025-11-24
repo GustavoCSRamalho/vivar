@@ -67,11 +67,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
             );
           }
 
-          if (!provider.hasPlaces) {
+          if (!provider.hasBusinesses) {
             return _buildEmptyState();
           }
 
-          final currentPlace = provider.currentPlace!;
+          final currentPlace = provider.currentBusinesses!;
 
           return Column(
             children: [
@@ -185,7 +185,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   }
 
   void _navigateToDetails(String placeId) {
-    AppRoutes.navigateToPlaceDetails(context, placeId);
+    AppRoutes.navigateToBusinessesDetails(context, placeId);
   }
 
   void _onNavBarTap(int index) {

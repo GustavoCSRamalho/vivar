@@ -8,8 +8,8 @@ import '../../entity/discover/discover_collection_entity.dart';
 
 abstract class DiscoverRepositoryProtocol {
   Future<List<DiscoverCollectionEntity>> getCollections();
-  Future<List<BusinessEntity>> getCollectionPlaces(String collectionId);
-  Future<List<BusinessEntity>> getTrendingPlaces();
-  Future<List<BusinessEntity>> getNearYouPlaces();
-  Future<List<BusinessEntity>> getTopRatedPlaces();
+  Future<List<BusinessEntity>> getCollectionBusinesses(String collectionId);
+  Future<List<BusinessEntity>> getTrendingBusinesses();
+  Future<List<BusinessEntity>> getNearYouBusinesses();
+  Future<List<BusinessEntity>> getTopRatedBusinesses();
 }

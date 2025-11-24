@@ -4,8 +4,8 @@ import 'package:vivar/domain/entity/business/business_entity.dart';
 
 import '../../entity/place/place_entity.dart';
 
-class FilterPlacesByCategoryUseCase {
-  FilterPlacesByCategoryUseCase();
+class FilterBusinessesByCategoryUseCase {
+  FilterBusinessesByCategoryUseCase();
 
   List<BusinessEntity> execute({
     required List<BusinessEntity> businesses,

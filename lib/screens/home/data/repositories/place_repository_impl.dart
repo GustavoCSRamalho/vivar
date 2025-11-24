@@ -1,34 +1,34 @@
-// data/repositories/place_repository_impl.dart
+// data/repositories/Businesses_repository_impl.dart
 
 import 'package:flutter/foundation.dart';
 import 'package:vivar/domain/entity/business/business_entity.dart';
-import 'package:vivar/models/business_model.dart';
 import 'package:vivar/domain/interface/place/place_repository_protocol.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/screens/home/data/datasource/place/home_place_sync_datasource.dart';
 
 /// Implementação do repositório de lugares
 /// Delega operações de dados para o sync datasource
 /// Responsável por converter entre Model (data layer) e Entity (domain layer)
-class PlaceRepositoryImpl implements PlaceRepositoryProtocol {
-  final PlaceSyncDatasource _syncDatasource;
+class BusinessesRepositoryImpl implements BusinessesRepositoryProtocol {
+  final BusinessesSyncDatasource _syncDatasource;
 
-  PlaceRepositoryImpl({required PlaceSyncDatasource syncDatasource})
+  BusinessesRepositoryImpl({required BusinessesSyncDatasource syncDatasource})
     : _syncDatasource = syncDatasource;
 
   @override
-  Future<List<BusinessEntity>> getAllPlaces() async {
-    final models = await _syncDatasource.getAllPlaces();
+  Future<List<BusinessEntity>> getAllBusinesses() async {
+    final models = await _syncDatasource.getAllBusinessess();
     debugPrint('🌍 todos os lugares... ${models.length} encontrados');
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<BusinessEntity>> getNearbyPlaces({
+  Future<List<BusinessEntity>> getNearbyBusinesses({
     required double latitude,
     required double longitude,
     required double radiusKm,
   }) async {
-    final models = await _syncDatasource.getNearbyPlaces(
+    final models = await _syncDatasource.getNearbyBusinessess(
       latitude: latitude,
       longitude: longitude,
       radiusKm: radiusKm,
@@ -37,44 +37,44 @@ class PlaceRepositoryImpl implements PlaceRepositoryProtocol {
   }
 
   @override
-  Future<List<BusinessEntity>> getPlacesByCategory(String category) async {
-    final models = await _syncDatasource.getPlacesByCategory(category);
+  Future<List<BusinessEntity>> getBusinessesByCategory(String category) async {
+    final models = await _syncDatasource.getBusinessessByCategory(category);
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<BusinessEntity>> searchPlaces(String query) async {
-    final models = await _syncDatasource.searchPlaces(query);
+  Future<List<BusinessEntity>> searchBusinesses(String query) async {
+    final models = await _syncDatasource.searchBusinessess(query);
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<BusinessEntity?> getPlaceById(String id) async {
-    final model = await _syncDatasource.getPlaceById(id);
+  Future<BusinessEntity?> getBusinessesById(String id) async {
+    final model = await _syncDatasource.getBusinessesById(id);
     return model != null ? _modelToEntity(model) : null;
   }
 
   @override
-  Future<List<BusinessEntity>> getPlacesWithDiscount() async {
-    final models = await _syncDatasource.getPlacesWithDiscount();
+  Future<List<BusinessEntity>> getBusinessesWithDiscount() async {
+    final models = await _syncDatasource.getBusinessessWithDiscount();
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<BusinessEntity>> getTopRatedPlaces({int limit = 10}) async {
-    final models = await _syncDatasource.getTopRatedPlaces(limit: limit);
+  Future<List<BusinessEntity>> getTopRatedBusinesses({int limit = 10}) async {
+    final models = await _syncDatasource.getTopRatedBusinessess(limit: limit);
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<BusinessEntity>> getFilteredPlaces({
+  Future<List<BusinessEntity>> getFilteredBusinesses({
     List<String>? categories,
     String? priceRange,
     double? minRating,
     List<String>? amenities,
     bool? openNow,
   }) async {
-    final models = await _syncDatasource.getFilteredPlaces(
+    final models = await _syncDatasource.getFilteredBusinessess(
       categories: categories,
       priceRange: priceRange,
       minRating: minRating,

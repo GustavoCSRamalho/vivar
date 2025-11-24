@@ -4,10 +4,10 @@ import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 
 abstract class SwipeLocalDataSourceProtocol {
-  Future<List<BusinessModel>> getSwipePlaces();
-  Future<void> likePlace(String userId, String placeId);
-  Future<void> superLikePlace(String userId, String placeId);
-  Future<void> dislikePlace(String userId, String placeId);
+  Future<List<BusinessModel>> getSwipeBusinesses();
+  Future<void> likeBusinesses(String userId, String placeId);
+  Future<void> superLikeBusinesses(String userId, String placeId);
+  Future<void> dislikeBusinesses(String userId, String placeId);
 }
 
 class SwipeLocalDataSource implements SwipeLocalDataSourceProtocol {
@@ -18,7 +18,7 @@ class SwipeLocalDataSource implements SwipeLocalDataSourceProtocol {
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<List<BusinessModel>> getSwipePlaces() async {
+  Future<List<BusinessModel>> getSwipeBusinesses() async {
     final db = await _database;
 
     final maps = await db.query(
@@ -31,32 +31,32 @@ class SwipeLocalDataSource implements SwipeLocalDataSourceProtocol {
   }
 
   @override
-  Future<void> likePlace(String userId, String placeId) async {
+  Future<void> likeBusinesses(String userId, String businessesId) async {
     final db = await _database;
 
     await db.insert(_favoriteTableName, {
       'id': DateTime.now().millisecondsSinceEpoch.toString(),
       'user_id': userId,
-      'place_id': placeId,
+      'businesses_id': businessesId,
       'created_at': DateTime.now().toIso8601String(),
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
-  Future<void> superLikePlace(String userId, String placeId) async {
+  Future<void> superLikeBusinesses(String userId, String businessesId) async {
     final db = await _database;
 
     await db.insert(_favoriteTableName, {
       'id': DateTime.now().millisecondsSinceEpoch.toString(),
       'user_id': userId,
-      'place_id': placeId,
+      'businesses_id': businessesId,
       'is_super_like': 1,
       'created_at': DateTime.now().toIso8601String(),
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
-  Future<void> dislikePlace(String userId, String placeId) async {
+  Future<void> dislikeBusinesses(String userId, String businessesId) async {
     // implementar se necessário
   }
 }

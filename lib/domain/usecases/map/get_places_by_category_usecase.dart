@@ -3,17 +3,17 @@
 import '../../entity/map/map_place_entity.dart';
 import '../../interface/map/map_repository_protocol.dart';
 
-class GetPlacesByCategoryUseCase {
+class GetBusinessesByCategoryUseCase {
   final MapRepositoryProtocol _mapRepository;
 
-  GetPlacesByCategoryUseCase(this._mapRepository);
+  GetBusinessesByCategoryUseCase(this._mapRepository);
 
   Future<List<MapPlaceEntity>> execute(String category) async {
     try {
       if (category == 'Todos') {
-        return await _mapRepository.getPlacesForMap();
+        return await _mapRepository.getBusinessesForMap();
       }
-      return await _mapRepository.getPlacesByCategory(category);
+      return await _mapRepository.getBusinessesByCategory(category);
     } catch (e) {
       print('❌ Erro ao buscar lugares por categoria: $e');
       rethrow;

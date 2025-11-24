@@ -6,7 +6,8 @@ import 'package:vivar/domain/entity/business/business_entity.dart'
 import 'package:vivar/domain/usecases/location/get_current_location_usecase.dart';
 import 'package:vivar/domain/usecases/place/apply_advanced_filters_usecase.dart';
 import 'package:vivar/domain/usecases/place/filter_places_by_category_usecase.dart';
-import 'package:vivar/domain/usecases/place/get_all_places_usecase.dart';
+import 'package:vivar/domain/usecases/place/get_all_Businesses_usecase.dart'
+    hide GetAllBusinessesUseCase;
 import 'package:vivar/domain/usecases/place/get_nearby_places_usecase.dart';
 import 'package:vivar/domain/usecases/place/search_places_usecase.dart';
 import '../../../../domain/entity/place/place_entity.dart';
@@ -27,44 +28,45 @@ import '../../../../domain/interface/location/location_repository_protocol.dart'
 class HomeProvider with ChangeNotifier {
   // Use Cases injetados
   final GetCurrentLocationUseCase _getCurrentLocationUseCase;
-  final GetAllPlacesUseCase _getAllPlacesUseCase;
-  final GetNearbyPlacesUseCase _getNearbyPlacesUseCase;
-  final FilterPlacesByCategoryUseCase _filterPlacesByCategoryUseCase;
-  final SearchPlacesUseCase _searchPlacesUseCase;
+  final GetAllBusinessesUseCase _getAllBusinessesUseCase;
+  final GetNearbyBusinessesUseCase _getNearbyBusinessesUseCase;
+  final FilterBusinessesByCategoryUseCase _filterBusinessesByCategoryUseCase;
+  final SearchBusinessesUseCase _searchBusinessesUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final LoadUserFavoritesUseCase _loadUserFavoritesUseCase;
-  final ToggleFavoritePlaceUseCase _toggleFavoritePlaceUseCase;
+  final ToggleFavoriteBusinessesUseCase _toggleFavoritePlaceUseCase;
   final GetNotificationsUseCase _getNotificationsUseCase;
   final CheckUnreadNotificationsUseCase _checkUnreadNotificationsUseCase;
   final ApplyAdvancedFiltersUseCase _applyAdvancedFiltersUseCase;
 
   HomeProvider({
     required GetCurrentLocationUseCase getCurrentLocationUseCase,
-    required GetAllPlacesUseCase getAllPlacesUseCase,
-    required GetNearbyPlacesUseCase getNearbyPlacesUseCase,
-    required FilterPlacesByCategoryUseCase filterPlacesByCategoryUseCase,
-    required SearchPlacesUseCase searchPlacesUseCase,
+    required GetAllBusinessesUseCase getAllBusinessesUseCase,
+    required GetNearbyBusinessesUseCase getNearbyBusinessesUseCase,
+    required FilterBusinessesByCategoryUseCase
+    filterBusinessesByCategoryUseCase,
+    required SearchBusinessesUseCase searchBusinessesUseCase,
     required GetCurrentUserUseCase getCurrentUserUseCase,
     required LoadUserFavoritesUseCase loadUserFavoritesUseCase,
-    required ToggleFavoritePlaceUseCase toggleFavoritePlaceUseCase,
+    required ToggleFavoriteBusinessesUseCase toggleFavoriteBusinessesUseCase,
     required GetNotificationsUseCase getNotificationsUseCase,
     required CheckUnreadNotificationsUseCase checkUnreadNotificationsUseCase,
     required ApplyAdvancedFiltersUseCase applyAdvancedFiltersUseCase,
   }) : _getCurrentLocationUseCase = getCurrentLocationUseCase,
-       _getAllPlacesUseCase = getAllPlacesUseCase,
-       _getNearbyPlacesUseCase = getNearbyPlacesUseCase,
-       _filterPlacesByCategoryUseCase = filterPlacesByCategoryUseCase,
-       _searchPlacesUseCase = searchPlacesUseCase,
+       _getAllBusinessesUseCase = getAllBusinessesUseCase,
+       _getNearbyBusinessesUseCase = getNearbyBusinessesUseCase,
+       _filterBusinessesByCategoryUseCase = filterBusinessesByCategoryUseCase,
+       _searchBusinessesUseCase = searchBusinessesUseCase,
        _getCurrentUserUseCase = getCurrentUserUseCase,
        _loadUserFavoritesUseCase = loadUserFavoritesUseCase,
-       _toggleFavoritePlaceUseCase = toggleFavoritePlaceUseCase,
+       _toggleFavoritePlaceUseCase = toggleFavoriteBusinessesUseCase,
        _getNotificationsUseCase = getNotificationsUseCase,
        _checkUnreadNotificationsUseCase = checkUnreadNotificationsUseCase,
        _applyAdvancedFiltersUseCase = applyAdvancedFiltersUseCase;
 
   // Estado
-  List<BusinessEntity> _allPlaces = [];
-  List<BusinessEntity> _filteredPlaces = [];
+  List<BusinessEntity> _allBusinesses = [];
+  List<BusinessEntity> _filteredBusinesses = [];
   List<String> _favoritePlaceIds = [];
   UserEntity? _currentUser;
   Position? _currentPosition;
@@ -75,7 +77,7 @@ class HomeProvider with ChangeNotifier {
   String _selectedCategory = 'Todos';
 
   // Getters
-  List<BusinessEntity> get businesses => _filteredPlaces;
+  List<BusinessEntity> get businesses => _filteredBusinesses;
   List<String> get favoritePlaceIds => _favoritePlaceIds;
   UserEntity? get currentUser => _currentUser;
   Position? get currentPosition => _currentPosition;
@@ -101,7 +103,7 @@ class HomeProvider with ChangeNotifier {
       await _loadLocation();
 
       // 3. Carregar lugares (próximos se houver localização, todos caso contrário)
-      await _loadPlaces();
+      await _loadBusinesses();
 
       // 4. Carregar favoritos se houver usuário
       if (_currentUser != null) {
@@ -146,12 +148,12 @@ class HomeProvider with ChangeNotifier {
   }
 
   /// Carrega os lugares
-  Future<void> _loadPlaces() async {
+  Future<void> _loadBusinesses() async {
     try {
       if (_currentPosition != null) {
         // Carregar lugares próximos
         debugPrint('📍 Carregando lugares próximos...');
-        _allPlaces = await _getNearbyPlacesUseCase.execute(
+        _allBusinesses = await _getNearbyBusinessesUseCase.execute(
           userLatitude: _currentPosition!.latitude,
           userLongitude: _currentPosition!.longitude,
           radiusKm: 5.0,
@@ -159,11 +161,11 @@ class HomeProvider with ChangeNotifier {
       } else {
         // Carregar todos os lugares
         debugPrint('🌍 Carregando todos os lugares...');
-        _allPlaces = await _getAllPlacesUseCase.execute();
+        _allBusinesses = await _getAllBusinessesUseCase.execute();
       }
 
       _applyFilter();
-      debugPrint('✅ ${_allPlaces.length} lugares carregados');
+      debugPrint('✅ ${_allBusinesses.length} lugares carregados');
     } catch (e) {
       throw Exception('Erro ao carregar lugares: $e');
     }
@@ -208,11 +210,11 @@ class HomeProvider with ChangeNotifier {
 
   /// Aplica o filtro atual
   void _applyFilter() {
-    _filteredPlaces = _filterPlacesByCategoryUseCase.execute(
-      businesses: _allPlaces,
+    _filteredBusinesses = _filterBusinessesByCategoryUseCase.execute(
+      businesses: _allBusinesses,
       category: _selectedCategory,
     );
-    debugPrint('✅ Filtro aplicado: ${_filteredPlaces.length} lugares');
+    debugPrint('✅ Filtro aplicado: ${_filteredBusinesses.length} lugares');
   }
 
   void applyAdvancedFilters({
@@ -222,20 +224,20 @@ class HomeProvider with ChangeNotifier {
     List<String>? amenities,
     bool? openNow,
   }) async {
-    _filteredPlaces = await _applyAdvancedFiltersUseCase.execute(
+    _filteredBusinesses = await _applyAdvancedFiltersUseCase.execute(
       categories: categories,
       priceRange: priceRange,
       minRating: minRating,
       amenities: amenities,
       openNow: openNow,
     );
-    debugPrint('✅ Filtro aplicado: ${_filteredPlaces.length} lugares');
+    debugPrint('✅ Filtro aplicado: ${_filteredBusinesses.length} lugares');
   }
 
   /// Busca lugares por texto
-  Future<void> searchPlaces(String query) async {
+  Future<void> searchBusinesses(String query) async {
     if (query.trim().isEmpty) {
-      _filteredPlaces = _allPlaces;
+      _filteredBusinesses = _allBusinesses;
       notifyListeners();
       return;
     }
@@ -243,9 +245,9 @@ class HomeProvider with ChangeNotifier {
     _setLoading(true);
 
     try {
-      _filteredPlaces = await _searchPlacesUseCase.execute(query);
+      _filteredBusinesses = await _searchBusinessesUseCase.execute(query);
       debugPrint(
-        '🔍 Busca: ${_filteredPlaces.length} resultados para "$query"',
+        '🔍 Busca: ${_filteredBusinesses.length} resultados para "$query"',
       );
     } catch (e) {
       _error = 'Erro na busca: $e';

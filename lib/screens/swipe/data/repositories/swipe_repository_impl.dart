@@ -1,7 +1,6 @@
+import 'package:vivar/domain/entity/swipe/swipe_place_entity.dart';
 import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
 import 'package:vivar/models/business_model.dart';
-import 'package:vivar/models/place_model.dart';
-import 'package:vivar/domain/entity/swipe/swipe_place_entity.dart';
 import 'package:vivar/screens/swipe/data/datasource/swipe_sync_service.dart';
 
 class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
@@ -11,10 +10,10 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
     : _syncService = syncService;
 
   @override
-  Future<List<SwipePlaceEntity>> getSwipePlaces() async {
+  Future<List<SwipeBusinessesEntity>> getSwipeBusinesses() async {
     try {
       // Busca do local através do sync service
-      final localModels = await _syncService.getSwipePlaces();
+      final localModels = await _syncService.getSwipeBusinesses();
 
       if (localModels.isNotEmpty) {
         print('✅ Lugares carregados do cache local');
@@ -23,7 +22,7 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
 
       // Se não tiver local, busca do remoto através do sync service
       print('🌐 Buscando lugares do servidor...');
-      final remoteModels = await _syncService.getSwipePlacesRemote();
+      final remoteModels = await _syncService.getSwipeBusinessesRemote();
 
       return remoteModels.map(_modelToEntity).toList();
     } catch (e) {
@@ -33,10 +32,10 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
   }
 
   @override
-  Future<void> likePlace(String userId, String placeId) async {
+  Future<void> likeBusinesses(String userId, String BusinessesId) async {
     try {
       // Salva localmente através do sync service
-      await _syncService.likePlace(userId, placeId);
+      await _syncService.likeBusinesses(userId, BusinessesId);
       print('✅ Like salvo localmente');
 
       // Sincroniza em background (não espera)
@@ -50,10 +49,10 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
   }
 
   @override
-  Future<void> dislikePlace(String userId, String placeId) async {
+  Future<void> dislikeBusinesses(String userId, String BusinessesId) async {
     try {
       // Salva localmente através do sync service
-      await _syncService.dislikePlace(userId, placeId);
+      await _syncService.dislikeBusinesses(userId, BusinessesId);
       print('✅ Dislike salvo localmente');
 
       // Sincroniza em background (não espera)
@@ -67,10 +66,10 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
   }
 
   @override
-  Future<void> superLikePlace(String userId, String placeId) async {
+  Future<void> superLikeBusinesses(String userId, String BusinessesId) async {
     try {
       // Salva localmente através do sync service
-      await _syncService.superLikePlace(userId, placeId);
+      await _syncService.superLikeBusinesses(userId, BusinessesId);
       print('✅ Super like salvo localmente');
 
       // Sincroniza em background (não espera)
@@ -94,7 +93,7 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
     }
   }
 
-  SwipePlaceEntity _modelToEntity(BusinessModel model) {
+  SwipeBusinessesEntity _modelToEntity(BusinessModel model) {
     final tags = <String>[];
     if (model.amenities != null) {
       tags.addAll(model.amenities!.take(3));
@@ -102,7 +101,7 @@ class SwipeRepositoryImpl implements SwipeRepositoryProtocol {
 
     final distance = (model.distance ?? 0) / 1000;
 
-    return SwipePlaceEntity(
+    return SwipeBusinessesEntity(
       id: model.id,
       name: model.name,
       category: model.category,

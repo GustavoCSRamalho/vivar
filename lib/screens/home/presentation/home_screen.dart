@@ -5,7 +5,6 @@ import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/routes.dart';
 import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/models/filters_bottom_sheet.dart';
-import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 import 'package:vivar/widgets/buttons/custom_bottom_nav_bar.dart';
 import 'package:vivar/widgets/buttons/place_card.dart';
@@ -159,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.only(top: 8),
                         sliver: SliverToBoxAdapter(
                           child: TodayCard(
-                            title: '${businessesToShow.length} lugares encontrados',
+                            title:
+                                '${businessesToShow.length} lugares encontrados',
                             subtitle: 'Descubra novos lugares perto de você',
                             emoji: '🎉',
                             onTap: _openEvents,
@@ -172,22 +172,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Lista de lugares
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                          final place = businessesToShow[index];
-                          return PlaceCard(
-                            imageUrl: place.firstImage ?? '',
-                            name: place.name,
-                            rating: place.rating,
-                            category: place.categoryWithPrice,
-                            distance: place.formattedDistance,
-                            discount: place.discountText,
-                            isOpen: place.isOpen,
+                          final Businesses = businessesToShow[index];
+                          return BusinessesCard(
+                            imageUrl: Businesses.firstImage ?? '',
+                            name: Businesses.name,
+                            rating: Businesses.rating,
+                            category: Businesses.categoryWithPrice,
+                            distance: Businesses.formattedDistance,
+                            discount: Businesses.discountText,
+                            isOpen: Businesses.isOpen,
                             closingTime: '22h',
-                            isFavorite: provider.isFavorite(place.id),
+                            isFavorite: provider.isFavorite(Businesses.id),
                             onTap: () {
                               debugPrint(
-                                '🖱️ Card clicado: ${place.name} (${place.id})',
+                                '🖱️ Card clicado: ${Businesses.name} (${Businesses.id})',
                               );
-                              _navigateToDetails(place.id);
+                              _navigateToDetails(Businesses.id);
                             },
                           );
                         }, childCount: businessesToShow.length),
@@ -313,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openSearch() {
-    showSearch(context: context, delegate: PlaceSearchDelegate());
+    showSearch(context: context, delegate: BusinessesSearchDelegate());
   }
 
   void _openFilters() {
@@ -331,9 +331,9 @@ class _HomeScreenState extends State<HomeScreen> {
     ).showSnackBar(SnackBar(content: Text('Eventos em breve')));
   }
 
-  void _navigateToDetails(String placeId) {
-    debugPrint('🔍 Navegando para detalhes: $placeId');
-    AppRoutes.navigateToPlaceDetails(context, placeId);
+  void _navigateToDetails(String BusinessesId) {
+    debugPrint('🔍 Navegando para detalhes: $BusinessesId');
+    AppRoutes.navigateToBusinessesDetails(context, BusinessesId);
   }
 
   void _onNavBarTap(int index) {
@@ -357,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 // Search Delegate
-class PlaceSearchDelegate extends SearchDelegate<String> {
+class BusinessesSearchDelegate extends SearchDelegate<String> {
   @override
   List<Widget> buildActions(BuildContext context) {
     return [IconButton(icon: Icon(Icons.clear), onPressed: () => query = '')];
@@ -377,7 +377,7 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
       return Center(child: Text('Digite para buscar lugares'));
     }
 
-    context.read<HomeProvider>().searchPlaces(query);
+    context.read<HomeProvider>().searchBusinesses(query);
 
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {
@@ -406,7 +406,7 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
         return ListView.builder(
           itemCount: provider.businesses.length,
           itemBuilder: (context, index) {
-            final place = provider.businesses[index];
+            final Businesses = provider.businesses[index];
             return ListTile(
               leading: Container(
                 width: 50,
@@ -417,14 +417,14 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
                 ),
                 child: Icon(Icons.place, color: AppColors.primary),
               ),
-              title: Text(place.name),
+              title: Text(Businesses.name),
               subtitle: Text(
-                '${place.categoryWithPrice} · ${place.formattedDistance}',
+                '${Businesses.categoryWithPrice} · ${Businesses.formattedDistance}',
               ),
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-                close(context, place.id);
-                AppRoutes.navigateToPlaceDetails(context, place.id);
+                close(context, Businesses.id);
+                AppRoutes.navigateToBusinessesDetails(context, Businesses.id);
               },
             );
           },

@@ -2,10 +2,10 @@
 
 import '../../interface/user/user_repository_protocol.dart';
 
-class ToggleFavoritePlaceUseCase {
+class ToggleFavoriteBusinessesUseCase {
   final UserRepositoryProtocol _userRepository;
 
-  ToggleFavoritePlaceUseCase(this._userRepository);
+  ToggleFavoriteBusinessesUseCase(this._userRepository);
 
   Future<bool> execute({
     required String userId,

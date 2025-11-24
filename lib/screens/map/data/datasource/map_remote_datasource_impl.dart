@@ -6,9 +6,9 @@ import 'dart:math';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class MapRemoteDatasourceProtocol {
-  Future<List<BusinessModel>> getPlacesForMap();
-  Future<List<BusinessModel>> getPlacesByCategory(String category);
-  Future<List<BusinessModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getBusinessesForMap();
+  Future<List<BusinessModel>> getBusinessesByCategory(String category);
+  Future<List<BusinessModel>> getNearbyBusinessesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
@@ -25,7 +25,7 @@ class MapRemoteDatasourceImpl implements MapRemoteDatasourceProtocol {
     : _supabase = supabase ?? Supabase.instance.client;
 
   @override
-  Future<List<BusinessModel>> getPlacesForMap() async {
+  Future<List<BusinessModel>> getBusinessesForMap() async {
     try {
       final response = await _supabase.from('businesses').select();
 
@@ -39,7 +39,7 @@ class MapRemoteDatasourceImpl implements MapRemoteDatasourceProtocol {
   }
 
   @override
-  Future<List<BusinessModel>> getPlacesByCategory(String category) async {
+  Future<List<BusinessModel>> getBusinessesByCategory(String category) async {
     try {
       final response = await _supabase
           .from('businesses')
@@ -56,7 +56,7 @@ class MapRemoteDatasourceImpl implements MapRemoteDatasourceProtocol {
   }
 
   @override
-  Future<List<BusinessModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getNearbyBusinessesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,

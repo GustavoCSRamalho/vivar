@@ -8,10 +8,6 @@ import 'package:vivar/screens/discover/data/datasource/discover_datasource.dart'
 import 'package:vivar/screens/discover/data/repositories/discover_repository_impl.dart';
 import 'package:vivar/domain/usecases/discover/get_collections_usecase.dart';
 import 'package:vivar/screens/discover/presentation/providers/discover_provider.dart';
-import 'package:vivar/screens/home/data/datasource/place/home_place_datasource.dart';
-import 'package:vivar/screens/home/data/datasource/place/home_place_remote_datasource_impl.dart';
-import 'package:vivar/screens/home/data/datasource/place/home_place_sync_datasource.dart';
-import 'package:vivar/screens/home/data/repositories/place_repository_impl.dart';
 
 class DiscoverProviderFactory {
   static DiscoverProvider create() {
@@ -19,17 +15,23 @@ class DiscoverProviderFactory {
     final repository = DiscoverRepositoryImpl(datasource: datasource);
 
     final getCollectionsUseCase = GetCollectionsUseCase(repository);
-    final getCollectionPlacesUseCase = GetCollectionPlacesUseCase(repository);
-    final getTrendingPlacesUseCase = GetTrendingPlacesUseCase(repository);
-    final getNearYouPlacesUseCase = GetNearYouPlacesUseCase(repository);
-    final getTopRatedPlacesUseCase = GetTopRatedPlacesUseCase(repository);
+    final getCollectionBusinessesUseCase = GetCollectionBusinessesUseCase(
+      repository,
+    );
+    final getTrendingBusinessesUseCase = GetTrendingBusinessesUseCase(
+      repository,
+    );
+    final getNearYouBusinessesUseCase = GetNearYouBusinessesUseCase(repository);
+    final getTopRatedBusinessesUseCase = GetTopRatedBusinessesUseCase(
+      repository,
+    );
 
     return DiscoverProvider(
       getCollectionsUseCase: getCollectionsUseCase,
-      getCollectionPlacesUseCase: getCollectionPlacesUseCase,
-      getTrendingPlacesUseCase: getTrendingPlacesUseCase,
-      getNearYouPlacesUseCase: getNearYouPlacesUseCase,
-      getTopRatedPlacesUseCase: getTopRatedPlacesUseCase,
+      getCollectionBusinessesUseCase: getCollectionBusinessesUseCase,
+      getTrendingBusinessesUseCase: getTrendingBusinessesUseCase,
+      getNearYouBusinessesUseCase: getNearYouBusinessesUseCase,
+      getTopRatedBusinessesUseCase: getTopRatedBusinessesUseCase,
     );
   }
 }

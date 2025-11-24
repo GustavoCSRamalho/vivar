@@ -16,24 +16,24 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
     : _syncDatasource = syncDatasource;
 
   @override
-  Future<List<MapPlaceEntity>> getPlacesForMap() async {
-    final models = await _syncDatasource.getPlacesForMap();
+  Future<List<MapPlaceEntity>> getBusinessesForMap() async {
+    final models = await _syncDatasource.getBusinessesForMap();
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<MapPlaceEntity>> getPlacesByCategory(String category) async {
-    final models = await _syncDatasource.getPlacesByCategory(category);
+  Future<List<MapPlaceEntity>> getBusinessesByCategory(String category) async {
+    final models = await _syncDatasource.getBusinessesByCategory(category);
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<MapPlaceEntity>> getNearbyPlacesForMap({
+  Future<List<MapPlaceEntity>> getNearbyBusinessesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
   }) async {
-    final models = await _syncDatasource.getNearbyPlacesForMap(
+    final models = await _syncDatasource.getNearbyBusinessesForMap(
       latitude: latitude,
       longitude: longitude,
       radiusKm: radiusKm,
@@ -42,8 +42,8 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
   }
 
   @override
-  Future<List<MapPlaceEntity>> searchPlacesOnMap(String query) async {
-    final models = await _syncDatasource.searchPlacesOnMap(query);
+  Future<List<MapPlaceEntity>> searchBusinessesOnMap(String query) async {
+    final models = await _syncDatasource.searchBusinessesOnMap(query);
     return models.map(_modelToEntity).toList();
   }
 

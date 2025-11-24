@@ -37,14 +37,14 @@ class _MapScreenContentState extends State<_MapScreenContent> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadNearbyPlaces();
+      _loadNearbyBusinesses();
     });
   }
 
-  Future<void> _loadNearbyPlaces() async {
+  Future<void> _loadNearbyBusinesses() async {
     final provider = context.read<MapProvider>();
     if (!provider.isDisposed) {
-      await provider.loadNearbyPlaces(
+      await provider.loadNearbyBusinesses(
         _currentLocation.latitude,
         _currentLocation.longitude,
       );
@@ -171,7 +171,7 @@ class _MapScreenContentState extends State<_MapScreenContent> {
           child: PlacePreviewCard(
             place: place,
             onTap: () {
-              AppRoutes.navigateToPlaceDetails(context, place.id);
+              AppRoutes.navigateToBusinessesDetails(context, place.id);
             },
           ),
         );
@@ -182,7 +182,7 @@ class _MapScreenContentState extends State<_MapScreenContent> {
   Future<void> _onSearch(String query) async {
     final provider = context.read<MapProvider>();
     if (!provider.isDisposed) {
-      await provider.searchPlaces(
+      await provider.searchBusinesses(
         query,
         _currentLocation.latitude,
         _currentLocation.longitude,

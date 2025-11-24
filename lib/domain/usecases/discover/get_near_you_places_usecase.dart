@@ -4,14 +4,14 @@ import 'package:vivar/domain/entity/business/business_entity.dart';
 
 import '../../interface/discover/discover_repository_protocol.dart';
 
-class GetNearYouPlacesUseCase {
+class GetNearYouBusinessesUseCase {
   final DiscoverRepositoryProtocol _repository;
 
-  GetNearYouPlacesUseCase(this._repository);
+  GetNearYouBusinessesUseCase(this._repository);
 
   Future<List<BusinessEntity>> execute() async {
     try {
-      return await _repository.getNearYouPlaces();
+      return await _repository.getNearYouBusinesses();
     } catch (e) {
       print('❌ Erro ao buscar lugares próximos: $e');
       return [];

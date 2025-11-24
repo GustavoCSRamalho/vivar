@@ -3,14 +3,14 @@
 import '../../entity/map/map_place_entity.dart';
 import '../../interface/map/map_repository_protocol.dart';
 
-class GetPlacesForMapUseCase {
+class GetBusinessesForMapUseCase {
   final MapRepositoryProtocol _mapRepository;
 
-  GetPlacesForMapUseCase(this._mapRepository);
+  GetBusinessesForMapUseCase(this._mapRepository);
 
   Future<List<MapPlaceEntity>> execute() async {
     try {
-      return await _mapRepository.getPlacesForMap();
+      return await _mapRepository.getBusinessesForMap();
     } catch (e) {
       print('❌ Erro ao buscar lugares para mapa: $e');
       rethrow;

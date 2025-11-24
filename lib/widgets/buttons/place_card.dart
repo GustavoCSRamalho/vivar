@@ -4,7 +4,7 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/text_styles.dart';
 import '../../core/constants/spacing.dart';
 
-class PlaceCard extends StatelessWidget {
+class BusinessesCard extends StatelessWidget {
   final String imageUrl;
   final String name;
   final double rating;
@@ -16,7 +16,7 @@ class PlaceCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isFavorite;
 
-  const PlaceCard({
+  const BusinessesCard({
     Key? key,
     required this.imageUrl,
     required this.name,

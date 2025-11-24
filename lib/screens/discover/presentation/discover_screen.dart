@@ -33,13 +33,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     try {
       debugPrint('🔄 DiscoverScreen: Carregando coleções...');
 
-      // final businessesProvider = context.read<PlacesProvider>();
       final homeProvider = context.read<HomeProvider>();
-
-      // // Carregar lugares se ainda não foram carregados
-      // if (homeProvider.businesses.isEmpty) {
-      //   await homeProvider._loadPlaces;
-      // }
 
       // Gerar coleções baseadas nos lugares do banco
       _collections = _generateCollections(homeProvider);
@@ -103,8 +97,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     });
 
     // Coleções especiais
-    final openPlaces = businesses.where((p) => p.isOpen).length;
-    if (openPlaces > 0) {
+    final openBusinesses = businesses.where((p) => p.isOpen).length;
+    if (openBusinesses > 0) {
       collections.add({
         'id': 'open_now',
         'title': 'Abertos Agora',
@@ -113,7 +107,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'imageUrl':
             businesses.firstWhere((p) => p.isOpen).images?.first ??
             'assets/images/cafe.png',
-        'businessesCount': openPlaces,
+        'businessesCount': openBusinesses,
       });
     }
 
@@ -136,8 +130,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       });
     }
 
-    final premiumPlaces = businesses.where((p) => p.isPremiumOnly).length;
-    if (premiumPlaces > 0) {
+    final premiumBusinesses = businesses.where((p) => p.isPremiumOnly).length;
+    if (premiumBusinesses > 0) {
       collections.add({
         'id': 'premium',
         'title': 'Vivar Plus',
@@ -146,15 +140,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'imageUrl':
             businesses.firstWhere((p) => p.isPremiumOnly).images?.first ??
             'assets/images/cafe.png',
-        'businessesCount': premiumPlaces,
+        'businessesCount': premiumBusinesses,
       });
     }
 
     // Lugares próximos
-    final nearbyPlaces = businesses
+    final nearbyBusinesses = businesses
         .where((p) => p.distance != null && p.distance! < 1000)
         .length;
-    if (nearbyPlaces > 0) {
+    if (nearbyBusinesses > 0) {
       collections.add({
         'id': 'nearby',
         'title': 'Pertinho de Você',
@@ -166,7 +160,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 .images
                 ?.first ??
             'assets/images/cafe.png',
-        'businessesCount': nearbyPlaces,
+        'businessesCount': nearbyBusinesses,
       });
     }
 

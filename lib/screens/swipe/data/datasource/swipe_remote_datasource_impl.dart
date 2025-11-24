@@ -5,10 +5,10 @@ import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 
 abstract class SwipeRemoteDatasourceProtocol {
-  Future<List<BusinessModel>> getSwipePlaces({int limit = 50});
-  Future<void> likePlace(String userId, String placeId);
-  Future<void> superLikePlace(String userId, String placeId);
-  Future<void> dislikePlace(String userId, String placeId);
+  Future<List<BusinessModel>> getSwipeBusinesses({int limit = 50});
+  Future<void> likeBusinesses(String userId, String businessesId);
+  Future<void> superLikeBusinesses(String userId, String businessesId);
+  Future<void> dislikeBusinesses(String userId, String businessesId);
   Future<Map<String, dynamic>> getSyncData(String userId, DateTime? lastSync);
 }
 // data/datasources/swipe/swipe_remote_datasource_impl.dart
@@ -20,7 +20,7 @@ class SwipeRemoteDatasourceImpl implements SwipeRemoteDatasourceProtocol {
     : _supabase = supabase ?? Supabase.instance.client;
 
   @override
-  Future<List<BusinessModel>> getSwipePlaces({int limit = 50}) async {
+  Future<List<BusinessModel>> getSwipeBusinesses({int limit = 50}) async {
     try {
       // Busca lugares aleatórios usando função do PostgreSQL
       final response = await _supabase.rpc(
@@ -53,11 +53,11 @@ class SwipeRemoteDatasourceImpl implements SwipeRemoteDatasourceProtocol {
   }
 
   @override
-  Future<void> likePlace(String userId, String placeId) async {
+  Future<void> likeBusinesses(String userId, String businessesId) async {
     try {
       await _supabase.from('favorites').insert({
         'user_id': userId,
-        'place_id': placeId,
+        'businesses_id': businessesId,
         'is_super_like': false,
         'created_at': DateTime.now().toIso8601String(),
       });
@@ -68,11 +68,11 @@ class SwipeRemoteDatasourceImpl implements SwipeRemoteDatasourceProtocol {
   }
 
   @override
-  Future<void> superLikePlace(String userId, String placeId) async {
+  Future<void> superLikeBusinesses(String userId, String businessesId) async {
     try {
       await _supabase.from('favorites').insert({
         'user_id': userId,
-        'place_id': placeId,
+        'businesses_id': businessesId,
         'is_super_like': true,
         'created_at': DateTime.now().toIso8601String(),
       });
@@ -83,11 +83,11 @@ class SwipeRemoteDatasourceImpl implements SwipeRemoteDatasourceProtocol {
   }
 
   @override
-  Future<void> dislikePlace(String userId, String placeId) async {
+  Future<void> dislikeBusinesses(String userId, String vusinessesId) async {
     try {
       await _supabase.from('dislikes').insert({
         'user_id': userId,
-        'place_id': placeId,
+        'businesses_id': vusinessesId,
         'created_at': DateTime.now().toIso8601String(),
       });
     } catch (e) {

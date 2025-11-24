@@ -29,32 +29,32 @@ class MapSyncDatasource {
        _connectivity = connectivity ?? Connectivity(),
        _dbHelper = dbHelper ?? DatabaseHelper();
 
-  Future<List<BusinessModel>> getPlacesForMap() async {
+  Future<List<BusinessModel>> getBusinessesForMap() async {
     await _checkAndSync();
-    return await _localDatasource.getPlacesForMap();
+    return await _localDatasource.getBusinessesForMap();
   }
 
-  Future<List<BusinessModel>> getPlacesByCategory(String category) async {
+  Future<List<BusinessModel>> getBusinessesByCategory(String category) async {
     await _checkAndSync();
-    return await _localDatasource.getPlacesByCategory(category);
+    return await _localDatasource.getBusinessesByCategory(category);
   }
 
-  Future<List<BusinessModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getNearbyBusinessesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
   }) async {
     await _checkAndSync();
-    return await _localDatasource.getNearbyPlacesForMap(
+    return await _localDatasource.getNearbyBusinessesForMap(
       latitude: latitude,
       longitude: longitude,
       radiusKm: radiusKm,
     );
   }
 
-  Future<List<BusinessModel>> searchPlacesOnMap(String query) async {
+  Future<List<BusinessModel>> searchBusinessesOnMap(String query) async {
     await _checkAndSync();
-    return await _localDatasource.searchPlacesOnMap(query);
+    return await _localDatasource.searchBusinessesOnMap(query);
   }
 
   Future<void> _checkAndSync() async {
@@ -72,7 +72,7 @@ class MapSyncDatasource {
 
     try {
       print('🔄 Iniciando sincronização inicial do mapa...');
-      await _syncPlaces();
+      await _syncBusinesses();
       await _markInitialDataLoaded();
       await _updateLastSync();
       print('✅ Sincronização inicial do mapa concluída');
@@ -84,7 +84,7 @@ class MapSyncDatasource {
   void _syncInBackground() {
     Future.microtask(() async {
       try {
-        await _syncPlaces();
+        await _syncBusinesses();
         await _updateLastSync();
       } catch (e) {
         print('⚠️ Erro na sincronização em background do mapa: $e');
@@ -92,22 +92,22 @@ class MapSyncDatasource {
     });
   }
 
-  Future<void> _syncPlaces() async {
+  Future<void> _syncBusinesses() async {
     if (!await _isOnline()) return;
 
     try {
       final lastSync = await _getLastSync();
       final syncData = await _remoteDatasource.getSyncData(lastSync);
-      final remotePlaces = (syncData['businesses'] as List)
+      final remoteBusinesses = (syncData['businesses'] as List)
           .map((data) => BusinessModel.fromMap(data))
           .toList();
 
-      if (remotePlaces.isEmpty) return;
+      if (remoteBusinesses.isEmpty) return;
 
       final db = await _dbHelper.database;
       final batch = db.batch();
 
-      for (final place in remotePlaces) {
+      for (final place in remoteBusinesses) {
         final existingData = await db.query(
           _tableName,
           where: 'id = ?',
@@ -135,7 +135,7 @@ class MapSyncDatasource {
       }
 
       await batch.commit(noResult: true);
-      print('✅ Mapa: ${remotePlaces.length} lugares processados');
+      print('✅ Mapa: ${remoteBusinesses.length} lugares processados');
     } catch (e) {
       print('❌ Erro ao sincronizar lugares do mapa: $e');
     }

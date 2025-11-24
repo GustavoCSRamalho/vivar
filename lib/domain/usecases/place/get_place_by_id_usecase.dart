@@ -5,7 +5,7 @@ import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/domain/interface/place/place_repository_protocol.dart';
 
 class GetPlaceByIdUseCase {
-  final PlaceRepositoryProtocol _placeRepository;
+  final BusinessesRepositoryProtocol _placeRepository;
 
   GetPlaceByIdUseCase(this._placeRepository);
 
@@ -15,7 +15,7 @@ class GetPlaceByIdUseCase {
         throw Exception('ID do lugar não pode ser vazio');
       }
 
-      return await _placeRepository.getPlaceById(placeId);
+      return await _placeRepository.getBusinessesById(placeId);
     } catch (e) {
       print('❌ Erro ao buscar lugar por ID: $e');
       rethrow;

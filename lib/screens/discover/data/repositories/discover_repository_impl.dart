@@ -25,26 +25,28 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
   }
 
   @override
-  Future<List<BusinessEntity>> getCollectionPlaces(String collectionId) async {
+  Future<List<BusinessEntity>> getCollectionBusinesses(
+    String collectionId,
+  ) async {
     final models = await _getPlaceModelsForCollection(collectionId);
     return models;
   }
 
   @override
-  Future<List<BusinessEntity>> getTrendingPlaces() async {
-    final models = await _datasource.getTrendingPlaces();
+  Future<List<BusinessEntity>> getTrendingBusinesses() async {
+    final models = await _datasource.getTrendingBusinesses();
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<BusinessEntity>> getNearYouPlaces() async {
-    final models = await _datasource.getNearYouPlaces();
+  Future<List<BusinessEntity>> getNearYouBusinesses() async {
+    final models = await _datasource.getNearYouBusinesses();
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<BusinessEntity>> getTopRatedPlaces() async {
-    final models = await _datasource.getTopRatedPlaces();
+  Future<List<BusinessEntity>> getTopRatedBusinesses() async {
+    final models = await _datasource.getTopRatedBusinesses();
     return models.map(_modelToEntity).toList();
   }
 
@@ -54,13 +56,13 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
   ) async {
     switch (collectionId) {
       case 'trending':
-        return toEntityList(await _datasource.getTrendingPlaces());
+        return toEntityList(await _datasource.getTrendingBusinesses());
       case 'near_you':
-        return toEntityList(await _datasource.getNearYouPlaces());
+        return toEntityList(await _datasource.getNearYouBusinesses());
       case 'top_rated':
-        return toEntityList(await _datasource.getTopRatedPlaces());
+        return toEntityList(await _datasource.getTopRatedBusinesses());
       case 'new':
-        return toEntityList(await _datasource.getNewPlaces());
+        return toEntityList(await _datasource.getNewBusinesses());
       default:
         return [];
     }

@@ -5,14 +5,14 @@ import 'package:vivar/domain/entity/place/place_entity.dart';
 
 import '../../interface/discover/discover_repository_protocol.dart';
 
-class GetTrendingPlacesUseCase {
+class GetTrendingBusinessesUseCase {
   final DiscoverRepositoryProtocol _repository;
 
-  GetTrendingPlacesUseCase(this._repository);
+  GetTrendingBusinessesUseCase(this._repository);
 
   Future<List<BusinessEntity>> execute() async {
     try {
-      return await _repository.getTrendingPlaces();
+      return await _repository.getTrendingBusinesses();
     } catch (e) {
       print('❌ Erro ao buscar lugares em alta: $e');
       return [];

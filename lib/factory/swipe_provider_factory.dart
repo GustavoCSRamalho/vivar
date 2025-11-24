@@ -22,16 +22,16 @@ class SwipeProviderFactory {
 
     final repository = SwipeRepositoryImpl(syncService: syncService);
 
-    final getSwipePlacesUseCase = GetSwipePlacesUseCase(repository);
-    final likePlaceUseCase = LikePlaceUseCase(repository);
-    final dislikePlaceUseCase = DislikePlaceUseCase(repository);
-    final superLikePlaceUseCase = SuperLikePlaceUseCase(repository);
+    final getSwipeBusinessesUseCase = GetSwipeBusinessesUseCase(repository);
+    final likePlaceUseCase = LikeBusinessesUseCase(repository);
+    final dislikePlaceUseCase = DislikeBusinessesUseCase(repository);
+    final superLikePlaceUseCase = SuperLikeBusinessesUseCase(repository);
 
     return SwipeProvider(
-      getSwipePlacesUseCase: getSwipePlacesUseCase,
-      likePlaceUseCase: likePlaceUseCase,
-      dislikePlaceUseCase: dislikePlaceUseCase,
-      superLikePlaceUseCase: superLikePlaceUseCase,
+      getSwipeBusinessesUseCase: getSwipeBusinessesUseCase,
+      likeBusinessesUseCase: likePlaceUseCase,
+      dislikeBusinessesUseCase: dislikePlaceUseCase,
+      superLikeBusinessesUseCase: superLikePlaceUseCase,
     );
   }
 }

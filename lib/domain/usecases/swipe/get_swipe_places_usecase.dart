@@ -3,14 +3,14 @@
 import 'package:vivar/domain/entity/swipe/swipe_place_entity.dart';
 import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
 
-class GetSwipePlacesUseCase {
+class GetSwipeBusinessesUseCase {
   final SwipeRepositoryProtocol _repository;
 
-  GetSwipePlacesUseCase(this._repository);
+  GetSwipeBusinessesUseCase(this._repository);
 
-  Future<List<SwipePlaceEntity>> execute() async {
+  Future<List<SwipeBusinessesEntity>> execute() async {
     try {
-      return await _repository.getSwipePlaces();
+      return await _repository.getSwipeBusinesses();
     } catch (e) {
       print('❌ Erro ao buscar lugares para swipe: $e');
       rethrow;

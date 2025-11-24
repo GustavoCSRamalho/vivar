@@ -1,7 +1,6 @@
 // data/services/swipe/swipe_sync_service.dart
 
 import 'package:vivar/models/business_model.dart';
-import 'package:vivar/models/place_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/screens/swipe/data/datasource/swipe_local_datasource.dart';
@@ -22,24 +21,24 @@ class SwipeSyncService {
 
   // ========== Métodos delegados para os datasources ==========
 
-  Future<List<BusinessModel>> getSwipePlaces() async {
-    return await _localDataSource.getSwipePlaces();
+  Future<List<BusinessModel>> getSwipeBusinesses() async {
+    return await _localDataSource.getSwipeBusinesses();
   }
 
-  Future<List<BusinessModel>> getSwipePlacesRemote({int limit = 50}) async {
-    return await _remoteDataSource.getSwipePlaces(limit: limit);
+  Future<List<BusinessModel>> getSwipeBusinessesRemote({int limit = 50}) async {
+    return await _remoteDataSource.getSwipeBusinesses(limit: limit);
   }
 
-  Future<void> likePlace(String userId, String placeId) async {
-    return await _localDataSource.likePlace(userId, placeId);
+  Future<void> likeBusinesses(String userId, String BusinessesId) async {
+    return await _localDataSource.likeBusinesses(userId, BusinessesId);
   }
 
-  Future<void> superLikePlace(String userId, String placeId) async {
-    return await _localDataSource.superLikePlace(userId, placeId);
+  Future<void> superLikeBusinesses(String userId, String BusinessesId) async {
+    return await _localDataSource.superLikeBusinesses(userId, BusinessesId);
   }
 
-  Future<void> dislikePlace(String userId, String placeId) async {
-    return await _localDataSource.dislikePlace(userId, placeId);
+  Future<void> dislikeBusinesses(String userId, String BusinessesId) async {
+    return await _localDataSource.dislikeBusinesses(userId, BusinessesId);
   }
 
   // ========== Métodos de sincronização ==========
@@ -79,34 +78,34 @@ class SwipeSyncService {
       // Salva favoritos localmente usando o datasource local
       for (final favorite in favorites) {
         final isSuperLike = favorite['is_super_like'] == true;
-        final placeId = favorite['place_id'] as String;
+        final BusinessesId = favorite['Businesses_id'] as String;
 
         if (isSuperLike) {
-          await _localDataSource.superLikePlace(userId, placeId);
+          await _localDataSource.superLikeBusinesses(userId, BusinessesId);
         } else {
-          await _localDataSource.likePlace(userId, placeId);
+          await _localDataSource.likeBusinesses(userId, BusinessesId);
         }
 
         // Marca como já sincronizado no banco
         await db.update(
           'favorites',
           {'synced': 1},
-          where: 'place_id = ? AND user_id = ?',
-          whereArgs: [placeId, userId],
+          where: 'Businesses_id = ? AND user_id = ?',
+          whereArgs: [BusinessesId, userId],
         );
       }
 
       // Salva dislikes localmente usando o datasource local
       for (final dislike in dislikes) {
-        final placeId = dislike['place_id'] as String;
-        await _localDataSource.dislikePlace(userId, placeId);
+        final BusinessesId = dislike['Businesses_id'] as String;
+        await _localDataSource.dislikeBusinesses(userId, BusinessesId);
 
         // Marca como já sincronizado
         await db.update(
           'dislikes',
           {'synced': 1},
-          where: 'place_id = ? AND user_id = ?',
-          whereArgs: [placeId, userId],
+          where: 'Businesses_id = ? AND user_id = ?',
+          whereArgs: [BusinessesId, userId],
         );
       }
 
@@ -142,13 +141,13 @@ class SwipeSyncService {
       for (final favorite in pendingFavorites) {
         try {
           final isSuperLike = (favorite['is_super_like'] as int?) == 1;
-          final placeId = favorite['place_id'] as String;
+          final BusinessesId = favorite['Businesses_id'] as String;
 
           // Usa o remote datasource para enviar
           if (isSuperLike) {
-            await _remoteDataSource.superLikePlace(userId, placeId);
+            await _remoteDataSource.superLikeBusinesses(userId, BusinessesId);
           } else {
-            await _remoteDataSource.likePlace(userId, placeId);
+            await _remoteDataSource.likeBusinesses(userId, BusinessesId);
           }
 
           // Marca como sincronizado
@@ -175,10 +174,10 @@ class SwipeSyncService {
 
       for (final dislike in pendingDislikes) {
         try {
-          final placeId = dislike['place_id'] as String;
+          final BusinessesId = dislike['Businesses_id'] as String;
 
           // Usa o remote datasource para enviar
-          await _remoteDataSource.dislikePlace(userId, placeId);
+          await _remoteDataSource.dislikeBusinesses(userId, BusinessesId);
 
           // Marca como sincronizado
           await db.update(

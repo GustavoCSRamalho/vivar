@@ -14,16 +14,18 @@ import '../../../models/place_model.dart';
 import '../../../widgets/buttons/primary_button.dart';
 import '../../../widgets/buttons/secondary_button.dart';
 
-class PlaceDetailsScreen extends StatefulWidget {
-  final String placeId;
+class BusinessesDetailsScreen extends StatefulWidget {
+  final String businessesId;
 
-  const PlaceDetailsScreen({Key? key, required this.placeId}) : super(key: key);
+  const BusinessesDetailsScreen({Key? key, required this.businessesId})
+    : super(key: key);
 
   @override
-  _PlaceDetailsScreenState createState() => _PlaceDetailsScreenState();
+  _BusinessesDetailsScreenState createState() =>
+      _BusinessesDetailsScreenState();
 }
 
-class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
+class _BusinessesDetailsScreenState extends State<BusinessesDetailsScreen> {
   final PageController _photoController = PageController();
   final ValueNotifier<bool> _showBottomBar = ValueNotifier(false);
   int _currentPhotoIndex = 0;
@@ -35,7 +37,9 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    debugPrint('🏗️ PlaceDetailsScreen initState com ID: ${widget.placeId}');
+    debugPrint(
+      '🏗️ PlaceDetailsScreen initState com ID: ${widget.businessesId}',
+    );
     // NÃO chamar _loadPlace() aqui
   }
 
@@ -49,7 +53,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   }
 
   Future<void> _loadPlace() async {
-    debugPrint('📥 Carregando lugar: ${widget.placeId}');
+    debugPrint('📥 Carregando lugar: ${widget.businessesId}');
 
     setState(() {
       _isLoading = true;
@@ -61,14 +65,14 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
       final homeProvider = context.read<HomeProvider>();
 
       // Buscar o lugar pelo ID
-      await businessesProvider.getPlaceById(widget.placeId);
+      await businessesProvider.getPlaceById(widget.businessesId);
 
       final place = businessesProvider.place!;
 
       debugPrint('🔍 Lugar encontrado: ${place?.name}');
 
       if (place != null) {
-        final isFav = homeProvider.isFavorite(widget.placeId);
+        final isFav = homeProvider.isFavorite(widget.businessesId);
 
         setState(() {
           _place = place;
@@ -588,7 +592,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   void _toggleFavorite() async {
     final user = await context.read<LoginProvider>().currentUser;
     if (user != null) {
-      await context.read<HomeProvider>().toggleFavorite(widget.placeId);
+      await context.read<HomeProvider>().toggleFavorite(widget.businessesId);
       setState(() => _isFavorite = !_isFavorite);
     }
   }

@@ -28,7 +28,7 @@ class AppRoutes {
   static const String discover = '/discover';
   static const String swipe = '/swipe';
   static const String map = '/map';
-  static const String placeDetails = '/place-details';
+  static const String businessesDetails = '/businesses-details';
   static const String profile = '/profile';
   static const String editProfile = '/edit-profile';
   static const String settings = '/settings';
@@ -66,14 +66,14 @@ class AppRoutes {
     debugPrint('🔍 Navegando para detalhes do lugar name: ${settings.name}');
 
     switch (settings.name) {
-      case placeDetails:
+      case businessesDetails:
         // Extrai os argumentos
 
         final args = settings.arguments as Map<String, dynamic>?;
-        final placeId = args?['placeId'] as String?;
-        debugPrint('🏪 Abrindo detalhes do lugar: $placeId');
+        final businessesId = args?['businessesId'] as String?;
+        debugPrint('🏪 Abrindo detalhes do lugar: $businessesId');
 
-        if (placeId == null) {
+        if (businessesId == null) {
           debugPrint('❌ ID do lugar não fornecido');
 
           // Se não tiver placeId, retorna para home
@@ -81,7 +81,8 @@ class AppRoutes {
         }
 
         return MaterialPageRoute(
-          builder: (context) => PlaceDetailsScreen(placeId: placeId),
+          builder: (context) =>
+              BusinessesDetailsScreen(businessesId: businessesId),
         );
 
       default:
@@ -90,15 +91,15 @@ class AppRoutes {
   }
 
   // Método helper para navegação com argumentos
-  static Future<T?> navigateToPlaceDetails<T>(
+  static Future<T?> navigateToBusinessesDetails<T>(
     BuildContext context,
-    String placeId,
+    String businessesId,
   ) {
-    debugPrint('🔍 Navegando para detalhes do lugar: $placeId');
+    debugPrint('🔍 Navegando para detalhes do lugar: $businessesId');
     return Navigator.pushNamed<T>(
       context,
-      placeDetails,
-      arguments: {'placeId': placeId},
+      businessesDetails,
+      arguments: {'businessesId': businessesId},
     );
   }
 }

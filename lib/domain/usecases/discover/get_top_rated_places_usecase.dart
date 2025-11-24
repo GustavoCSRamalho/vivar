@@ -5,14 +5,14 @@ import 'package:vivar/domain/entity/place/place_entity.dart';
 
 import '../../interface/discover/discover_repository_protocol.dart';
 
-class GetTopRatedPlacesUseCase {
+class GetTopRatedBusinessesUseCase {
   final DiscoverRepositoryProtocol _repository;
 
-  GetTopRatedPlacesUseCase(this._repository);
+  GetTopRatedBusinessesUseCase(this._repository);
 
   Future<List<BusinessEntity>> execute() async {
     try {
-      return await _repository.getTopRatedPlaces();
+      return await _repository.getTopRatedBusinesses();
     } catch (e) {
       print('❌ Erro ao buscar lugares mais bem avaliados: $e');
       return [];

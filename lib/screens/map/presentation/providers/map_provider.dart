@@ -2,8 +2,6 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/domain/entity/map/map_place_entity.dart';
 import 'package:vivar/domain/usecases/map/get_nearby_places_for_map_usecase.dart';
 import 'package:vivar/domain/usecases/map/get_places_by_category_usecase.dart';
@@ -11,20 +9,20 @@ import 'package:vivar/domain/usecases/map/get_places_for_map_usecase.dart';
 import 'package:vivar/domain/usecases/map/search_places_on_map_usecase.dart';
 
 class MapProvider with ChangeNotifier {
-  final GetPlacesForMapUseCase _getPlacesForMapUseCase;
-  final GetPlacesByCategoryUseCase _getPlacesByCategoryUseCase;
-  final GetNearbyPlacesForMapUseCase _getNearbyPlacesForMapUseCase;
-  final SearchPlacesOnMapUseCase _searchPlacesOnMapUseCase;
+  final GetBusinessesForMapUseCase _getBusinessesForMapUseCase;
+  final GetBusinessesByCategoryUseCase _getBusinessesByCategoryUseCase;
+  final GetNearbyBusinessesForMapUseCase _getNearbyBusinessesForMapUseCase;
+  final SearchBusinessesOnMapUseCase _searchBusinessesOnMapUseCase;
 
   MapProvider({
-    required GetPlacesForMapUseCase getPlacesForMapUseCase,
-    required GetPlacesByCategoryUseCase getPlacesByCategoryUseCase,
-    required GetNearbyPlacesForMapUseCase getNearbyPlacesForMapUseCase,
-    required SearchPlacesOnMapUseCase searchPlacesOnMapUseCase,
-  }) : _getPlacesForMapUseCase = getPlacesForMapUseCase,
-       _getPlacesByCategoryUseCase = getPlacesByCategoryUseCase,
-       _getNearbyPlacesForMapUseCase = getNearbyPlacesForMapUseCase,
-       _searchPlacesOnMapUseCase = searchPlacesOnMapUseCase;
+    required GetBusinessesForMapUseCase getBusinessesForMapUseCase,
+    required GetBusinessesByCategoryUseCase getBusinessesByCategoryUseCase,
+    required GetNearbyBusinessesForMapUseCase getNearbyBusinessesForMapUseCase,
+    required SearchBusinessesOnMapUseCase searchBusinessesOnMapUseCase,
+  }) : _getBusinessesForMapUseCase = getBusinessesForMapUseCase,
+       _getBusinessesByCategoryUseCase = getBusinessesByCategoryUseCase,
+       _getNearbyBusinessesForMapUseCase = getNearbyBusinessesForMapUseCase,
+       _searchBusinessesOnMapUseCase = searchBusinessesOnMapUseCase;
 
   GoogleMapController? _mapController;
   List<MapPlaceEntity> _businesses = [];
@@ -58,7 +56,7 @@ class MapProvider with ChangeNotifier {
     _error = null;
 
     try {
-      _businesses = await _getPlacesForMapUseCase.execute();
+      _businesses = await _getBusinessesForMapUseCase.execute();
       _buildMarkers();
       debugPrint('✅ ${_businesses.length} lugares carregados para o mapa');
     } catch (e) {
@@ -69,14 +67,14 @@ class MapProvider with ChangeNotifier {
     }
   }
 
-  Future<void> loadNearbyPlaces(double latitude, double longitude) async {
+  Future<void> loadNearbyBusinesses(double latitude, double longitude) async {
     if (_disposed) return;
 
     _setLoading(true);
     _error = null;
 
     try {
-      _businesses = await _getNearbyPlacesForMapUseCase.execute(
+      _businesses = await _getNearbyBusinessesForMapUseCase.execute(
         latitude: latitude,
         longitude: longitude,
         radiusKm: 5000,
@@ -98,7 +96,7 @@ class MapProvider with ChangeNotifier {
     _selectedCategory = category;
 
     try {
-      _businesses = await _getPlacesByCategoryUseCase.execute(category);
+      _businesses = await _getBusinessesByCategoryUseCase.execute(category);
       _buildMarkers();
       debugPrint('🔍 Filtrado por $category: ${_businesses.length} lugares');
     } catch (e) {
@@ -109,7 +107,7 @@ class MapProvider with ChangeNotifier {
     }
   }
 
-  Future<void> searchPlaces(
+  Future<void> searchBusinesses(
     String query,
     double latitude,
     double longitude,
@@ -117,14 +115,14 @@ class MapProvider with ChangeNotifier {
     if (_disposed) return;
 
     if (query.trim().isEmpty) {
-      await loadNearbyPlaces(latitude, longitude);
+      await loadNearbyBusinesses(latitude, longitude);
       return;
     }
 
     _setLoading(true);
 
     try {
-      _businesses = await _searchPlacesOnMapUseCase.execute(query);
+      _businesses = await _searchBusinessesOnMapUseCase.execute(query);
       _buildMarkers();
       debugPrint('🔍 Busca: ${_businesses.length} resultados');
     } catch (e) {

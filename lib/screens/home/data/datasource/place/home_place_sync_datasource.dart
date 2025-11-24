@@ -1,27 +1,26 @@
-// data/datasources/place/place_sync_datasource.dart
+// data/datasources/Businesses/Businesses_sync_datasource.dart
 
 import 'package:vivar/models/business_model.dart';
-import 'package:vivar/models/place_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/screens/home/data/datasource/place/home_place_remote_datasource_impl.dart';
 import 'package:vivar/screens/home/data/datasource/place/home_place_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/place/home_place_remote_datasource_impl.dart';
 
-class PlaceSyncDatasource {
-  final PlaceDatasourceProtocol _localDatasource;
-  final PlaceRemoteDatasourceProtocol _remoteDatasource;
+class BusinessesSyncDatasource {
+  final BusinessesDatasourceProtocol _localDatasource;
+  final BusinessesRemoteDatasourceProtocol _remoteDatasource;
   final Connectivity _connectivity;
   final DatabaseHelper _dbHelper;
 
-  static const String _lastSyncKey = 'place_last_sync';
-  static const String _hasInitialDataKey = 'place_has_initial_data';
+  static const String _lastSyncKey = 'businesses_last_sync';
+  static const String _hasInitialDataKey = 'businesses_has_initial_data';
   static const String _tableName = 'businesses';
 
-  PlaceSyncDatasource({
-    required PlaceDatasourceProtocol localDatasource,
-    required PlaceRemoteDatasourceProtocol remoteDatasource,
+  BusinessesSyncDatasource({
+    required BusinessesDatasourceProtocol localDatasource,
+    required BusinessesRemoteDatasourceProtocol remoteDatasource,
     Connectivity? connectivity,
     DatabaseHelper? dbHelper,
   }) : _localDatasource = localDatasource,
@@ -29,50 +28,50 @@ class PlaceSyncDatasource {
        _connectivity = connectivity ?? Connectivity(),
        _dbHelper = dbHelper ?? DatabaseHelper();
 
-  Future<List<BusinessModel>> getAllPlaces() async {
+  Future<List<BusinessModel>> getAllBusinessess() async {
     await _checkAndSync();
-    return await _localDatasource.getAllPlaces();
+    return await _localDatasource.getAllBusinesses();
   }
 
-  Future<List<BusinessModel>> getNearbyPlaces({
+  Future<List<BusinessModel>> getNearbyBusinessess({
     required double latitude,
     required double longitude,
     required double radiusKm,
   }) async {
     await _checkAndSync();
-    return await _localDatasource.getNearbyPlaces(
+    return await _localDatasource.getNearbyBusinesses(
       latitude: latitude,
       longitude: longitude,
       radiusKm: radiusKm,
     );
   }
 
-  Future<List<BusinessModel>> getPlacesByCategory(String category) async {
+  Future<List<BusinessModel>> getBusinessessByCategory(String category) async {
     await _checkAndSync();
-    return await _localDatasource.getPlacesByCategory(category);
+    return await _localDatasource.getBusinessesByCategory(category);
   }
 
-  Future<List<BusinessModel>> searchPlaces(String query) async {
+  Future<List<BusinessModel>> searchBusinessess(String query) async {
     await _checkAndSync();
-    return await _localDatasource.searchPlaces(query);
+    return await _localDatasource.searchBusinesses(query);
   }
 
-  Future<BusinessModel?> getPlaceById(String id) async {
+  Future<BusinessModel?> getBusinessesById(String id) async {
     await _checkAndSync();
-    return await _localDatasource.getPlaceById(id);
+    return await _localDatasource.getBusinessesById(id);
   }
 
-  Future<List<BusinessModel>> getPlacesWithDiscount() async {
+  Future<List<BusinessModel>> getBusinessessWithDiscount() async {
     await _checkAndSync();
-    return await _localDatasource.getPlacesWithDiscount();
+    return await _localDatasource.getBusinessesWithDiscount();
   }
 
-  Future<List<BusinessModel>> getTopRatedPlaces({int limit = 10}) async {
+  Future<List<BusinessModel>> getTopRatedBusinessess({int limit = 10}) async {
     await _checkAndSync();
-    return await _localDatasource.getTopRatedPlaces(limit: limit);
+    return await _localDatasource.getTopRatedBusinesses(limit: limit);
   }
 
-  Future<List<BusinessModel>> getFilteredPlaces({
+  Future<List<BusinessModel>> getFilteredBusinessess({
     List<String>? categories,
     String? priceRange,
     double? minRating,
@@ -80,7 +79,7 @@ class PlaceSyncDatasource {
     bool? openNow,
   }) async {
     await _checkAndSync();
-    return await _localDatasource.getFilteredPlaces(
+    return await _localDatasource.getFilteredBusinesses(
       categories: categories,
       priceRange: priceRange,
       minRating: minRating,
@@ -104,7 +103,7 @@ class PlaceSyncDatasource {
 
     try {
       print('🔄 Iniciando sincronização inicial de lugares...');
-      await _syncPlaces();
+      await _syncBusinessess();
       await _markInitialDataLoaded();
       await _updateLastSync();
       print('✅ Sincronização inicial concluída');
@@ -116,7 +115,7 @@ class PlaceSyncDatasource {
   void _syncInBackground() {
     Future.microtask(() async {
       try {
-        await _syncPlaces();
+        await _syncBusinessess();
         await _updateLastSync();
       } catch (e) {
         print('⚠️ Erro na sincronização em background: $e');
@@ -124,44 +123,46 @@ class PlaceSyncDatasource {
     });
   }
 
-  Future<void> _syncPlaces() async {
+  Future<void> _syncBusinessess() async {
     if (!await _isOnline()) return;
 
     try {
       final lastSync = await _getLastSync();
       final syncData = await _remoteDatasource.getSyncData(lastSync);
-      final remotePlaces = (syncData['businesses'] as List)
+      final remoteBusinessess = (syncData['businesses'] as List)
           .map((data) => BusinessModel.fromMap(data))
           .toList();
 
-      if (remotePlaces.isEmpty) return;
+      if (remoteBusinessess.isEmpty) return;
 
       final db = await _dbHelper.database;
       final batch = db.batch();
 
-      for (final place in remotePlaces) {
-        final existing = await _localDatasource.getPlaceById(place.id);
+      for (final Businesses in remoteBusinessess) {
+        final existing = await _localDatasource.getBusinessesById(
+          Businesses.id,
+        );
 
         if (existing == null) {
           batch.insert(
             _tableName,
-            place.toMap(),
+            Businesses.toMap(),
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
         } else {
-          if (place.updatedAt.isAfter(existing.updatedAt)) {
+          if (Businesses.updatedAt.isAfter(existing.updatedAt)) {
             batch.update(
               _tableName,
-              place.toMap(),
+              Businesses.toMap(),
               where: 'id = ?',
-              whereArgs: [place.id],
+              whereArgs: [Businesses.id],
             );
           }
         }
       }
 
       await batch.commit(noResult: true);
-      print('✅ ${remotePlaces.length} lugares processados');
+      print('✅ ${remoteBusinessess.length} lugares processados');
     } catch (e) {
       print('❌ Erro ao sincronizar lugares: $e');
     }

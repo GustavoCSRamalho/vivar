@@ -8,20 +8,20 @@ import 'package:vivar/models/place_model.dart';
 /// Contrato abstrato para datasource de mapa
 abstract class MapDatasourceProtocol {
   /// Busca todos os lugares para exibir no mapa
-  Future<List<BusinessModel>> getPlacesForMap();
+  Future<List<BusinessModel>> getBusinessesForMap();
 
   /// Busca lugares por categoria para o mapa
-  Future<List<BusinessModel>> getPlacesByCategory(String category);
+  Future<List<BusinessModel>> getBusinessesByCategory(String category);
 
   /// Busca lugares próximos para o mapa
-  Future<List<BusinessModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getNearbyBusinessesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
   });
 
   /// Busca lugares no mapa por texto
-  Future<List<BusinessModel>> searchPlacesOnMap(String query);
+  Future<List<BusinessModel>> searchBusinessesOnMap(String query);
 }
 
 /// Implementação do datasource de mapa
@@ -37,7 +37,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<List<BusinessModel>> getPlacesForMap() async {
+  Future<List<BusinessModel>> getBusinessesForMap() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(_tableName);
@@ -49,7 +49,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   @override
-  Future<List<BusinessModel>> getPlacesByCategory(String category) async {
+  Future<List<BusinessModel>> getBusinessesByCategory(String category) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -65,14 +65,14 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   @override
-  Future<List<BusinessModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getNearbyBusinessesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
   }) async {
     try {
       final db = await _database;
-      final query = _buildNearbyPlacesQuery();
+      final query = _buildNearbyBusinessesQuery();
 
       final List<Map<String, dynamic>> maps = await db.rawQuery(query, [
         latitude,
@@ -89,7 +89,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   @override
-  Future<List<BusinessModel>> searchPlacesOnMap(String query) async {
+  Future<List<BusinessModel>> searchBusinessesOnMap(String query) async {
     try {
       final db = await _database;
       final searchPattern = '%$query%';
@@ -108,7 +108,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   /// Constrói a query SQL para busca de lugares próximos usando Haversine
-  String _buildNearbyPlacesQuery() {
+  String _buildNearbyBusinessesQuery() {
     return '''
       SELECT *
       FROM (

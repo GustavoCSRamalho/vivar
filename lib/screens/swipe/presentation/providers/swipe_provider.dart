@@ -8,43 +8,43 @@ import 'package:vivar/domain/usecases/swipe/like_place_usecase.dart';
 import 'package:vivar/domain/usecases/swipe/super_like_place_usecase.dart';
 
 class SwipeProvider with ChangeNotifier {
-  final GetSwipePlacesUseCase _getSwipePlacesUseCase;
-  final LikePlaceUseCase _likePlaceUseCase;
-  final DislikePlaceUseCase _dislikePlaceUseCase;
-  final SuperLikePlaceUseCase _superLikePlaceUseCase;
+  final GetSwipeBusinessesUseCase _getSwipeBusinessesUseCase;
+  final LikeBusinessesUseCase _likeBusinessesUseCase;
+  final DislikeBusinessesUseCase _dislikeBusinessesUseCase;
+  final SuperLikeBusinessesUseCase _superLikeBusinessesUseCase;
 
   SwipeProvider({
-    required GetSwipePlacesUseCase getSwipePlacesUseCase,
-    required LikePlaceUseCase likePlaceUseCase,
-    required DislikePlaceUseCase dislikePlaceUseCase,
-    required SuperLikePlaceUseCase superLikePlaceUseCase,
-  }) : _getSwipePlacesUseCase = getSwipePlacesUseCase,
-       _likePlaceUseCase = likePlaceUseCase,
-       _dislikePlaceUseCase = dislikePlaceUseCase,
-       _superLikePlaceUseCase = superLikePlaceUseCase;
+    required GetSwipeBusinessesUseCase getSwipeBusinessesUseCase,
+    required LikeBusinessesUseCase likeBusinessesUseCase,
+    required DislikeBusinessesUseCase dislikeBusinessesUseCase,
+    required SuperLikeBusinessesUseCase superLikeBusinessesUseCase,
+  }) : _getSwipeBusinessesUseCase = getSwipeBusinessesUseCase,
+       _likeBusinessesUseCase = likeBusinessesUseCase,
+       _dislikeBusinessesUseCase = dislikeBusinessesUseCase,
+       _superLikeBusinessesUseCase = superLikeBusinessesUseCase;
 
-  List<SwipePlaceEntity> _places = [];
+  List<SwipeBusinessesEntity> _Businesses = [];
   int _currentIndex = 0;
   bool _isLoading = false;
   String? _error;
 
-  List<SwipePlaceEntity> get places => _places;
+  List<SwipeBusinessesEntity> get Businesses => _Businesses;
   int get currentIndex => _currentIndex;
-  int get remainingCount => _places.length - _currentIndex;
+  int get remainingCount => _Businesses.length - _currentIndex;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  bool get hasPlaces => _currentIndex < _places.length;
-  SwipePlaceEntity? get currentPlace =>
-      hasPlaces ? _places[_currentIndex] : null;
+  bool get hasBusinesses => _currentIndex < _Businesses.length;
+  SwipeBusinessesEntity? get currentBusinesses =>
+      hasBusinesses ? _Businesses[_currentIndex] : null;
 
   Future<void> initialize() async {
     _setLoading(true);
     _error = null;
 
     try {
-      _places = await _getSwipePlacesUseCase.execute();
+      _Businesses = await _getSwipeBusinessesUseCase.execute();
       _currentIndex = 0;
-      debugPrint('✅ ${_places.length} lugares carregados para swipe');
+      debugPrint('✅ ${_Businesses.length} lugares carregados para swipe');
     } catch (e) {
       _error = 'Erro ao carregar lugares: $e';
       debugPrint('❌ Erro ao carregar lugares: $e');
@@ -54,11 +54,14 @@ class SwipeProvider with ChangeNotifier {
   }
 
   Future<void> like(String userId) async {
-    if (!hasPlaces) return;
+    if (!hasBusinesses) return;
 
     try {
-      await _likePlaceUseCase.execute(userId, _places[_currentIndex].id);
-      _nextPlace();
+      await _likeBusinessesUseCase.execute(
+        userId,
+        _Businesses[_currentIndex].id,
+      );
+      _nextBusinesses();
       debugPrint('✅ Like dado no lugar');
     } catch (e) {
       debugPrint('❌ Erro ao dar like: $e');
@@ -66,11 +69,14 @@ class SwipeProvider with ChangeNotifier {
   }
 
   Future<void> dislike(String userId) async {
-    if (!hasPlaces) return;
+    if (!hasBusinesses) return;
 
     try {
-      await _dislikePlaceUseCase.execute(userId, _places[_currentIndex].id);
-      _nextPlace();
+      await _dislikeBusinessesUseCase.execute(
+        userId,
+        _Businesses[_currentIndex].id,
+      );
+      _nextBusinesses();
       debugPrint('✅ Dislike dado no lugar');
     } catch (e) {
       debugPrint('❌ Erro ao dar dislike: $e');
@@ -78,19 +84,22 @@ class SwipeProvider with ChangeNotifier {
   }
 
   Future<void> superLike(String userId) async {
-    if (!hasPlaces) return;
+    if (!hasBusinesses) return;
 
     try {
-      await _superLikePlaceUseCase.execute(userId, _places[_currentIndex].id);
-      _nextPlace();
+      await _superLikeBusinessesUseCase.execute(
+        userId,
+        _Businesses[_currentIndex].id,
+      );
+      _nextBusinesses();
       debugPrint('✅ Super like dado no lugar');
     } catch (e) {
       debugPrint('❌ Erro ao dar super like: $e');
     }
   }
 
-  void _nextPlace() {
-    if (_currentIndex < _places.length - 1) {
+  void _nextBusinesses() {
+    if (_currentIndex < _Businesses.length - 1) {
       _currentIndex++;
       notifyListeners();
     } else {

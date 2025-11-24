@@ -11,34 +11,34 @@ import 'package:vivar/domain/usecases/discover/get_trending_places_usecase.dart'
 
 class DiscoverProvider with ChangeNotifier {
   final GetCollectionsUseCase _getCollectionsUseCase;
-  final GetCollectionPlacesUseCase _getCollectionPlacesUseCase;
-  final GetTrendingPlacesUseCase _getTrendingPlacesUseCase;
-  final GetNearYouPlacesUseCase _getNearYouPlacesUseCase;
-  final GetTopRatedPlacesUseCase _getTopRatedPlacesUseCase;
+  final GetCollectionBusinessesUseCase _getCollectionBusinessesUseCase;
+  final GetTrendingBusinessesUseCase _getTrendingBusinessesUseCase;
+  final GetNearYouBusinessesUseCase _getNearYouBusinessesUseCase;
+  final GetTopRatedBusinessesUseCase _getTopRatedBusinessesUseCase;
 
   DiscoverProvider({
     required GetCollectionsUseCase getCollectionsUseCase,
-    required GetCollectionPlacesUseCase getCollectionPlacesUseCase,
-    required GetTrendingPlacesUseCase getTrendingPlacesUseCase,
-    required GetNearYouPlacesUseCase getNearYouPlacesUseCase,
-    required GetTopRatedPlacesUseCase getTopRatedPlacesUseCase,
+    required GetCollectionBusinessesUseCase getCollectionBusinessesUseCase,
+    required GetTrendingBusinessesUseCase getTrendingBusinessesUseCase,
+    required GetNearYouBusinessesUseCase getNearYouBusinessesUseCase,
+    required GetTopRatedBusinessesUseCase getTopRatedBusinessesUseCase,
   }) : _getCollectionsUseCase = getCollectionsUseCase,
-       _getCollectionPlacesUseCase = getCollectionPlacesUseCase,
-       _getTrendingPlacesUseCase = getTrendingPlacesUseCase,
-       _getNearYouPlacesUseCase = getNearYouPlacesUseCase,
-       _getTopRatedPlacesUseCase = getTopRatedPlacesUseCase;
+       _getCollectionBusinessesUseCase = getCollectionBusinessesUseCase,
+       _getTrendingBusinessesUseCase = getTrendingBusinessesUseCase,
+       _getNearYouBusinessesUseCase = getNearYouBusinessesUseCase,
+       _getTopRatedBusinessesUseCase = getTopRatedBusinessesUseCase;
 
   List<DiscoverCollectionEntity> _collections = [];
-  List<BusinessEntity> _trendingPlaces = [];
-  List<BusinessEntity> _nearYouPlaces = [];
-  List<BusinessEntity> _topRatedPlaces = [];
+  List<BusinessEntity> _trendingBusinesses = [];
+  List<BusinessEntity> _nearYouBusinesses = [];
+  List<BusinessEntity> _topRatedBusinesses = [];
   bool _isLoading = false;
   String? _error;
 
   List<DiscoverCollectionEntity> get collections => _collections;
-  List<BusinessEntity> get trendingPlaces => _trendingPlaces;
-  List<BusinessEntity> get nearYouPlaces => _nearYouPlaces;
-  List<BusinessEntity> get topRatedPlaces => _topRatedPlaces;
+  List<BusinessEntity> get trendingBusinesses => _trendingBusinesses;
+  List<BusinessEntity> get nearYouBusinesses => _nearYouBusinesses;
+  List<BusinessEntity> get topRatedBusinesses => _topRatedBusinesses;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -48,9 +48,9 @@ class DiscoverProvider with ChangeNotifier {
 
     try {
       _collections = await _getCollectionsUseCase.execute();
-      _trendingPlaces = await _getTrendingPlacesUseCase.execute();
-      _nearYouPlaces = await _getNearYouPlacesUseCase.execute();
-      _topRatedPlaces = await _getTopRatedPlacesUseCase.execute();
+      _trendingBusinesses = await _getTrendingBusinessesUseCase.execute();
+      _nearYouBusinesses = await _getNearYouBusinessesUseCase.execute();
+      _topRatedBusinesses = await _getTopRatedBusinessesUseCase.execute();
 
       debugPrint('✅ Coleções carregadas: ${_collections.length}');
     } catch (e) {
@@ -61,9 +61,11 @@ class DiscoverProvider with ChangeNotifier {
     }
   }
 
-  Future<List<BusinessEntity>> getCollectionPlaces(String collectionId) async {
+  Future<List<BusinessEntity>> getCollectionBusinesses(
+    String collectionId,
+  ) async {
     try {
-      return await _getCollectionPlacesUseCase.execute(collectionId);
+      return await _getCollectionBusinessesUseCase.execute(collectionId);
     } catch (e) {
       debugPrint('❌ Erro ao buscar lugares da coleção: $e');
       return [];

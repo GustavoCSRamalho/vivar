@@ -30,7 +30,7 @@ abstract class UserPointsManagerProtocol {
 /// Protocolo para atualização de estatísticas do usuário
 abstract class UserStatisticsUpdaterProtocol {
   /// Incrementa o contador de lugares visitados
-  Future<int> incrementPlacesVisited(String userId);
+  Future<int> incrementBusinessesVisited(String userId);
 
   /// Incrementa o contador de badges conquistados
   Future<int> incrementBadgesCount(String userId);
@@ -89,10 +89,10 @@ class UserRepository extends BaseRepository<UserModel>
   }
 
   @override
-  Future<int> incrementPlacesVisited(String userId) async {
+  Future<int> incrementBusinessesVisited(String userId) async {
     final db = await database;
     return await db.rawUpdate(
-      'UPDATE $tableName SET places_visited = places_visited + 1 WHERE id = ?',
+      'UPDATE $tableName SET businesses_visited = businesses_visited + 1 WHERE id = ?',
       [userId],
     );
   }

@@ -3,10 +3,10 @@
 import '../../entity/map/map_place_entity.dart';
 import '../../interface/map/map_repository_protocol.dart';
 
-class GetNearbyPlacesForMapUseCase {
+class GetNearbyBusinessesForMapUseCase {
   final MapRepositoryProtocol _mapRepository;
 
-  GetNearbyPlacesForMapUseCase(this._mapRepository);
+  GetNearbyBusinessesForMapUseCase(this._mapRepository);
 
   Future<List<MapPlaceEntity>> execute({
     required double latitude,
@@ -14,7 +14,7 @@ class GetNearbyPlacesForMapUseCase {
     double radiusKm = 5.0,
   }) async {
     try {
-      return await _mapRepository.getNearbyPlacesForMap(
+      return await _mapRepository.getNearbyBusinessesForMap(
         latitude: latitude,
         longitude: longitude,
         radiusKm: radiusKm,

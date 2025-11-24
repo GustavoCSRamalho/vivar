@@ -5,14 +5,14 @@ import 'package:vivar/domain/entity/place/place_entity.dart';
 
 import '../../interface/discover/discover_repository_protocol.dart';
 
-class GetCollectionPlacesUseCase {
+class GetCollectionBusinessesUseCase {
   final DiscoverRepositoryProtocol _repository;
 
-  GetCollectionPlacesUseCase(this._repository);
+  GetCollectionBusinessesUseCase(this._repository);
 
   Future<List<BusinessEntity>> execute(String collectionId) async {
     try {
-      return await _repository.getCollectionPlaces(collectionId);
+      return await _repository.getCollectionBusinesses(collectionId);
     } catch (e) {
       print('❌ Erro ao buscar lugares da coleção: $e');
       rethrow;

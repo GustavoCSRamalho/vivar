@@ -6,7 +6,7 @@ import '../../entity/place/place_entity.dart';
 import '../../interface/place/place_repository_protocol.dart';
 
 class ApplyAdvancedFiltersUseCase {
-  final PlaceRepositoryProtocol _placeRepository;
+  final BusinessesRepositoryProtocol _placeRepository;
 
   ApplyAdvancedFiltersUseCase(this._placeRepository);
 
@@ -18,7 +18,7 @@ class ApplyAdvancedFiltersUseCase {
     bool? openNow,
   }) async {
     try {
-      return await _placeRepository.getFilteredPlaces(
+      return await _placeRepository.getFilteredBusinesses(
         categories: categories,
         priceRange: priceRange,
         minRating: minRating,

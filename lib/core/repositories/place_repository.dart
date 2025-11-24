@@ -29,12 +29,12 @@ abstract class PlaceLocationReaderProtocol {
 /// Protocolo para leitura de disponibilidade de lugares
 abstract class PlaceAvailabilityReaderProtocol {
   /// Retorna apenas lugares que estão abertos
-  Future<List<BusinessModel>> getOpenPlaces();
+  Future<List<BusinessModel>> getOpenBusinessesS();
 }
 
 // Arquivo: place_search_protocol.dart
 /// Protocolo para busca de lugares
-abstract class PlaceSearchProtocol {
+abstract class BusinessesSearchProtocol {
   /// Busca lugares por texto (nome, descrição ou categoria)
   Future<List<BusinessModel>> search(String searchText);
 }
@@ -43,14 +43,14 @@ abstract class PlaceSearchProtocol {
 /// Protocolo para leitura de lugares com desconto
 abstract class PlaceDiscountReaderProtocol {
   /// Retorna lugares que oferecem desconto
-  Future<List<BusinessModel>> getPlacesWithDiscount();
+  Future<List<BusinessModel>> getBusinessesSWithDiscount();
 }
 
 // Arquivo: place_premium_reader_protocol.dart
 /// Protocolo para leitura de lugares premium
 abstract class PlacePremiumReaderProtocol {
   /// Retorna lugares exclusivos para usuários premium
-  Future<List<BusinessModel>> getPremiumPlaces();
+  Future<List<BusinessModel>> getPremiumBusinessesS();
 }
 
 // Arquivo: place_rating_reader_protocol.dart
@@ -89,7 +89,7 @@ class PlaceRepository extends BaseRepository<BusinessModel>
         PlaceCategoryReaderProtocol,
         PlaceLocationReaderProtocol,
         PlaceAvailabilityReaderProtocol,
-        PlaceSearchProtocol,
+        BusinessesSearchProtocol,
         PlaceDiscountReaderProtocol,
         PlacePremiumReaderProtocol,
         PlaceRatingReaderProtocol,
@@ -147,7 +147,7 @@ class PlaceRepository extends BaseRepository<BusinessModel>
 
   // Buscar lugares abertos
   @override
-  Future<List<BusinessModel>> getOpenPlaces() async {
+  Future<List<BusinessModel>> getOpenBusinessesS() async {
     return await getWhere('is_open = ?', [1]);
   }
 
@@ -165,7 +165,7 @@ class PlaceRepository extends BaseRepository<BusinessModel>
 
   // Lugares com desconto
   @override
-  Future<List<BusinessModel>> getPlacesWithDiscount() async {
+  Future<List<BusinessModel>> getBusinessesSWithDiscount() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
@@ -176,7 +176,7 @@ class PlaceRepository extends BaseRepository<BusinessModel>
 
   // Lugares premium
   @override
-  Future<List<BusinessModel>> getPremiumPlaces() async {
+  Future<List<BusinessModel>> getPremiumBusinessesS() async {
     return await getWhere('is_premium_only = ?', [1]);
   }
 

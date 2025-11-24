@@ -2,14 +2,14 @@
 
 import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
 
-class SuperLikePlaceUseCase {
+class SuperLikeBusinessesUseCase {
   final SwipeRepositoryProtocol _repository;
 
-  SuperLikePlaceUseCase(this._repository);
+  SuperLikeBusinessesUseCase(this._repository);
 
   Future<void> execute(String userId, String placeId) async {
     try {
-      await _repository.superLikePlace(userId, placeId);
+      await _repository.superLikeBusinesses(userId, placeId);
     } catch (e) {
       print('❌ Erro ao dar super like: $e');
       rethrow;

@@ -1,6 +1,6 @@
-// domain/entities/swipe_place_entity.dart
+// domain/entities/swipe_Businesses_entity.dart
 
-class SwipePlaceEntity {
+class SwipeBusinessesEntity {
   final String id;
   final String name;
   final String category;
@@ -13,7 +13,7 @@ class SwipePlaceEntity {
   final String? discount;
   final bool isOpen;
 
-  SwipePlaceEntity({
+  SwipeBusinessesEntity({
     required this.id,
     required this.name,
     required this.category,

@@ -20,22 +20,24 @@ class MapProviderFactory {
     );
     final mapRepositoryImpl = MapRepositoryImpl(syncDatasource: syncDatasource);
 
-    final getPlacesForMapUseCase = GetPlacesForMapUseCase(mapRepositoryImpl);
-    final getPlacesByCategoryUseCase = GetPlacesByCategoryUseCase(
+    final getBusinessesForMapUseCase = GetBusinessesForMapUseCase(
       mapRepositoryImpl,
     );
-    final getNearbyPlacesForMapUseCase = GetNearbyPlacesForMapUseCase(
+    final getBusinessesByCategoryUseCase = GetBusinessesByCategoryUseCase(
       mapRepositoryImpl,
     );
-    final searchPlacesOnMapUseCase = SearchPlacesOnMapUseCase(
+    final getNearbyBusinessesForMapUseCase = GetNearbyBusinessesForMapUseCase(
+      mapRepositoryImpl,
+    );
+    final searchBusinessesOnMapUseCase = SearchBusinessesOnMapUseCase(
       mapRepositoryImpl,
     );
 
     return MapProvider(
-      getPlacesForMapUseCase: getPlacesForMapUseCase,
-      getPlacesByCategoryUseCase: getPlacesByCategoryUseCase,
-      getNearbyPlacesForMapUseCase: getNearbyPlacesForMapUseCase,
-      searchPlacesOnMapUseCase: searchPlacesOnMapUseCase,
+      getBusinessesForMapUseCase: getBusinessesForMapUseCase,
+      getBusinessesByCategoryUseCase: getBusinessesByCategoryUseCase,
+      getNearbyBusinessesForMapUseCase: getNearbyBusinessesForMapUseCase,
+      searchBusinessesOnMapUseCase: searchBusinessesOnMapUseCase,
     );
   }
 }

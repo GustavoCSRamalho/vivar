@@ -52,7 +52,7 @@ class DatabaseSeeder {
       await _seedUsers();
 
       // 2. Adicionar lugares
-      await _seedPlaces();
+      await _seedBusinesses();
 
       // Marca como populado
       await _markAsSeeded();
@@ -88,7 +88,7 @@ class DatabaseSeeder {
   }
 
   /// Popular lugares
-  Future<void> _seedPlaces() async {
+  Future<void> _seedBusinesses() async {
     debugPrint('📍 Adicionando lugares...');
 
     final businesses = [

@@ -3,14 +3,13 @@
 import 'dart:math';
 
 import 'package:vivar/models/business_model.dart';
-import 'package:vivar/models/place_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract class PlaceRemoteDatasourceProtocol {
-  Future<List<BusinessModel>> getAllPlaces();
-  Future<BusinessModel?> getPlaceById(String id);
+abstract class BusinessesRemoteDatasourceProtocol {
+  Future<List<BusinessModel>> getAllBusinesses();
+  Future<BusinessModel?> getBusinessesById(String id);
   Future<Map<String, dynamic>> getSyncData(DateTime? lastSync);
-  Future<List<BusinessModel>> getNearbyPlaces({
+  Future<List<BusinessModel>> getNearbyBusinesses({
     required double latitude,
     required double longitude,
     required double radiusKm,
@@ -19,14 +18,15 @@ abstract class PlaceRemoteDatasourceProtocol {
 
 // data/datasources/place/place_remote_datasource_impl.dart
 
-class PlaceRemoteDatasourceImpl implements PlaceRemoteDatasourceProtocol {
+class BusinessesRemoteDatasourceImpl
+    implements BusinessesRemoteDatasourceProtocol {
   final SupabaseClient _supabase;
 
-  PlaceRemoteDatasourceImpl({SupabaseClient? supabase})
+  BusinessesRemoteDatasourceImpl({SupabaseClient? supabase})
     : _supabase = supabase ?? Supabase.instance.client;
 
   @override
-  Future<List<BusinessModel>> getAllPlaces() async {
+  Future<List<BusinessModel>> getAllBusinesses() async {
     try {
       final response = await _supabase.from('businesses').select();
 
@@ -40,7 +40,7 @@ class PlaceRemoteDatasourceImpl implements PlaceRemoteDatasourceProtocol {
   }
 
   @override
-  Future<BusinessModel?> getPlaceById(String id) async {
+  Future<BusinessModel?> getBusinessesById(String id) async {
     try {
       final response = await _supabase
           .from('businesses')
@@ -76,7 +76,7 @@ class PlaceRemoteDatasourceImpl implements PlaceRemoteDatasourceProtocol {
   }
 
   @override
-  Future<List<BusinessModel>> getNearbyPlaces({
+  Future<List<BusinessModel>> getNearbyBusinesses({
     required double latitude,
     required double longitude,
     required double radiusKm,

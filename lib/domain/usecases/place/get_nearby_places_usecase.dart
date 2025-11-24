@@ -6,11 +6,11 @@ import 'package:vivar/domain/entity/business/business_entity.dart';
 import '../../entity/place/place_entity.dart';
 import '../../interface/place/place_repository_protocol.dart';
 
-class GetNearbyPlacesUseCase {
-  final PlaceRepositoryProtocol _placeRepository;
+class GetNearbyBusinessesUseCase {
+  final BusinessesRepositoryProtocol _placeRepository;
   final LocationService _locationService;
 
-  GetNearbyPlacesUseCase(this._placeRepository, this._locationService);
+  GetNearbyBusinessesUseCase(this._placeRepository, this._locationService);
 
   Future<List<BusinessEntity>> execute({
     required double userLatitude,
@@ -18,7 +18,7 @@ class GetNearbyPlacesUseCase {
     double radiusKm = 5.0,
   }) async {
     try {
-      final businesses = await _placeRepository.getNearbyPlaces(
+      final businesses = await _placeRepository.getNearbyBusinesses(
         latitude: userLatitude,
         longitude: userLongitude,
         radiusKm: radiusKm,

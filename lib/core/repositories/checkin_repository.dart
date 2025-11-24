@@ -40,7 +40,7 @@ abstract class CheckinStatisticsProtocol {
   Future<int> getCheckinCount(String userId);
 
   /// Retorna a quantidade de lugares únicos visitados
-  Future<int> getUniquePlacesVisited(String userId);
+  Future<int> getUniqueBusinessVisited(String userId);
 
   /// Retorna o streak atual de dias consecutivos com check-in
   Future<int> getCurrentStreak(String userId);
@@ -139,7 +139,7 @@ class CheckinRepository extends BaseRepository<CheckinModel>
 
   // Contagem de lugares únicos visitados
   @override
-  Future<int> getUniquePlacesVisited(String userId) async {
+  Future<int> getUniqueBusinessVisited(String userId) async {
     final db = await database;
     final result = await db.rawQuery(
       'SELECT COUNT(DISTINCT place_id) as count FROM $tableName WHERE user_id = ?',

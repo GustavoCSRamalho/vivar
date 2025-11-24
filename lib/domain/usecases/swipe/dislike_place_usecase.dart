@@ -2,14 +2,14 @@
 
 import 'package:vivar/domain/interface/swipe/swipe_repository_protocol.dart';
 
-class DislikePlaceUseCase {
+class DislikeBusinessesUseCase {
   final SwipeRepositoryProtocol _repository;
 
-  DislikePlaceUseCase(this._repository);
+  DislikeBusinessesUseCase(this._repository);
 
   Future<void> execute(String userId, String placeId) async {
     try {
-      await _repository.dislikePlace(userId, placeId);
+      await _repository.dislikeBusinesses(userId, placeId);
     } catch (e) {
       print('❌ Erro ao dar dislike: $e');
       rethrow;

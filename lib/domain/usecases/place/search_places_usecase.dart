@@ -5,10 +5,10 @@ import 'package:vivar/domain/entity/business/business_entity.dart';
 import '../../entity/place/place_entity.dart';
 import '../../interface/place/place_repository_protocol.dart';
 
-class SearchPlacesUseCase {
-  final PlaceRepositoryProtocol _placeRepository;
+class SearchBusinessesUseCase {
+  final BusinessesRepositoryProtocol _placeRepository;
 
-  SearchPlacesUseCase(this._placeRepository);
+  SearchBusinessesUseCase(this._placeRepository);
 
   Future<List<BusinessEntity>> execute(String query) async {
     try {
@@ -16,7 +16,7 @@ class SearchPlacesUseCase {
         return [];
       }
 
-      return await _placeRepository.searchPlaces(query.trim());
+      return await _placeRepository.searchBusinesses(query.trim());
     } catch (e) {
       print('❌ Erro ao buscar lugares: $e');
       rethrow;
