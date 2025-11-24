@@ -76,7 +76,7 @@
 //       final uniquePlaces = await _checkinRepo.getUniquePlacesVisited(userId);
 //       await _userRepo.update(
 //         (await _userRepo.getById(userId))!.copyWith(
-//           placesVisited: uniquePlaces,
+//           businessesVisited: uniquePlaces,
 //           points:
 //               (await _userRepo.getById(userId))!.points + checkin.pointsEarned,
 //         ),

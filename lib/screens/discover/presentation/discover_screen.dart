@@ -7,7 +7,6 @@ import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/constants/routes.dart';
-import '../../../providers/places_provider.dart';
 import 'widgets/discover_card.dart';
 
 class DiscoverScreen extends StatefulWidget {
@@ -34,11 +33,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     try {
       debugPrint('🔄 DiscoverScreen: Carregando coleções...');
 
-      // final placesProvider = context.read<PlacesProvider>();
+      // final businessesProvider = context.read<PlacesProvider>();
       final homeProvider = context.read<HomeProvider>();
 
       // // Carregar lugares se ainda não foram carregados
-      // if (homeProvider.places.isEmpty) {
+      // if (homeProvider.businesses.isEmpty) {
       //   await homeProvider._loadPlaces;
       // }
 
@@ -56,9 +55,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   /// Gera coleções dinamicamente baseadas nos lugares
   List<Map<String, dynamic>> _generateCollections(HomeProvider provider) {
-    final places = provider.places;
+    final businesses = provider.businesses;
 
-    if (places.isEmpty) {
+    if (businesses.isEmpty) {
       return [];
     }
 
@@ -66,7 +65,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final categoryCounts = <String, int>{};
     final categoryImages = <String, String>{};
 
-    for (var place in places) {
+    for (var place in businesses) {
       categoryCounts[place.category] =
           (categoryCounts[place.category] ?? 0) + 1;
 
@@ -87,8 +86,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       'title': 'Todos os Lugares',
       'category': 'Geral',
       'description': 'Explore todos os lugares cadastrados na plataforma',
-      'imageUrl': places.first.images?.first ?? 'assets/images/cafe.png',
-      'placesCount': places.length,
+      'imageUrl': businesses.first.images?.first ?? 'assets/images/cafe.png',
+      'businessesCount': businesses.length,
     });
 
     // Coleções por categoria
@@ -99,12 +98,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'category': category,
         'description': _getCategoryDescription(category),
         'imageUrl': categoryImages[category] ?? 'assets/images/cafe.png',
-        'placesCount': count,
+        'businessesCount': count,
       });
     });
 
     // Coleções especiais
-    final openPlaces = places.where((p) => p.isOpen).length;
+    final openPlaces = businesses.where((p) => p.isOpen).length;
     if (openPlaces > 0) {
       collections.add({
         'id': 'open_now',
@@ -112,13 +111,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'category': 'Especial',
         'description': 'Lugares abertos e prontos para receber você',
         'imageUrl':
-            places.firstWhere((p) => p.isOpen).images?.first ??
+            businesses.firstWhere((p) => p.isOpen).images?.first ??
             'assets/images/cafe.png',
-        'placesCount': openPlaces,
+        'businessesCount': openPlaces,
       });
     }
 
-    final withDiscounts = places.where((p) => p.discountText != null).length;
+    final withDiscounts = businesses
+        .where((p) => p.discountText != null)
+        .length;
     if (withDiscounts > 0) {
       collections.add({
         'id': 'discounts',
@@ -126,13 +127,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'category': 'Promoções',
         'description': 'Aproveite ofertas exclusivas e economize',
         'imageUrl':
-            places.firstWhere((p) => p.discountText != null).images?.first ??
+            businesses
+                .firstWhere((p) => p.discountText != null)
+                .images
+                ?.first ??
             'assets/images/cafe.png',
-        'placesCount': withDiscounts,
+        'businessesCount': withDiscounts,
       });
     }
 
-    final premiumPlaces = places.where((p) => p.isPremiumOnly).length;
+    final premiumPlaces = businesses.where((p) => p.isPremiumOnly).length;
     if (premiumPlaces > 0) {
       collections.add({
         'id': 'premium',
@@ -140,14 +144,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'category': 'Premium',
         'description': 'Lugares exclusivos para assinantes Vivar Plus',
         'imageUrl':
-            places.firstWhere((p) => p.isPremiumOnly).images?.first ??
+            businesses.firstWhere((p) => p.isPremiumOnly).images?.first ??
             'assets/images/cafe.png',
-        'placesCount': premiumPlaces,
+        'businessesCount': premiumPlaces,
       });
     }
 
     // Lugares próximos
-    final nearbyPlaces = places
+    final nearbyPlaces = businesses
         .where((p) => p.distance != null && p.distance! < 1000)
         .length;
     if (nearbyPlaces > 0) {
@@ -157,17 +161,17 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'category': 'Localização',
         'description': 'Lugares a menos de 1km de distância',
         'imageUrl':
-            places
+            businesses
                 .firstWhere((p) => p.distance != null && p.distance! < 1000)
                 .images
                 ?.first ??
             'assets/images/cafe.png',
-        'placesCount': nearbyPlaces,
+        'businessesCount': nearbyPlaces,
       });
     }
 
     // Bem avaliados
-    final topRated = places.where((p) => p.rating >= 4.5).length;
+    final topRated = businesses.where((p) => p.rating >= 4.5).length;
     if (topRated > 0) {
       collections.add({
         'id': 'top_rated',
@@ -175,9 +179,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         'category': 'Qualidade',
         'description': 'Lugares com as melhores avaliações dos usuários',
         'imageUrl':
-            places.firstWhere((p) => p.rating >= 4.5).images?.first ??
+            businesses.firstWhere((p) => p.rating >= 4.5).images?.first ??
             'assets/images/cafe.png',
-        'placesCount': topRated,
+        'businessesCount': topRated,
       });
     }
 
@@ -243,7 +247,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           title: collection['title'],
                           category: collection['category'],
                           description: collection['description'],
-                          placesCount: collection['placesCount'],
+                          businessesCount: collection['businessesCount'],
                           onTap: () => _openCollection(collection),
                         );
                       },

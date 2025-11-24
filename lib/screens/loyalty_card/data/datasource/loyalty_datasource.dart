@@ -66,7 +66,7 @@ class LoyaltyDatasourceImpl implements LoyaltyDatasourceProtocol {
         cardNumber: _generateCardNumber(user['id'] as String),
         planType: user['plan_type'] as String? ?? 'free',
         points: user['points'] as int? ?? 0,
-        placesVisited: user['places_visited'] as int? ?? 0,
+        businessesVisited: user['businesses_visited'] as int? ?? 0,
         activeCoupons: 8, // Mock data - poderia vir de outra tabela
         badgesCount: user['badges_count'] as int? ?? 0,
         streakDays: user['streak_days'] as int? ?? 0,

@@ -1,4 +1,4 @@
-// domain/usecases/map/get_places_for_map_usecase.dart
+// domain/usecases/map/get_businesses_for_map_usecase.dart
 
 import '../../entity/map/map_place_entity.dart';
 import '../../interface/map/map_repository_protocol.dart';

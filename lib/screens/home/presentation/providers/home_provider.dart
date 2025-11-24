@@ -1,15 +1,18 @@
 // presentation/providers/home_provider.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart'
+    show BusinessEntity;
 import 'package:vivar/domain/usecases/location/get_current_location_usecase.dart';
 import 'package:vivar/domain/usecases/place/apply_advanced_filters_usecase.dart';
+import 'package:vivar/domain/usecases/place/filter_places_by_category_usecase.dart';
+import 'package:vivar/domain/usecases/place/get_all_places_usecase.dart';
+import 'package:vivar/domain/usecases/place/get_nearby_places_usecase.dart';
+import 'package:vivar/domain/usecases/place/search_places_usecase.dart';
 import '../../../../domain/entity/place/place_entity.dart';
 import '../../../../domain/entity/position/position_entity.dart';
 import '../../../../domain/entity/user/user_entity.dart';
-import '../../../../domain/usecases/place/get_all_places_usecase.dart';
-import '../../../../domain/usecases/place/get_nearby_places_usecase.dart';
-import '../../../../domain/usecases/place/filter_places_by_category_usecase.dart';
-import '../../../../domain/usecases/place/search_places_usecase.dart';
+import '../../../../domain/usecases/place/get_all_businesses_usecase.dart';
 import '../../../../domain/usecases/user/get_current_user_usecase.dart';
 import '../../../../domain/usecases/user/load_user_favorites_usecase.dart';
 import '../../../../domain/usecases/user/toggle_favorite_place_usecase.dart';
@@ -60,8 +63,8 @@ class HomeProvider with ChangeNotifier {
        _applyAdvancedFiltersUseCase = applyAdvancedFiltersUseCase;
 
   // Estado
-  List<PlaceEntity> _allPlaces = [];
-  List<PlaceEntity> _filteredPlaces = [];
+  List<BusinessEntity> _allPlaces = [];
+  List<BusinessEntity> _filteredPlaces = [];
   List<String> _favoritePlaceIds = [];
   UserEntity? _currentUser;
   Position? _currentPosition;
@@ -72,7 +75,7 @@ class HomeProvider with ChangeNotifier {
   String _selectedCategory = 'Todos';
 
   // Getters
-  List<PlaceEntity> get places => _filteredPlaces;
+  List<BusinessEntity> get businesses => _filteredPlaces;
   List<String> get favoritePlaceIds => _favoritePlaceIds;
   UserEntity? get currentUser => _currentUser;
   Position? get currentPosition => _currentPosition;
@@ -206,7 +209,7 @@ class HomeProvider with ChangeNotifier {
   /// Aplica o filtro atual
   void _applyFilter() {
     _filteredPlaces = _filterPlacesByCategoryUseCase.execute(
-      places: _allPlaces,
+      businesses: _allPlaces,
       category: _selectedCategory,
     );
     debugPrint('✅ Filtro aplicado: ${_filteredPlaces.length} lugares');

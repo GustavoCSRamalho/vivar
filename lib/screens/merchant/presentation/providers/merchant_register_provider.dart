@@ -1,6 +1,7 @@
 // presentation/providers/merchant_register_provider.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/domain/entity/merchant/merchant_entity.dart';
 import 'package:vivar/domain/usecases/merchant/register_merchant_usecase.dart';
 import 'package:vivar/domain/usecases/merchant/validate_merchant_data_usecase.dart';
@@ -116,7 +117,7 @@ class MerchantRegisterProvider with ChangeNotifier {
         return false;
       }
 
-      final merchant = MerchantEntity(
+      final merchant = BusinessEntity(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: name,
         category: category,
@@ -129,6 +130,11 @@ class MerchantRegisterProvider with ChangeNotifier {
         amenities: _selectedAmenities,
         isWhatsapp: _isWhatsapp,
         createdAt: DateTime.now(),
+        city: 'Sao sebastiao',
+        state: 'Maresias',
+        updatedAt: DateTime.now(),
+        latitude: 0,
+        longitude: 0,
       );
 
       await _registerMerchantUseCase.execute(merchant);

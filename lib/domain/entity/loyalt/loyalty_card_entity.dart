@@ -7,7 +7,7 @@ class LoyaltyCardEntity {
   final String cardNumber;
   final String planType;
   final int points;
-  final int placesVisited;
+  final int businessesVisited;
   final int activeCoupons;
   final int badgesCount;
   final int streakDays;
@@ -20,7 +20,7 @@ class LoyaltyCardEntity {
     required this.cardNumber,
     required this.planType,
     required this.points,
-    required this.placesVisited,
+    required this.businessesVisited,
     required this.activeCoupons,
     required this.badgesCount,
     required this.streakDays,

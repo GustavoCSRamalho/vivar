@@ -86,6 +86,8 @@ dependencies:
   shimmer: ^3.0.0
 
   json_annotation: ^4.9.0
+  connectivity_plus: ^7.0.0
+  supabase_flutter: ^2.10.3
 
 dev_dependencies:
   flutter_test:

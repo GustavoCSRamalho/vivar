@@ -4,6 +4,7 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 
 /// Contrato abstrato para datasource de descoberta de lugares
@@ -13,26 +14,26 @@ abstract class DiscoverDatasourceProtocol {
   /// Ordenados por número de reviews (mais populares)
   ///
   /// Retorna lista de [PlaceModel] em alta (máximo 12)
-  Future<List<PlaceModel>> getTrendingPlaces();
+  Future<List<BusinessModel>> getTrendingPlaces();
 
   /// Busca lugares próximos ao usuário
   /// Ordenados por distância (mais próximos primeiro)
   ///
   /// Retorna lista de [PlaceModel] próximos (máximo 8)
-  Future<List<PlaceModel>> getNearYouPlaces();
+  Future<List<BusinessModel>> getNearYouPlaces();
 
   /// Busca lugares mais bem avaliados
   /// Filtra lugares com rating >= 4.5
   /// Ordenados por rating e número de reviews
   ///
   /// Retorna lista de [PlaceModel] top rated (máximo 15)
-  Future<List<PlaceModel>> getTopRatedPlaces();
+  Future<List<BusinessModel>> getTopRatedPlaces();
 
   /// Busca lugares recém adicionados
   /// Ordenados por data de criação (mais recentes primeiro)
   ///
   /// Retorna lista de [PlaceModel] novos (máximo 6)
-  Future<List<PlaceModel>> getNewPlaces();
+  Future<List<BusinessModel>> getNewPlaces();
 }
 
 /// Implementação do datasource de descoberta
@@ -41,7 +42,7 @@ abstract class DiscoverDatasourceProtocol {
 class DiscoverDatasourceImpl implements DiscoverDatasourceProtocol {
   final DatabaseHelper _dbHelper;
 
-  static const String _tableName = 'places';
+  static const String _tableName = 'businesses';
   static const int _trendingLimit = 12;
   static const int _nearbyLimit = 8;
   static const int _topRatedLimit = 15;
@@ -54,7 +55,7 @@ class DiscoverDatasourceImpl implements DiscoverDatasourceProtocol {
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<List<PlaceModel>> getTrendingPlaces() async {
+  Future<List<BusinessModel>> getTrendingPlaces() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -70,7 +71,7 @@ class DiscoverDatasourceImpl implements DiscoverDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getNearYouPlaces() async {
+  Future<List<BusinessModel>> getNearYouPlaces() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -86,7 +87,7 @@ class DiscoverDatasourceImpl implements DiscoverDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getTopRatedPlaces() async {
+  Future<List<BusinessModel>> getTopRatedPlaces() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -104,7 +105,7 @@ class DiscoverDatasourceImpl implements DiscoverDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getNewPlaces() async {
+  Future<List<BusinessModel>> getNewPlaces() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -120,7 +121,7 @@ class DiscoverDatasourceImpl implements DiscoverDatasourceProtocol {
   }
 
   /// Converte lista de Maps para lista de PlaceModel
-  List<PlaceModel> _mapListToModels(List<Map<String, dynamic>> maps) {
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+  List<BusinessModel> _mapListToModels(List<Map<String, dynamic>> maps) {
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 }

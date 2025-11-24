@@ -195,7 +195,7 @@ class _LoyaltyCardScreenState extends State<LoyaltyCardScreen> {
         Expanded(
           child: _buildStatCard(
             '🏪',
-            '${card.placesVisited}',
+            '${card.businessesVisited}',
             'Lugares\nvisitados',
           ),
         ),

@@ -1,6 +1,7 @@
 // screens/place_details/place_details_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/screens/auth/data/repositories/auth_repository_impl.dart';
 import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
 import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
@@ -8,7 +9,6 @@ import 'package:vivar/domain/entity/place/place_details_entity.dart';
 import 'package:vivar/screens/place_details/presentation/providers/place_details_provider.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
-import '../../../providers/places_provider.dart';
 import '../../../providers/user_provider.dart';
 import '../../../models/place_model.dart';
 import '../../../widgets/buttons/primary_button.dart';
@@ -28,7 +28,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   final ValueNotifier<bool> _showBottomBar = ValueNotifier(false);
   int _currentPhotoIndex = 0;
   bool _isFavorite = false;
-  PlaceDetailsEntity? _place;
+  BusinessEntity? _place;
   bool _isLoading = true;
   String? _error;
 
@@ -57,13 +57,13 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
     });
 
     try {
-      final placesProvider = context.read<PlaceDetailsProvider>();
+      final businessesProvider = context.read<PlaceDetailsProvider>();
       final homeProvider = context.read<HomeProvider>();
 
       // Buscar o lugar pelo ID
-      await placesProvider.getPlaceById(widget.placeId);
+      await businessesProvider.getPlaceById(widget.placeId);
 
-      final place = placesProvider.place!;
+      final place = businessesProvider.place!;
 
       debugPrint('🔍 Lugar encontrado: ${place?.name}');
 

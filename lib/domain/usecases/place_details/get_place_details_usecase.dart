@@ -1,5 +1,7 @@
 // domain/usecases/place_details/get_place_details_usecase.dart
 
+import 'package:vivar/domain/entity/business/business_entity.dart';
+
 import '../../entity/place/place_details_entity.dart';
 import '../../interface/place/place_details_repository_protocol.dart';
 
@@ -8,7 +10,7 @@ class GetPlaceDetailsUseCase {
 
   GetPlaceDetailsUseCase(this._repository);
 
-  Future<PlaceDetailsEntity?> execute(String placeId) async {
+  Future<BusinessEntity?> execute(String placeId) async {
     try {
       return await _repository.getPlaceDetails(placeId);
     } catch (e) {

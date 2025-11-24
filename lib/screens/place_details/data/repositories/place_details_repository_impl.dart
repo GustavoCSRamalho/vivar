@@ -1,54 +1,56 @@
 // data/repositories/place_details_repository_impl.dart
 
+import 'package:vivar/domain/entity/business/business_entity.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:vivar/models/review_model.dart';
 import 'package:vivar/domain/entity/place/place_details_entity.dart';
 import 'package:vivar/domain/entity/review/review_entity.dart';
 import 'package:vivar/domain/interface/place/place_details_repository_protocol.dart';
-import 'package:vivar/screens/place_details/data/datasource/place_details_datasource.dart';
+import 'package:vivar/screens/place_details/data/datasource/place_details_sync_datasource.dart';
 
 /// Implementação do repositório de detalhes de lugares
-/// Delega operações de dados para o datasource
+/// Delega operações de dados para o datasource de sincronização
 /// Converte entre Model e Entity
 class PlaceDetailsRepositoryImpl implements PlaceDetailsRepositoryProtocol {
-  final PlaceDetailsDatasourceProtocol _datasource;
+  final PlaceDetailsSyncDatasource _syncDatasource;
 
   PlaceDetailsRepositoryImpl({
-    required PlaceDetailsDatasourceProtocol datasource,
-  }) : _datasource = datasource;
+    required PlaceDetailsSyncDatasource syncDatasource,
+  }) : _syncDatasource = syncDatasource;
 
   @override
-  Future<PlaceDetailsEntity?> getPlaceDetails(String placeId) async {
-    final model = await _datasource.getPlaceById(placeId);
+  Future<BusinessEntity?> getPlaceDetails(String placeId) async {
+    final model = await _syncDatasource.getPlaceById(placeId);
     return model != null ? _placeModelToEntity(model) : null;
   }
 
   @override
-  Future<PlaceDetailsEntity?> getPlaceById(String id) async {
-    final model = await _datasource.getPlaceById(id);
+  Future<BusinessEntity?> getPlaceById(String id) async {
+    final model = await _syncDatasource.getPlaceById(id);
     return model != null ? _placeModelToEntity(model) : null;
   }
 
   @override
   Future<List<ReviewEntity>> getPlaceReviews(String placeId) async {
-    final maps = await _datasource.getPlaceReviews(placeId);
+    final maps = await _syncDatasource.getPlaceReviews(placeId);
     return maps.map(_reviewMapToEntity).toList();
   }
 
   @override
   Future<void> addReview(ReviewEntity review) async {
     final reviewModel = _reviewEntityToModel(review);
-    await _datasource.addReview(reviewModel);
+    await _syncDatasource.addReview(reviewModel);
   }
 
   @override
   Future<bool> checkIfUserReviewed(String userId, String placeId) {
-    return _datasource.checkIfUserReviewed(userId, placeId);
+    return _syncDatasource.checkIfUserReviewed(userId, placeId);
   }
 
   /// Converte PlaceModel (data layer) para PlaceDetailsEntity (domain layer)
-  PlaceDetailsEntity _placeModelToEntity(PlaceModel model) {
-    return PlaceDetailsEntity(
+  BusinessEntity _placeModelToEntity(BusinessModel model) {
+    return BusinessEntity(
       id: model.id,
       name: model.name,
       category: model.category,
@@ -73,6 +75,8 @@ class PlaceDetailsRepositoryImpl implements PlaceDetailsRepositoryProtocol {
       discountPercentage: model.discountPercentage,
       isPremiumOnly: model.isPremiumOnly,
       distance: model.distance,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     );
   }
 

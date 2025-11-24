@@ -5,7 +5,6 @@ import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/text_styles.dart';
 import '../../core/constants/spacing.dart';
-import '../../providers/places_provider.dart';
 
 class FiltersBottomSheet extends StatefulWidget {
   @override

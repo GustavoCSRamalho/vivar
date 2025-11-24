@@ -1,4 +1,6 @@
 // core/repositories/place_repository.dart
+import 'package:vivar/models/business_model.dart';
+
 import '../database/database_helper.dart';
 import '../../models/place_model.dart';
 import 'base_repository.dart';
@@ -9,14 +11,14 @@ import 'base_repository.dart';
 /// Protocolo para leitura de lugares por categoria
 abstract class PlaceCategoryReaderProtocol {
   /// Retorna lugares de uma categoria específica
-  Future<List<PlaceModel>> getByCategory(String category);
+  Future<List<BusinessModel>> getByCategory(String category);
 }
 
 // Arquivo: place_location_reader_protocol.dart
 /// Protocolo para leitura de lugares por localização
 abstract class PlaceLocationReaderProtocol {
   /// Retorna lugares próximos a uma coordenada
-  Future<List<PlaceModel>> getNearby(
+  Future<List<BusinessModel>> getNearby(
     double latitude,
     double longitude,
     double radiusKm,
@@ -27,35 +29,35 @@ abstract class PlaceLocationReaderProtocol {
 /// Protocolo para leitura de disponibilidade de lugares
 abstract class PlaceAvailabilityReaderProtocol {
   /// Retorna apenas lugares que estão abertos
-  Future<List<PlaceModel>> getOpenPlaces();
+  Future<List<BusinessModel>> getOpenPlaces();
 }
 
 // Arquivo: place_search_protocol.dart
 /// Protocolo para busca de lugares
 abstract class PlaceSearchProtocol {
   /// Busca lugares por texto (nome, descrição ou categoria)
-  Future<List<PlaceModel>> search(String searchText);
+  Future<List<BusinessModel>> search(String searchText);
 }
 
 // Arquivo: place_discount_reader_protocol.dart
 /// Protocolo para leitura de lugares com desconto
 abstract class PlaceDiscountReaderProtocol {
   /// Retorna lugares que oferecem desconto
-  Future<List<PlaceModel>> getPlacesWithDiscount();
+  Future<List<BusinessModel>> getPlacesWithDiscount();
 }
 
 // Arquivo: place_premium_reader_protocol.dart
 /// Protocolo para leitura de lugares premium
 abstract class PlacePremiumReaderProtocol {
   /// Retorna lugares exclusivos para usuários premium
-  Future<List<PlaceModel>> getPremiumPlaces();
+  Future<List<BusinessModel>> getPremiumPlaces();
 }
 
 // Arquivo: place_rating_reader_protocol.dart
 /// Protocolo para leitura de lugares por avaliação
 abstract class PlaceRatingReaderProtocol {
   /// Retorna os lugares mais bem avaliados
-  Future<List<PlaceModel>> getTopRated({int limit = 10});
+  Future<List<BusinessModel>> getTopRated({int limit = 10});
 }
 
 // Arquivo: place_rating_updater_protocol.dart
@@ -69,7 +71,7 @@ abstract class PlaceRatingUpdaterProtocol {
 /// Protocolo para filtragem avançada de lugares
 abstract class PlaceFilterProtocol {
   /// Retorna lugares filtrados por múltiplos critérios
-  Future<List<PlaceModel>> getFiltered({
+  Future<List<BusinessModel>> getFiltered({
     List<String>? categories,
     String? priceRange,
     double? minRating,
@@ -82,7 +84,7 @@ abstract class PlaceFilterProtocol {
 // IMPLEMENTAÇÃO NO REPOSITORY
 // ============================================
 
-class PlaceRepository extends BaseRepository<PlaceModel>
+class PlaceRepository extends BaseRepository<BusinessModel>
     implements
         PlaceCategoryReaderProtocol,
         PlaceLocationReaderProtocol,
@@ -94,23 +96,23 @@ class PlaceRepository extends BaseRepository<PlaceModel>
         PlaceRatingUpdaterProtocol,
         PlaceFilterProtocol {
   @override
-  String get tableName => 'places';
+  String get tableName => 'businesses';
 
   @override
-  PlaceModel fromMap(Map<String, dynamic> map) => PlaceModel.fromMap(map);
+  BusinessModel fromMap(Map<String, dynamic> map) => BusinessModel.fromMap(map);
 
   @override
-  Map<String, dynamic> toMap(PlaceModel model) => model.toMap();
+  Map<String, dynamic> toMap(BusinessModel model) => model.toMap();
 
   // Buscar por categoria
   @override
-  Future<List<PlaceModel>> getByCategory(String category) async {
+  Future<List<BusinessModel>> getByCategory(String category) async {
     return await getWhere('category = ?', [category]);
   }
 
   // Buscar por proximidade (requer cálculo de distância)
   @override
-  Future<List<PlaceModel>> getNearby(
+  Future<List<BusinessModel>> getNearby(
     double latitude,
     double longitude,
     double radiusKm,
@@ -140,54 +142,54 @@ class PlaceRepository extends BaseRepository<PlaceModel>
       radiusKm,
     ]);
 
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 
   // Buscar lugares abertos
   @override
-  Future<List<PlaceModel>> getOpenPlaces() async {
+  Future<List<BusinessModel>> getOpenPlaces() async {
     return await getWhere('is_open = ?', [1]);
   }
 
   // Buscar por texto
   @override
-  Future<List<PlaceModel>> search(String searchText) async {
+  Future<List<BusinessModel>> search(String searchText) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
       where: 'name LIKE ? OR description LIKE ? OR category LIKE ?',
       whereArgs: ['%$searchText%', '%$searchText%', '%$searchText%'],
     );
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 
   // Lugares com desconto
   @override
-  Future<List<PlaceModel>> getPlacesWithDiscount() async {
+  Future<List<BusinessModel>> getPlacesWithDiscount() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
       where: 'discount_percentage IS NOT NULL AND discount_percentage > 0',
     );
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 
   // Lugares premium
   @override
-  Future<List<PlaceModel>> getPremiumPlaces() async {
+  Future<List<BusinessModel>> getPremiumPlaces() async {
     return await getWhere('is_premium_only = ?', [1]);
   }
 
   // Top avaliados
   @override
-  Future<List<PlaceModel>> getTopRated({int limit = 10}) async {
+  Future<List<BusinessModel>> getTopRated({int limit = 10}) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
       orderBy: 'rating DESC, reviews_count DESC',
       limit: limit,
     );
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 
   // Atualizar rating
@@ -212,7 +214,7 @@ class PlaceRepository extends BaseRepository<PlaceModel>
 
   // Filtros avançados
   @override
-  Future<List<PlaceModel>> getFiltered({
+  Future<List<BusinessModel>> getFiltered({
     List<String>? categories,
     String? priceRange,
     double? minRating,
@@ -248,6 +250,6 @@ class PlaceRepository extends BaseRepository<PlaceModel>
       whereArgs: whereArgs,
     );
 
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 }

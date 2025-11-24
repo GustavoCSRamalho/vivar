@@ -1,42 +1,37 @@
-// data/datasources/merchant/merchant_datasource.dart
+// data/datasources/merchant/merchant_local_datasource_impl.dart
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/domain/entity/merchant/merchant_entity.dart';
-import 'dart:convert';
+import 'package:vivar/models/business_model.dart';
+import 'package:vivar/models/merchant_model.dart';
 
-/// Contrato abstrato para datasource de comerciantes
-abstract class MerchantDatasourceProtocol {
-  /// Registra um novo comerciante
-  Future<void> registerMerchant(MerchantEntity merchant);
+// data/datasources/merchant/merchant_local_datasource_protocol.dart
 
-  /// Busca comerciante por ID
-  Future<MerchantEntity?> getMerchantById(String merchantId);
-
-  /// Busca comerciantes de um usuário
-  Future<List<MerchantEntity>> getUserMerchants(String userId);
+abstract class MerchantLocalDatasourceProtocol {
+  Future<void> registerMerchant(BusinessModel merchant);
+  Future<BusinessModel?> getMerchantById(String merchantId);
+  Future<List<BusinessModel>> getUserMerchants(String userId);
+  Future<void> markAsPendingSync(String merchantId);
+  Future<List<BusinessModel>> getPendingMerchants();
+  Future<void> updateMerchant(BusinessModel merchant);
 }
 
-/// Implementação do datasource de comerciantes
-/// Contém TODA a lógica de acesso ao banco de dados SQLite
-class MerchantDatasourceImpl implements MerchantDatasourceProtocol {
+class MerchantLocalDatasourceImpl implements MerchantLocalDatasourceProtocol {
   final DatabaseHelper _dbHelper;
+  static const String _tableName = 'businesses';
 
-  static const String _tableName = 'merchants';
-
-  MerchantDatasourceImpl({DatabaseHelper? dbHelper})
+  MerchantLocalDatasourceImpl({DatabaseHelper? dbHelper})
     : _dbHelper = dbHelper ?? DatabaseHelper();
 
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<void> registerMerchant(MerchantEntity merchant) async {
+  Future<void> registerMerchant(BusinessModel merchant) async {
     try {
       final db = await _database;
-
       await db.insert(
         _tableName,
-        _entityToMap(merchant),
+        merchant.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e) {
@@ -46,7 +41,7 @@ class MerchantDatasourceImpl implements MerchantDatasourceProtocol {
   }
 
   @override
-  Future<MerchantEntity?> getMerchantById(String merchantId) async {
+  Future<BusinessModel?> getMerchantById(String merchantId) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -57,8 +52,7 @@ class MerchantDatasourceImpl implements MerchantDatasourceProtocol {
       );
 
       if (maps.isEmpty) return null;
-
-      return _mapToEntity(maps.first);
+      return BusinessModel.fromMap(maps.first);
     } catch (e) {
       print('❌ Erro ao buscar comerciante por ID: $e');
       return null;
@@ -66,7 +60,7 @@ class MerchantDatasourceImpl implements MerchantDatasourceProtocol {
   }
 
   @override
-  Future<List<MerchantEntity>> getUserMerchants(String userId) async {
+  Future<List<BusinessModel>> getUserMerchants(String userId) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -76,48 +70,60 @@ class MerchantDatasourceImpl implements MerchantDatasourceProtocol {
         orderBy: 'created_at DESC',
       );
 
-      return maps.map(_mapToEntity).toList();
+      return maps.map((map) => BusinessModel.fromMap(map)).toList();
     } catch (e) {
       print('❌ Erro ao buscar comerciantes do usuário: $e');
       return [];
     }
   }
 
-  /// Converte MerchantEntity para Map para inserção no banco
-  Map<String, dynamic> _entityToMap(MerchantEntity entity) {
-    return {
-      'id': entity.id,
-      'name': entity.name,
-      'category': entity.category,
-      'address': entity.address,
-      'phone': entity.phone,
-      'email': entity.email,
-      'description': entity.description,
-      'images': jsonEncode(entity.images),
-      'schedule': jsonEncode(entity.schedule),
-      'amenities': jsonEncode(entity.amenities),
-      'is_whatsapp': entity.isWhatsapp ? 1 : 0,
-      'status': entity.status,
-      'created_at': entity.createdAt.toIso8601String(),
-    };
+  @override
+  Future<void> markAsPendingSync(String merchantId) async {
+    try {
+      final db = await _database;
+      await db.update(
+        _tableName,
+        {'synced': 0},
+        where: 'id = ?',
+        whereArgs: [merchantId],
+      );
+    } catch (e) {
+      print('❌ Erro ao marcar comerciante como pendente: $e');
+      rethrow;
+    }
   }
 
-  /// Converte Map do banco para MerchantEntity
-  MerchantEntity _mapToEntity(Map<String, dynamic> map) {
-    return MerchantEntity(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      category: map['category'] as String,
-      address: map['address'] as String,
-      phone: map['phone'] as String,
-      email: map['email'] as String,
-      description: map['description'] as String,
-      images: List<String>.from(jsonDecode(map['images'] as String)),
-      schedule: Map<String, String>.from(jsonDecode(map['schedule'] as String)),
-      amenities: List<String>.from(jsonDecode(map['amenities'] as String)),
-      isWhatsapp: (map['is_whatsapp'] as int) == 1,
-      status: map['status'] as String,
-      createdAt: DateTime.parse(map['created_at'] as String),
-    );
+  @override
+  Future<List<BusinessModel>> getPendingMerchants() async {
+    try {
+      final db = await _database;
+      final List<Map<String, dynamic>> maps = await db.query(
+        _tableName,
+        where: 'synced = ?',
+        whereArgs: [0],
+        orderBy: 'updated_at ASC',
+      );
+
+      return maps.map((map) => BusinessModel.fromMap(map)).toList();
+    } catch (e) {
+      print('❌ Erro ao buscar comerciantes pendentes: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> updateMerchant(BusinessModel merchant) async {
+    try {
+      final db = await _database;
+      await db.update(
+        _tableName,
+        merchant.toMap(),
+        where: 'id = ?',
+        whereArgs: [merchant.id],
+      );
+    } catch (e) {
+      print('❌ Erro ao atualizar comerciante: $e');
+      rethrow;
+    }
   }
 }

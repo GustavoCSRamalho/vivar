@@ -1,5 +1,6 @@
-// domain/usecases/discover/get_top_rated_places_usecase.dart
+// domain/usecases/discover/get_top_rated_businesses_usecase.dart
 
+import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/domain/entity/place/place_entity.dart';
 
 import '../../interface/discover/discover_repository_protocol.dart';
@@ -9,7 +10,7 @@ class GetTopRatedPlacesUseCase {
 
   GetTopRatedPlacesUseCase(this._repository);
 
-  Future<List<PlaceEntity>> execute() async {
+  Future<List<BusinessEntity>> execute() async {
     try {
       return await _repository.getTopRatedPlaces();
     } catch (e) {

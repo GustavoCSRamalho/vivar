@@ -27,7 +27,7 @@ class MapProvider with ChangeNotifier {
        _searchPlacesOnMapUseCase = searchPlacesOnMapUseCase;
 
   GoogleMapController? _mapController;
-  List<MapPlaceEntity> _places = [];
+  List<MapPlaceEntity> _businesses = [];
   Set<Marker> _markers = {};
   MapPlaceEntity? _selectedPlace;
   String _selectedCategory = 'Todos';
@@ -37,7 +37,7 @@ class MapProvider with ChangeNotifier {
 
   // Getters
   GoogleMapController? get mapController => _mapController;
-  List<MapPlaceEntity> get places => _places;
+  List<MapPlaceEntity> get businesses => _businesses;
   Set<Marker> get markers => _markers;
   MapPlaceEntity? get selectedPlace => _selectedPlace;
   String get selectedCategory => _selectedCategory;
@@ -58,9 +58,9 @@ class MapProvider with ChangeNotifier {
     _error = null;
 
     try {
-      _places = await _getPlacesForMapUseCase.execute();
+      _businesses = await _getPlacesForMapUseCase.execute();
       _buildMarkers();
-      debugPrint('✅ ${_places.length} lugares carregados para o mapa');
+      debugPrint('✅ ${_businesses.length} lugares carregados para o mapa');
     } catch (e) {
       _error = 'Erro ao carregar lugares: $e';
       debugPrint('❌ Erro ao carregar lugares para mapa: $e');
@@ -76,13 +76,13 @@ class MapProvider with ChangeNotifier {
     _error = null;
 
     try {
-      _places = await _getNearbyPlacesForMapUseCase.execute(
+      _businesses = await _getNearbyPlacesForMapUseCase.execute(
         latitude: latitude,
         longitude: longitude,
         radiusKm: 5000,
       );
       _buildMarkers();
-      debugPrint('✅ ${_places.length} lugares próximos carregados');
+      debugPrint('✅ ${_businesses.length} lugares próximos carregados');
     } catch (e) {
       _error = 'Erro ao carregar lugares próximos: $e';
       debugPrint('❌ Erro ao carregar lugares próximos: $e');
@@ -98,9 +98,9 @@ class MapProvider with ChangeNotifier {
     _selectedCategory = category;
 
     try {
-      _places = await _getPlacesByCategoryUseCase.execute(category);
+      _businesses = await _getPlacesByCategoryUseCase.execute(category);
       _buildMarkers();
-      debugPrint('🔍 Filtrado por $category: ${_places.length} lugares');
+      debugPrint('🔍 Filtrado por $category: ${_businesses.length} lugares');
     } catch (e) {
       _error = 'Erro ao filtrar: $e';
       debugPrint('❌ Erro ao filtrar: $e');
@@ -124,9 +124,9 @@ class MapProvider with ChangeNotifier {
     _setLoading(true);
 
     try {
-      _places = await _searchPlacesOnMapUseCase.execute(query);
+      _businesses = await _searchPlacesOnMapUseCase.execute(query);
       _buildMarkers();
-      debugPrint('🔍 Busca: ${_places.length} resultados');
+      debugPrint('🔍 Busca: ${_businesses.length} resultados');
     } catch (e) {
       _error = 'Erro na busca: $e';
       debugPrint('❌ Erro na busca: $e');
@@ -165,7 +165,7 @@ class MapProvider with ChangeNotifier {
   void _buildMarkers() {
     if (_disposed) return;
 
-    _markers = _places.map((place) {
+    _markers = _businesses.map((place) {
       return Marker(
         markerId: MarkerId(place.id),
         position: LatLng(place.latitude, place.longitude),
@@ -202,7 +202,7 @@ class MapProvider with ChangeNotifier {
 
     _mapController = null;
     _markers.clear();
-    _places.clear();
+    _businesses.clear();
     _selectedPlace = null;
 
     super.dispose();

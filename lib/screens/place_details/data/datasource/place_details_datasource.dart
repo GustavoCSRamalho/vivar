@@ -2,13 +2,14 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:vivar/models/review_model.dart';
 
 /// Contrato abstrato para datasource de detalhes de lugares
 abstract class PlaceDetailsDatasourceProtocol {
   /// Busca detalhes de um lugar por ID
-  Future<PlaceModel?> getPlaceById(String placeId);
+  Future<BusinessModel?> getPlaceById(String placeId);
 
   /// Busca reviews de um lugar com dados do usuário
   Future<List<Map<String, dynamic>>> getPlaceReviews(String placeId);
@@ -25,7 +26,7 @@ abstract class PlaceDetailsDatasourceProtocol {
 class PlaceDetailsDatasource implements PlaceDetailsDatasourceProtocol {
   final DatabaseHelper _dbHelper;
 
-  static const String _placeTableName = 'places';
+  static const String _placeTableName = 'businesses';
   static const String _reviewTableName = 'reviews';
   static const String _userTableName = 'users';
 
@@ -35,7 +36,7 @@ class PlaceDetailsDatasource implements PlaceDetailsDatasourceProtocol {
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<PlaceModel?> getPlaceById(String placeId) async {
+  Future<BusinessModel?> getPlaceById(String placeId) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -47,7 +48,7 @@ class PlaceDetailsDatasource implements PlaceDetailsDatasourceProtocol {
 
       if (maps.isEmpty) return null;
 
-      return PlaceModel.fromMap(maps.first);
+      return BusinessModel.fromMap(maps.first);
     } catch (e) {
       print('❌ Erro ao buscar detalhes do lugar: $e');
       return null;

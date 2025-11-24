@@ -3,14 +3,14 @@ import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/domain/entity/profile/profile_entity.dart';
 import 'package:vivar/models/user_model.dart';
 
-abstract class ProfileLocalDataSourceProtocol {
+abstract class ProfileLocalDatasourceProtocol {
   Future<ProfileEntity?> getProfile(String userId);
   Future<void> updateProfile(ProfileEntity profile);
   Future<int> getRecentCheckinsCount(String userId);
   Future<List<String>> getRecentBadges(String userId, {int limit = 5});
 }
 
-class ProfileLocalDataSource implements ProfileLocalDataSourceProtocol {
+class ProfileLocalDataSource implements ProfileLocalDatasourceProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   final String _userTableName = 'users';
   final String _checkinTableName = 'checkins';
@@ -81,7 +81,7 @@ class ProfileLocalDataSource implements ProfileLocalDataSourceProtocol {
       location: model.location,
       planType: model.planType,
       points: model.points,
-      placesVisited: model.placesVisited,
+      businessesVisited: model.businessesVisited,
       badgesCount: model.badgesCount,
       streakDays: model.streakDays,
       favoriteCount: model.favoriteCount,
@@ -102,7 +102,7 @@ class ProfileLocalDataSource implements ProfileLocalDataSourceProtocol {
       location: entity.location,
       planType: entity.planType,
       points: entity.points,
-      placesVisited: entity.placesVisited,
+      businessesVisited: entity.businessesVisited,
       badgesCount: entity.badgesCount,
       streakDays: entity.streakDays,
       favoriteCount: entity.favoriteCount,

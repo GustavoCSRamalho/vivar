@@ -1,7 +1,8 @@
+// data/datasources/user/user_local_datasource_protocol.dart
+
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
 import 'package:vivar/models/user_model.dart';
-import 'dart:convert';
 
 abstract class UserLocalDataSourceProtocol {
   Future<UserModel?> getUser(String userId);
@@ -9,10 +10,14 @@ abstract class UserLocalDataSourceProtocol {
   Future<void> updateAvatar(String userId, String url);
   Future<void> removeAvatar(String userId);
 }
+// data/datasources/user/user_local_datasource_impl.dart
 
-class UserLocalDataSource implements UserLocalDataSourceProtocol {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
+class UserLocalDataSourceImpl implements UserLocalDataSourceProtocol {
+  final DatabaseHelper _dbHelper;
   final String _userTableName = 'users';
+
+  UserLocalDataSourceImpl({DatabaseHelper? dbHelper})
+    : _dbHelper = dbHelper ?? DatabaseHelper();
 
   Future<Database> get _database async => await _dbHelper.database;
 

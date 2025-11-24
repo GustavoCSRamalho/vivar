@@ -110,7 +110,7 @@
 //     try {
 //       await _userRepo.incrementPlacesVisited(_currentUser!.id);
 //       _currentUser = _currentUser!.copyWith(
-//         placesVisited: _currentUser!.placesVisited + 1,
+//         businessesVisited: _currentUser!.businessesVisited + 1,
 //       );
 //       notifyListeners();
 //     } catch (e) {

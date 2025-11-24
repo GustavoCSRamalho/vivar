@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/routes.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/models/filters_bottom_sheet.dart';
 import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/screens/home/presentation/providers/home_provider.dart';
@@ -140,10 +141,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
 
                 // Filtrar por categoria se necessário
-                List<PlaceEntity> placesToShow = provider.places;
+                List<BusinessEntity> businessesToShow = provider.businesses;
 
                 // Empty state
-                if (placesToShow.isEmpty) {
+                if (businessesToShow.isEmpty) {
                   return _buildEmptyState(provider);
                 }
 
@@ -158,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.only(top: 8),
                         sliver: SliverToBoxAdapter(
                           child: TodayCard(
-                            title: '${placesToShow.length} lugares encontrados',
+                            title: '${businessesToShow.length} lugares encontrados',
                             subtitle: 'Descubra novos lugares perto de você',
                             emoji: '🎉',
                             onTap: _openEvents,
@@ -171,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Lista de lugares
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                          final place = placesToShow[index];
+                          final place = businessesToShow[index];
                           return PlaceCard(
                             imageUrl: place.firstImage ?? '',
                             name: place.name,
@@ -189,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               _navigateToDetails(place.id);
                             },
                           );
-                        }, childCount: placesToShow.length),
+                        }, childCount: businessesToShow.length),
                       ),
 
                       // Espaço final
@@ -386,7 +387,7 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
           );
         }
 
-        if (provider.places.isEmpty) {
+        if (provider.businesses.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -403,9 +404,9 @@ class PlaceSearchDelegate extends SearchDelegate<String> {
         }
 
         return ListView.builder(
-          itemCount: provider.places.length,
+          itemCount: provider.businesses.length,
           itemBuilder: (context, index) {
-            final place = provider.places[index];
+            final place = provider.businesses[index];
             return ListTile(
               leading: Container(
                 width: 50,

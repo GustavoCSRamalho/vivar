@@ -150,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _buildStatItem(
-                                '${profile.placesVisited}',
+                                '0', //'${profile.placesVisited}',
                                 'Lugares',
                               ),
                               _buildStatItem('${profile.points}', 'Pontos'),

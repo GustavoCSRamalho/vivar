@@ -8,7 +8,7 @@ class DiscoverCard extends StatelessWidget {
   final String title;
   final String category;
   final String description;
-  final int placesCount;
+  final int businessesCount;
   final VoidCallback onTap;
 
   const DiscoverCard({
@@ -17,7 +17,7 @@ class DiscoverCard extends StatelessWidget {
     required this.title,
     required this.category,
     required this.description,
-    required this.placesCount,
+    required this.businessesCount,
     required this.onTap,
   }) : super(key: key);
 
@@ -121,7 +121,7 @@ class DiscoverCard extends StatelessWidget {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            '$placesCount ${placesCount == 1 ? 'lugar' : 'lugares'}',
+                            '$businessesCount ${businessesCount == 1 ? 'lugar' : 'lugares'}',
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,

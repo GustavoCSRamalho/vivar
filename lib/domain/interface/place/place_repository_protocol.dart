@@ -1,27 +1,27 @@
 // domain/repositories/place_repository_protocol.dart
 
-import '../../entity/place/place_entity.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 
 abstract class PlaceRepositoryProtocol {
-  Future<List<PlaceEntity>> getAllPlaces();
+  Future<List<BusinessEntity>> getAllPlaces();
 
-  Future<List<PlaceEntity>> getNearbyPlaces({
+  Future<List<BusinessEntity>> getNearbyPlaces({
     required double latitude,
     required double longitude,
     required double radiusKm,
   });
 
-  Future<List<PlaceEntity>> getPlacesByCategory(String category);
+  Future<List<BusinessEntity>> getPlacesByCategory(String category);
 
-  Future<List<PlaceEntity>> searchPlaces(String query);
+  Future<List<BusinessEntity>> searchPlaces(String query);
 
-  Future<PlaceEntity?> getPlaceById(String id);
+  Future<BusinessEntity?> getPlaceById(String id);
 
-  Future<List<PlaceEntity>> getPlacesWithDiscount();
+  Future<List<BusinessEntity>> getPlacesWithDiscount();
 
-  Future<List<PlaceEntity>> getTopRatedPlaces({int limit = 10});
+  Future<List<BusinessEntity>> getTopRatedPlaces({int limit = 10});
 
-  Future<List<PlaceEntity>> getFilteredPlaces({
+  Future<List<BusinessEntity>> getFilteredPlaces({
     List<String>? categories,
     String? priceRange,
     double? minRating,

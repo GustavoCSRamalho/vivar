@@ -1,6 +1,7 @@
 // core/database/database_seeder.dart
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vivar/models/business_model.dart';
 import '../repositories/place_repository.dart';
 import '../repositories/user_repository.dart';
 import '../../models/place_model.dart';
@@ -74,7 +75,7 @@ class DatabaseSeeder {
       location: 'São Paulo, SP',
       planType: 'free',
       points: 150,
-      placesVisited: 5,
+      businessesVisited: 5,
       favoriteCount: 3,
       badgesCount: 2,
       streakDays: 3,
@@ -90,8 +91,8 @@ class DatabaseSeeder {
   Future<void> _seedPlaces() async {
     debugPrint('📍 Adicionando lugares...');
 
-    final places = [
-      PlaceModel(
+    final businesses = [
+      BusinessModel(
         id: 'mock_1',
         name: 'Café Raiz',
         category: 'Cafés',
@@ -109,8 +110,11 @@ class DatabaseSeeder {
         reviewsCount: 142,
         priceRange: '\$\$',
         isOpen: true,
-        openingHours:
-            '{"seg-sex": "7:00-19:00", "sab": "8:00-18:00", "dom": "8:00-14:00"}',
+        openingHours: {
+          'seg-sex': '7:00-19:00',
+          'sab': '8:00-18:00',
+          'dom': '8:00-14:00',
+        },
         amenities: ['Wi-Fi grátis', 'Pet friendly', 'Estacionamento'],
         images: ['assets/images/cafe.png', 'assets/images/cafe2.png'],
         discountText: '15% OFF',
@@ -121,7 +125,7 @@ class DatabaseSeeder {
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_2',
         name: 'Restaurante Bella Vita',
         category: 'Restaurantes',
@@ -139,7 +143,7 @@ class DatabaseSeeder {
         reviewsCount: 98,
         priceRange: '\$\$\$',
         isOpen: true,
-        openingHours: '{"seg-dom": "11:00-23:00"}',
+        openingHours: {'seg-dom': '11:00-23:00'},
         amenities: ['Ar condicionado', 'Aceita cartão', 'Vinho', 'Romântico'],
         images: ['assets/images/restaurant.png'],
         discountText: '20% OFF',
@@ -150,7 +154,7 @@ class DatabaseSeeder {
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_3',
         name: 'Bar do João',
         category: 'Bares',
@@ -166,7 +170,7 @@ class DatabaseSeeder {
         reviewsCount: 67,
         priceRange: '\$\$',
         isOpen: true,
-        openingHours: '{"ter-dom": "17:00-01:00"}',
+        openingHours: {'ter-dom': '17:00-01:00'},
         amenities: ['Música ao vivo', 'Chopp', 'Petiscos'],
         images: ['assets/images/bar.png'],
         discountText: '10% OFF',
@@ -177,7 +181,7 @@ class DatabaseSeeder {
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_4',
         name: 'Padaria Aurora',
         category: 'Lojas',
@@ -194,7 +198,7 @@ class DatabaseSeeder {
         reviewsCount: 156,
         priceRange: '\$',
         isOpen: true,
-        openingHours: '{"seg-sab": "6:00-20:00", "dom": "6:00-14:00"}',
+        openingHours: {'seg-sab': '6:00-20:00', 'dom': '6:00-14:00'},
         amenities: ['Pães artesanais', 'Bolos', 'Café da manhã'],
         images: ['assets/images/bakery.png'],
         discountText: '5% OFF',
@@ -205,7 +209,7 @@ class DatabaseSeeder {
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_5',
         name: 'Sorveteria Gelato',
         category: 'Lojas',
@@ -222,18 +226,18 @@ class DatabaseSeeder {
         reviewsCount: 203,
         priceRange: '\$\$',
         isOpen: true,
-        openingHours: '{"seg-dom": "10:00-22:00"}',
+        openingHours: {'seg-dom': '10:00-22:00'},
         amenities: ['Artesanal', 'Natural', 'Vegano', 'Sem lactose'],
         images: ['assets/images/ice.png'],
         discountText: '2º sabor grátis',
-        discountPercentage: null,
+        discountPercentage: 0,
         isPremiumOnly: false,
         distance: 1500.0,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_6',
         name: 'Bistrô Central',
         category: 'Restaurantes',
@@ -250,17 +254,17 @@ class DatabaseSeeder {
         reviewsCount: 89,
         priceRange: '\$\$\$',
         isOpen: false,
-        openingHours: '{"ter-sab": "12:00-15:00, 19:00-23:00"}',
+        openingHours: {'ter-sab': '12:00-15:00, 19:00-23:00'},
         amenities: ['Ar condicionado', 'Estacionamento', 'Aceita cartão'],
         images: ['assets/images/bistro.png'],
-        discountPercentage: null,
+        discountPercentage: 0,
         isPremiumOnly: false,
         distance: 2100.0,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_7',
         name: 'Lanchonete do Bairro',
         category: 'Restaurantes',
@@ -276,7 +280,7 @@ class DatabaseSeeder {
         reviewsCount: 45,
         priceRange: '\$',
         isOpen: true,
-        openingHours: '{"seg-sex": "10:00-22:00", "sab-dom": "10:00-20:00"}',
+        openingHours: {'seg-sex': '10:00-22:00', 'sab-dom': '10:00-20:00'},
         amenities: ['Delivery', 'Aceita cartão', 'Sucos naturais'],
         images: ['assets/images/lanche.png'],
         discountText: '10% OFF',
@@ -287,7 +291,7 @@ class DatabaseSeeder {
         updatedAt: DateTime.now(),
         synced: true,
       ),
-      PlaceModel(
+      BusinessModel(
         id: 'mock_8',
         name: 'Café Literário',
         category: 'Cafés',
@@ -305,7 +309,7 @@ class DatabaseSeeder {
         reviewsCount: 112,
         priceRange: '\$\$',
         isOpen: true,
-        openingHours: '{"seg-dom": "8:00-22:00"}',
+        openingHours: {'seg-dom': '8:00-22:00'},
         amenities: ['Wi-Fi grátis', 'Livraria', 'Ambiente silencioso'],
         images: ['assets/images/cafe2.png'],
         discountText: '12% OFF',
@@ -319,12 +323,12 @@ class DatabaseSeeder {
     ];
 
     // Inserir cada lugar
-    for (final place in places) {
+    for (final place in businesses) {
       await _placeRepo.insert(place);
       debugPrint('✅ Lugar adicionado: ${place.name}');
     }
 
-    debugPrint('✅ ${places.length} lugares adicionados com sucesso!');
+    debugPrint('✅ ${businesses.length} lugares adicionados com sucesso!');
   }
 
   /// Limpa todos os dados e repopula (útil para testes)

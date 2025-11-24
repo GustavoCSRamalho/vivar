@@ -12,7 +12,7 @@ class UserEntity {
   final String? location;
   final String planType;
   final int points;
-  final int placesVisited;
+  final int businessesVisited;
   final int badgesCount;
   final int streakDays;
   final int? favoriteCount;
@@ -30,7 +30,7 @@ class UserEntity {
     this.location,
     this.planType = 'free',
     this.points = 0,
-    this.placesVisited = 0,
+    this.businessesVisited = 0,
     this.badgesCount = 0,
     this.streakDays = 0,
     this.favoriteCount,

@@ -7,8 +7,12 @@ import 'package:vivar/core/repositories/user_repository.dart';
 import 'package:vivar/core/services/location_service.dart';
 import 'package:vivar/screens/home/data/datasource/location_datasource.dart';
 import 'package:vivar/screens/home/data/datasource/notification_datasource.dart';
-import 'package:vivar/screens/home/data/datasource/place_datasource.dart';
-import 'package:vivar/screens/home/data/datasource/user_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/place/home_place_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/place/home_place_remote_datasource_impl.dart';
+import 'package:vivar/screens/home/data/datasource/place/home_place_sync_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/user/home_user_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/user/home_user_remote_datasource_impl.dart';
+import 'package:vivar/screens/home/data/datasource/user/home_user_sync_datasource.dart';
 import 'package:vivar/screens/home/data/repositories/location_repository_impl.dart';
 import 'package:vivar/screens/home/data/repositories/notification_repository_impl.dart';
 import 'package:vivar/screens/home/data/repositories/place_repository_impl.dart';
@@ -37,10 +41,27 @@ class HomeProviderFactory {
     final locationDatasource = LocationDatasourceImpl();
     final notificationDatasource = NotificationDatasource();
 
-    final placeRepositoryImpl = PlaceRepositoryImpl(
-      datasource: placeDatasource,
+    // No seu DI container ou GetIt
+    final remoteDatasource = PlaceRemoteDatasourceImpl();
+
+    final syncDatasource = PlaceSyncDatasource(
+      localDatasource: placeDatasource,
+      remoteDatasource: remoteDatasource,
     );
-    final userRepositoryImpl = UserRepositoryImpl(datasource: userDatasource);
+
+    final placeRepositoryImpl = PlaceRepositoryImpl(
+      syncDatasource: syncDatasource,
+    );
+
+    final userDataSource = UserDatasourceImpl();
+    final userRemoteDataSource = UserRemoteDatasourceImpl();
+    final syncUserDataSource = UserSyncDatasource(
+      localDatasource: userDataSource,
+      remoteDatasource: userRemoteDataSource,
+    );
+    final userRepositoryImpl = UserRepositoryImpl(
+      syncDatasource: syncUserDataSource,
+    );
     final locationRepositoryImpl = LocationRepositoryImpl(
       datasource: locationDatasource,
     );

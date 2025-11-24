@@ -1,18 +1,22 @@
+// data/repositories/user_profile_repository_impl.dart
+
 import 'dart:convert';
 import 'package:vivar/domain/entity/profile/profile_entity.dart';
 import 'package:vivar/domain/entity/user/user_profile_update_entity.dart';
 import 'package:vivar/models/user_model.dart';
 import 'package:vivar/domain/interface/user/user_profile_repository_protocol.dart';
-import 'package:vivar/screens/profile/data/datasource/user_local_datasource.dart';
+
+import '../datasource/user/profile_user_local_sync_datasource.dart';
 
 class UserProfileRepositoryImpl implements UserProfileRepositoryProtocol {
-  final UserLocalDataSourceProtocol datasource;
+  final UserLocalSyncDataSource _syncDatasource;
 
-  UserProfileRepositoryImpl({required this.datasource});
+  UserProfileRepositoryImpl({required UserLocalSyncDataSource syncDatasource})
+    : _syncDatasource = syncDatasource;
 
   @override
   Future<ProfileEntity?> getUserProfile(String userId) async {
-    final model = await datasource.getUser(userId);
+    final model = await _syncDatasource.getUser(userId);
     if (model == null) return null;
 
     return _modelToEntity(model);
@@ -20,10 +24,7 @@ class UserProfileRepositoryImpl implements UserProfileRepositoryProtocol {
 
   @override
   Future<void> updateUserProfile(UserProfileUpdateEntity profile) async {
-    final updateData = <String, dynamic>{
-      'name': profile.name.trim(),
-      'updated_at': DateTime.now().toIso8601String(),
-    };
+    final updateData = <String, dynamic>{'name': profile.name.trim()};
 
     if (profile.username != null) updateData['username'] = profile.username;
     if (profile.bio != null) updateData['bio'] = profile.bio;
@@ -36,7 +37,7 @@ class UserProfileRepositoryImpl implements UserProfileRepositoryProtocol {
       updateData['privacy_settings'] = jsonEncode(profile.privacySettings);
     }
 
-    await datasource.updateUser(updateData, profile.userId);
+    await _syncDatasource.updateUser(updateData, profile.userId);
   }
 
   @override
@@ -44,14 +45,14 @@ class UserProfileRepositoryImpl implements UserProfileRepositoryProtocol {
     await Future.delayed(Duration(seconds: 1));
     final url = "https://example.com/avatars/$userId.jpg";
 
-    await datasource.updateAvatar(userId, url);
+    await _syncDatasource.updateAvatar(userId, url);
 
     return url;
   }
 
   @override
   Future<void> removeAvatar(String userId) async {
-    await datasource.removeAvatar(userId);
+    await _syncDatasource.removeAvatar(userId);
   }
 
   ProfileEntity _modelToEntity(UserModel model) {
@@ -66,7 +67,7 @@ class UserProfileRepositoryImpl implements UserProfileRepositoryProtocol {
       location: model.location,
       planType: model.planType,
       points: model.points,
-      placesVisited: model.placesVisited,
+      businessesVisited: model.businessesVisited,
       badgesCount: model.badgesCount,
       streakDays: model.streakDays,
       favoriteCount: model.favoriteCount,

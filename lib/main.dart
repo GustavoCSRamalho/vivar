@@ -1,7 +1,8 @@
 // main.dart
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vivar/core/database/database_seeder.dart';
 import 'package:vivar/factory/challenges_provider_factory.dart';
 import 'package:vivar/factory/discover_provider_factory.dart';
@@ -11,7 +12,6 @@ import 'package:vivar/factory/home_provider_factory.dart';
 import 'package:vivar/factory/location_permission_provider_factory.dart';
 import 'package:vivar/factory/login_provider_factory.dart';
 import 'package:vivar/factory/loyalty_card_provider_factory.dart';
-import 'package:vivar/factory/map_provider_factory.dart';
 import 'package:vivar/factory/merchant_register_provider_factory.dart';
 import 'package:vivar/factory/notifications_provider_factory.dart';
 import 'package:vivar/factory/onboarding_provider_factory.dart';
@@ -22,33 +22,33 @@ import 'package:vivar/factory/settings_provider_factory.dart';
 import 'package:vivar/factory/splash_provider_factory.dart';
 import 'package:vivar/factory/subscription_provider_factory.dart';
 import 'package:vivar/factory/swipe_provider_factory.dart';
+import 'package:vivar/firebase_options.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
-import 'package:vivar/screens/swipe/presentation/providers/swipe_provider.dart';
 import 'app.dart';
-import 'providers/auth_provider.dart';
-import 'providers/places_provider.dart';
-import 'providers/user_provider.dart';
-import 'providers/favorites_provider.dart';
-import 'providers/checkins_provider.dart';
-import 'providers/badges_provider.dart';
-import 'providers/challenges_provider.dart';
-import 'providers/notifications_provider.dart';
 import 'core/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await Supabase.initialize(
+    url: 'https://csgqqnbqcmlgodrxysuj.supabase.co', // https://xxx.supabase.co
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzZ3FxbmJxY21sZ29kcnh5c3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MzAyMzUsImV4cCI6MjA3OTUwNjIzNX0.Fwe3JK2kmzxBgbA3Jn6gYw-wqFuiSXwkIbr5UTmWruA',
+  );
   // Inicializar banco de dados
   await DatabaseHelper().deleteDatabase();
   await DatabaseHelper().database;
   await DatabaseHelper().clearAllData();
 
   // Popular banco de dados com mocks (apenas na primeira vez)
-  final seeder = DatabaseSeeder();
-  await seeder.seed();
+  // final seeder = DatabaseSeeder();
+  // await seeder.seed();
 
-  await _testDatabaseDirectly();
+  // await _testDatabaseDirectly();
 
   final homeProvider = HomeProviderFactory.create();
   final profileProvider = ProfileProviderFactory.create();
@@ -91,7 +91,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => notificationProvider),
         ChangeNotifierProvider(create: (_) => challengesProvider),
         // ChangeNotifierProvider(create: (_) => UserProvider()),
-        // ChangeNotifierProvider(create: (_) => PlacesProvider()),
+        // ChangeNotifierProvider(create: (_) => businessesProvider()),
         // ChangeNotifierProvider(create: (_) => FavoritesProvider()),
         // ChangeNotifierProvider(create: (_) => CheckinsProvider()),
         // ChangeNotifierProvider(create: (_) => BadgesProvider()),
@@ -111,18 +111,18 @@ Future<void> _testDatabaseDirectly() async {
 
     // 1. Verificar se a tabela existe
     final tables = await db.rawQuery(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='places'",
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='businesses'",
     );
-    debugPrint('📋 Tabela places existe? ${tables.isNotEmpty}');
+    debugPrint('📋 Tabela businesses existe? ${tables.isNotEmpty}');
 
     if (tables.isEmpty) {
-      debugPrint('❌ PROBLEMA: Tabela places não existe!');
+      debugPrint('❌ PROBLEMA: Tabela businesses não existe!');
       return;
     }
 
     // 2. Contar registros
     final count = Sqflite.firstIntValue(
-      await db.rawQuery('SELECT COUNT(*) FROM places'),
+      await db.rawQuery('SELECT COUNT(*) FROM businesses'),
     );
     debugPrint('📊 Total de registros: $count');
 
@@ -130,7 +130,7 @@ Future<void> _testDatabaseDirectly() async {
       debugPrint('⚠️ BANCO VAZIO! Vamos inserir um teste...');
 
       // 3. Inserir um registro de teste MANUALMENTE
-      await db.insert('places', {
+      await db.insert('businesses', {
         'id': 'test_manual_${DateTime.now().millisecondsSinceEpoch}',
         'name': 'Teste Manual',
         'category': 'Cafés',
@@ -151,13 +151,13 @@ Future<void> _testDatabaseDirectly() async {
 
       // 4. Verificar novamente
       final newCount = Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM places'),
+        await db.rawQuery('SELECT COUNT(*) FROM businesses'),
       );
       debugPrint('📊 Novo total: $newCount');
     }
 
     // 5. Buscar e mostrar os primeiros 3
-    final maps = await db.query('places', limit: 3);
+    final maps = await db.query('businesses', limit: 3);
     debugPrint('📋 Primeiros registros:');
     for (var map in maps) {
       debugPrint('   - ${map['name']} (${map['id']})');
@@ -166,7 +166,7 @@ Future<void> _testDatabaseDirectly() async {
     // 6. Testar PlaceModel.fromMap()
     if (maps.isNotEmpty) {
       try {
-        final place = PlaceModel.fromMap(maps.first);
+        final place = BusinessModel.fromMap(maps.first);
         debugPrint('✅ PlaceModel.fromMap() funcionou: ${place.name}');
       } catch (e, stack) {
         debugPrint('❌ ERRO no PlaceModel.fromMap(): $e');

@@ -1,29 +1,30 @@
 import 'package:vivar/domain/entity/profile/profile_entity.dart';
 import 'package:vivar/domain/interface/profile/profile_repository_protocol.dart';
-import 'package:vivar/screens/profile/data/datasource/profile_local_datasource.dart';
+import 'package:vivar/screens/profile/data/datasource/profile/profile_sync_datasource.dart';
 
 class ProfileRepositoryImpl implements ProfileRepositoryProtocol {
-  final ProfileLocalDataSourceProtocol datasource;
+  final ProfileSyncDataSource _syncDatasource;
 
-  ProfileRepositoryImpl({required this.datasource});
+  ProfileRepositoryImpl({required ProfileSyncDataSource syncDatasource})
+    : _syncDatasource = syncDatasource;
 
   @override
   Future<ProfileEntity?> getProfile(String userId) {
-    return datasource.getProfile(userId);
+    return _syncDatasource.getProfile(userId);
   }
 
   @override
   Future<void> updateProfile(ProfileEntity profile) {
-    return datasource.updateProfile(profile);
+    return _syncDatasource.updateProfile(profile);
   }
 
   @override
   Future<int> getRecentCheckinsCount(String userId) {
-    return datasource.getRecentCheckinsCount(userId);
+    return _syncDatasource.getRecentCheckinsCount(userId);
   }
 
   @override
   Future<List<String>> getRecentBadges(String userId, {int limit = 5}) {
-    return datasource.getRecentBadges(userId, limit: limit);
+    return _syncDatasource.getRecentBadges(userId, limit: limit);
   }
 }

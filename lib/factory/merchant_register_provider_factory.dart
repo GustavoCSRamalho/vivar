@@ -1,6 +1,8 @@
 // presentation/providers/merchant_register_provider_factory.dart
 
 import 'package:vivar/screens/merchant/data/datasource/merchant_datasource.dart';
+import 'package:vivar/screens/merchant/data/datasource/merchant_remote_datasource_impl.dart';
+import 'package:vivar/screens/merchant/data/datasource/merchant_sync_datasource.dart';
 import 'package:vivar/screens/merchant/data/repositories/merchant_repository_impl.dart';
 import 'package:vivar/domain/usecases/merchant/register_merchant_usecase.dart';
 import 'package:vivar/domain/usecases/merchant/validate_merchant_data_usecase.dart';
@@ -8,8 +10,13 @@ import 'package:vivar/screens/merchant/presentation/providers/merchant_register_
 
 class MerchantRegisterProviderFactory {
   static MerchantRegisterProvider create() {
-    final datasource = MerchantDatasourceImpl();
-    final repository = MerchantRepositoryImpl(datasource: datasource);
+    final datasource = MerchantLocalDatasourceImpl();
+    final remoteDataSource = MerchantRemoteDatasourceImpl();
+    final syncDataSource = MerchantSyncDatasource(
+      localDatasource: datasource,
+      remoteDatasource: remoteDataSource,
+    );
+    final repository = MerchantRepositoryImpl(syncDatasource: syncDataSource);
 
     final registerMerchantUseCase = RegisterMerchantUseCase(repository);
     final validateMerchantDataUseCase = ValidateMerchantDataUseCase();

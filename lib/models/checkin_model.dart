@@ -1,9 +1,5 @@
 // models/checkin_model.dart
-import 'package:json_annotation/json_annotation.dart';
 
-part 'checkin_model.g.dart';
-
-@JsonSerializable()
 class CheckinModel {
   final String id;
   final String placeId;
@@ -25,21 +21,20 @@ class CheckinModel {
     this.synced = false,
   });
 
-  factory CheckinModel.fromJson(Map<String, dynamic> json) =>
-      _$CheckinModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CheckinModelToJson(this);
-
   factory CheckinModel.fromMap(Map<String, dynamic> map) {
     return CheckinModel(
-      id: map['id'],
-      placeId: map['place_id'],
-      userId: map['user_id'],
-      pointsEarned: map['points_earned'] ?? 50,
-      rating: map['rating'],
-      comment: map['comment'],
-      createdAt: DateTime.parse(map['created_at']),
-      synced: map['synced'] == 1,
+      id: map['id'] as String,
+      placeId: map['place_id'] as String,
+      userId: map['user_id'] as String,
+      pointsEarned: map['points_earned'] as int? ?? 50,
+      rating: map['rating'] as int?,
+      comment: map['comment'] as String?,
+      createdAt: map['created_at'] is String
+          ? DateTime.parse(map['created_at'])
+          : (map['created_at'] as DateTime),
+      synced: map['synced'] is int
+          ? (map['synced'] as int) == 1
+          : (map['synced'] as bool? ?? false),
     );
   }
 
@@ -54,5 +49,27 @@ class CheckinModel {
       'created_at': createdAt.toIso8601String(),
       'synced': synced ? 1 : 0,
     };
+  }
+
+  CheckinModel copyWith({
+    String? id,
+    String? placeId,
+    String? userId,
+    int? pointsEarned,
+    int? rating,
+    String? comment,
+    DateTime? createdAt,
+    bool? synced,
+  }) {
+    return CheckinModel(
+      id: id ?? this.id,
+      placeId: placeId ?? this.placeId,
+      userId: userId ?? this.userId,
+      pointsEarned: pointsEarned ?? this.pointsEarned,
+      rating: rating ?? this.rating,
+      comment: comment ?? this.comment,
+      createdAt: createdAt ?? this.createdAt,
+      synced: synced ?? this.synced,
+    );
   }
 }

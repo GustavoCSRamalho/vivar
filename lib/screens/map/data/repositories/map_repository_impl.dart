@@ -1,28 +1,29 @@
 // data/repositories/map_repository_impl.dart
 
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:vivar/domain/entity/map/map_place_entity.dart';
 import 'package:vivar/domain/interface/map/map_repository_protocol.dart';
-import 'package:vivar/screens/map/data/datasource/map_datasource.dart';
+import 'package:vivar/screens/map/data/datasource/map_sync_datasource.dart';
 
 /// Implementação do repositório de mapa
-/// Delega operações de dados para o datasource
+/// Delega operações de dados para o datasource de sincronização
 /// Converte PlaceModel para MapPlaceEntity (entidade específica do mapa)
 class MapRepositoryImpl implements MapRepositoryProtocol {
-  final MapDatasourceProtocol _datasource;
+  final MapSyncDatasource _syncDatasource;
 
-  MapRepositoryImpl({required MapDatasourceProtocol datasource})
-    : _datasource = datasource;
+  MapRepositoryImpl({required MapSyncDatasource syncDatasource})
+    : _syncDatasource = syncDatasource;
 
   @override
   Future<List<MapPlaceEntity>> getPlacesForMap() async {
-    final models = await _datasource.getPlacesForMap();
+    final models = await _syncDatasource.getPlacesForMap();
     return models.map(_modelToEntity).toList();
   }
 
   @override
   Future<List<MapPlaceEntity>> getPlacesByCategory(String category) async {
-    final models = await _datasource.getPlacesByCategory(category);
+    final models = await _syncDatasource.getPlacesByCategory(category);
     return models.map(_modelToEntity).toList();
   }
 
@@ -32,7 +33,7 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
     required double longitude,
     required double radiusKm,
   }) async {
-    final models = await _datasource.getNearbyPlacesForMap(
+    final models = await _syncDatasource.getNearbyPlacesForMap(
       latitude: latitude,
       longitude: longitude,
       radiusKm: radiusKm,
@@ -42,13 +43,13 @@ class MapRepositoryImpl implements MapRepositoryProtocol {
 
   @override
   Future<List<MapPlaceEntity>> searchPlacesOnMap(String query) async {
-    final models = await _datasource.searchPlacesOnMap(query);
+    final models = await _syncDatasource.searchPlacesOnMap(query);
     return models.map(_modelToEntity).toList();
   }
 
   /// Converte PlaceModel (data layer) para MapPlaceEntity (domain layer)
   /// Também formata a distância de metros para string legível
-  MapPlaceEntity _modelToEntity(PlaceModel model) {
+  MapPlaceEntity _modelToEntity(BusinessModel model) {
     final formattedDistance = _formatDistance(model.distance);
 
     return MapPlaceEntity(

@@ -1,4 +1,4 @@
-// // providers/places_provider.dart
+// // providers/businesses_provider.dart
 // import 'package:flutter/foundation.dart';
 // import 'package:vivar/models/place_model.dart';
 // import '../core/repositories/place_repository.dart';
@@ -8,7 +8,7 @@
 //   final PlaceRepository _placeRepo = PlaceRepository();
 //   final FavoriteRepository _favoriteRepo = FavoriteRepository();
 
-//   List<PlaceModel> _places = [];
+//   List<PlaceModel> _businesses = [];
 //   List<PlaceModel> _filteredPlaces = [];
 //   List<String> _favoritePlaceIds = [];
 //   bool _isLoading = false;
@@ -21,7 +21,7 @@
 //   double? _userLongitude;
 
 //   // Getters
-//   List<PlaceModel> get places => _filteredPlaces;
+//   List<PlaceModel> get businesses => _filteredPlaces;
 //   List<String> get favoritePlaceIds => _favoritePlaceIds;
 //   bool get isLoading => _isLoading;
 //   String? get error => _error;
@@ -40,8 +40,8 @@
 //       _error = null;
 //       notifyListeners();
 
-//       _places = await _placeRepo.getAll();
-//       debugPrint('⚠️ placesProvider.loadNearbyPlaces ${_places}');
+//       _businesses = await _placeRepo.getAll();
+//       debugPrint('⚠️ businessesProvider.loadNearbyPlaces ${_businesses}');
 //       _applyFilters();
 
 //       _isLoading = false;
@@ -76,7 +76,7 @@
 //       _userLongitude = longitude;
 //       notifyListeners();
 
-//       _places = await _placeRepo.getNearby(latitude, longitude, radiusKm);
+//       _businesses = await _placeRepo.getNearby(latitude, longitude, radiusKm);
 //       _applyFilters();
 
 //       _isLoading = false;
@@ -92,7 +92,7 @@
 //   Future<void> searchPlaces(String query) async {
 //     _searchQuery = query;
 //     if (query.isEmpty) {
-//       _filteredPlaces = _places;
+//       _filteredPlaces = _businesses;
 //     } else {
 //       try {
 //         _filteredPlaces = await _placeRepo.search(query);
@@ -112,7 +112,7 @@
 
 //   // Aplicar filtros
 //   void _applyFilters() {
-//     _filteredPlaces = _places;
+//     _filteredPlaces = _businesses;
 
 //     if (_selectedCategory != null && _selectedCategory != 'Todos') {
 //       _filteredPlaces = _filteredPlaces

@@ -2,25 +2,26 @@
 
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 
 /// Contrato abstrato para datasource de mapa
 abstract class MapDatasourceProtocol {
   /// Busca todos os lugares para exibir no mapa
-  Future<List<PlaceModel>> getPlacesForMap();
+  Future<List<BusinessModel>> getPlacesForMap();
 
   /// Busca lugares por categoria para o mapa
-  Future<List<PlaceModel>> getPlacesByCategory(String category);
+  Future<List<BusinessModel>> getPlacesByCategory(String category);
 
   /// Busca lugares próximos para o mapa
-  Future<List<PlaceModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getNearbyPlacesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
   });
 
   /// Busca lugares no mapa por texto
-  Future<List<PlaceModel>> searchPlacesOnMap(String query);
+  Future<List<BusinessModel>> searchPlacesOnMap(String query);
 }
 
 /// Implementação do datasource de mapa
@@ -28,7 +29,7 @@ abstract class MapDatasourceProtocol {
 class MapDatasourceImpl implements MapDatasourceProtocol {
   final DatabaseHelper _dbHelper;
 
-  static const String _tableName = 'places';
+  static const String _tableName = 'businesses';
 
   MapDatasourceImpl({DatabaseHelper? dbHelper})
     : _dbHelper = dbHelper ?? DatabaseHelper();
@@ -36,7 +37,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<List<PlaceModel>> getPlacesForMap() async {
+  Future<List<BusinessModel>> getPlacesForMap() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(_tableName);
@@ -48,7 +49,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getPlacesByCategory(String category) async {
+  Future<List<BusinessModel>> getPlacesByCategory(String category) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -64,7 +65,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getNearbyPlacesForMap({
+  Future<List<BusinessModel>> getNearbyPlacesForMap({
     required double latitude,
     required double longitude,
     required double radiusKm,
@@ -88,7 +89,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> searchPlacesOnMap(String query) async {
+  Future<List<BusinessModel>> searchPlacesOnMap(String query) async {
     try {
       final db = await _database;
       final searchPattern = '%$query%';
@@ -125,7 +126,7 @@ class MapDatasourceImpl implements MapDatasourceProtocol {
   }
 
   /// Converte lista de Maps para lista de PlaceModel
-  List<PlaceModel> _mapListToModels(List<Map<String, dynamic>> maps) {
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+  List<BusinessModel> _mapListToModels(List<Map<String, dynamic>> maps) {
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 }

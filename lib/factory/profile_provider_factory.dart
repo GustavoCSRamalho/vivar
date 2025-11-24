@@ -1,7 +1,9 @@
 // presentation/providers/profile_provider_factory.dart
 
 import 'package:vivar/domain/usecases/profile/get_recent_checkins_count_usecase.dart';
-import 'package:vivar/screens/profile/data/datasource/profile_local_datasource.dart';
+import 'package:vivar/screens/profile/data/datasource/profile/profile_local_datasource.dart';
+import 'package:vivar/screens/profile/data/datasource/profile/profile_remote_datasource_impl.dart';
+import 'package:vivar/screens/profile/data/datasource/profile/profile_sync_datasource.dart';
 import 'package:vivar/screens/profile/data/repositories/profile_repository_impl.dart';
 import '../domain/usecases/profile/get_profile_usecase.dart';
 import '../domain/usecases/profile/get_recent_badges_usecase.dart';
@@ -11,7 +13,15 @@ import '../screens/profile/presentation/providers/profile_provider.dart';
 class ProfileProviderFactory {
   static ProfileProvider create() {
     final datasource = ProfileLocalDataSource();
-    final profileRepositoryImpl = ProfileRepositoryImpl(datasource: datasource);
+    final remoteDatasource = ProfileRemoteDatasourceImpl();
+
+    final syncDataSource = ProfileSyncDataSource(
+      localDatasource: datasource,
+      remoteDatasource: remoteDatasource,
+    );
+    final profileRepositoryImpl = ProfileRepositoryImpl(
+      syncDatasource: syncDataSource,
+    );
 
     final getProfileUseCase = GetProfileUseCase(profileRepositoryImpl);
     final updateProfileUseCase = UpdateProfileUseCase(profileRepositoryImpl);

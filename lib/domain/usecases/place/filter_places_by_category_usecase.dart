@@ -1,23 +1,25 @@
-// domain/usecases/place/filter_places_by_category_usecase.dart
+// domain/usecases/place/filter_businesses_by_category_usecase.dart
+
+import 'package:vivar/domain/entity/business/business_entity.dart';
 
 import '../../entity/place/place_entity.dart';
 
 class FilterPlacesByCategoryUseCase {
   FilterPlacesByCategoryUseCase();
 
-  List<PlaceEntity> execute({
-    required List<PlaceEntity> places,
+  List<BusinessEntity> execute({
+    required List<BusinessEntity> businesses,
     required String category,
   }) {
     try {
       if (category == 'Todos') {
-        return places;
+        return businesses;
       }
 
-      return places.where((place) => place.category == category).toList();
+      return businesses.where((place) => place.category == category).toList();
     } catch (e) {
       print('❌ Erro ao filtrar por categoria: $e');
-      return places;
+      return businesses;
     }
   }
 }

@@ -1,6 +1,7 @@
 // presentation/providers/place_details_provider.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 
 import 'package:vivar/domain/entity/place/place_details_entity.dart';
 import 'package:vivar/domain/entity/review/review_entity.dart';
@@ -30,13 +31,13 @@ class PlaceDetailsProvider with ChangeNotifier {
        _checkUserReviewedUseCase = checkUserReviewedUseCase,
        _getPlaceByIdUseCase = getPlaceByIdUseCase;
 
-  PlaceDetailsEntity? _place;
+  BusinessEntity? _place;
   List<ReviewEntity> _reviews = [];
   bool _hasUserReviewed = false;
   bool _isLoading = false;
   String? _error;
 
-  PlaceDetailsEntity? get place => _place;
+  BusinessEntity? get place => _place;
   List<ReviewEntity> get reviews => _reviews;
   bool get hasUserReviewed => _hasUserReviewed;
   bool get isLoading => _isLoading;

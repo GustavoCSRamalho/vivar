@@ -1,13 +1,13 @@
 // presentation/providers/discover_provider.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/domain/entity/discover/discover_collection_entity.dart';
 import 'package:vivar/domain/usecases/discover/get_collection_places_usecase.dart';
 import 'package:vivar/domain/usecases/discover/get_collections_usecase.dart';
 import 'package:vivar/domain/usecases/discover/get_near_you_places_usecase.dart';
+import 'package:vivar/domain/usecases/discover/get_top_rated_places_usecase.dart';
 import 'package:vivar/domain/usecases/discover/get_trending_places_usecase.dart';
-import 'package:vivar/domain/entity/place/place_entity.dart';
-import 'package:vivar/domain/usecases/place/get_top_rated_places_usecase.dart';
 
 class DiscoverProvider with ChangeNotifier {
   final GetCollectionsUseCase _getCollectionsUseCase;
@@ -29,16 +29,16 @@ class DiscoverProvider with ChangeNotifier {
        _getTopRatedPlacesUseCase = getTopRatedPlacesUseCase;
 
   List<DiscoverCollectionEntity> _collections = [];
-  List<PlaceEntity> _trendingPlaces = [];
-  List<PlaceEntity> _nearYouPlaces = [];
-  List<PlaceEntity> _topRatedPlaces = [];
+  List<BusinessEntity> _trendingPlaces = [];
+  List<BusinessEntity> _nearYouPlaces = [];
+  List<BusinessEntity> _topRatedPlaces = [];
   bool _isLoading = false;
   String? _error;
 
   List<DiscoverCollectionEntity> get collections => _collections;
-  List<PlaceEntity> get trendingPlaces => _trendingPlaces;
-  List<PlaceEntity> get nearYouPlaces => _nearYouPlaces;
-  List<PlaceEntity> get topRatedPlaces => _topRatedPlaces;
+  List<BusinessEntity> get trendingPlaces => _trendingPlaces;
+  List<BusinessEntity> get nearYouPlaces => _nearYouPlaces;
+  List<BusinessEntity> get topRatedPlaces => _topRatedPlaces;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -61,7 +61,7 @@ class DiscoverProvider with ChangeNotifier {
     }
   }
 
-  Future<List<PlaceEntity>> getCollectionPlaces(String collectionId) async {
+  Future<List<BusinessEntity>> getCollectionPlaces(String collectionId) async {
     try {
       return await _getCollectionPlacesUseCase.execute(collectionId);
     } catch (e) {

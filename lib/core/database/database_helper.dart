@@ -14,7 +14,7 @@ class DatabaseHelper {
 
   // Nome e versão do banco
   static const String _databaseName = 'vivar_local.db';
-  static const int _databaseVersion = 2;
+  static const int _databaseVersion = 13;
 
   // Singleton do banco de dados
   Future<Database> get database async {
@@ -40,7 +40,7 @@ class DatabaseHelper {
   Future<void> _onCreate(Database db, int version) async {
     // Tabela de usuários
     await db.execute('''
-      CREATE TABLE users (
+      CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         email TEXT NOT NULL,
         name TEXT NOT NULL,
@@ -52,7 +52,7 @@ class DatabaseHelper {
         plan_type TEXT DEFAULT 'free',
         points INTEGER DEFAULT 0,
         favorite_count INTEGER DEFAULT 0,
-        places_visited INTEGER DEFAULT 0,
+        businesses_visited INTEGER DEFAULT 0,
         badges_count INTEGER DEFAULT 0,
         streak_days INTEGER DEFAULT 0,
         created_at TEXT NOT NULL,
@@ -63,19 +63,22 @@ class DatabaseHelper {
 
     // Tabela de lugares
     await db.execute('''
-      CREATE TABLE places (
+      CREATE TABLE IF NOT EXISTS businesses (
         id TEXT PRIMARY KEY,
+        user_id TEXT,
         name TEXT NOT NULL,
         category TEXT NOT NULL,
         description TEXT,
         address TEXT NOT NULL,
-        city TEXT NOT NULL,
-        state TEXT NOT NULL,
-        latitude REAL NOT NULL,
-        longitude REAL NOT NULL,
+        city TEXT,
+        state TEXT,
+        latitude REAL,
+        longitude REAL,
         phone TEXT,
         whatsapp TEXT,
         email TEXT,
+        schedule TEXT,
+        is_whatsapp INTEGER DEFAULT 0,
         website TEXT,
         rating REAL DEFAULT 0,
         reviews_count INTEGER DEFAULT 0,
@@ -90,13 +93,14 @@ class DatabaseHelper {
         distance REAL,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
-        synced INTEGER DEFAULT 0
+        synced INTEGER DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
     ''');
 
     // Tabela de reviews
     await db.execute('''
-      CREATE TABLE reviews (
+      CREATE TABLE IF NOT EXISTS reviews (
         id TEXT PRIMARY KEY,
         place_id TEXT NOT NULL,
         user_id TEXT NOT NULL,
@@ -106,14 +110,14 @@ class DatabaseHelper {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         synced INTEGER DEFAULT 0,
-        FOREIGN KEY (place_id) REFERENCES places (id) ON DELETE CASCADE,
+        FOREIGN KEY (place_id) REFERENCES businesses (id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
     ''');
 
     // Tabela de check-ins
     await db.execute('''
-      CREATE TABLE checkins (
+      CREATE TABLE IF NOT EXISTS checkins (
         id TEXT PRIMARY KEY,
         place_id TEXT NOT NULL,
         user_id TEXT NOT NULL,
@@ -122,20 +126,20 @@ class DatabaseHelper {
         comment TEXT,
         created_at TEXT NOT NULL,
         synced INTEGER DEFAULT 0,
-        FOREIGN KEY (place_id) REFERENCES places (id) ON DELETE CASCADE,
+        FOREIGN KEY (place_id) REFERENCES businesses (id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
     ''');
 
     // Tabela de favoritos
     await db.execute('''
-      CREATE TABLE favorites (
+      CREATE TABLE IF NOT EXISTS favorites (
         id TEXT PRIMARY KEY,
         place_id TEXT NOT NULL,
         user_id TEXT NOT NULL,
         created_at TEXT NOT NULL,
         synced INTEGER DEFAULT 0,
-        FOREIGN KEY (place_id) REFERENCES places (id) ON DELETE CASCADE,
+        FOREIGN KEY (place_id) REFERENCES businesses (id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         UNIQUE(place_id, user_id)
       )
@@ -143,7 +147,7 @@ class DatabaseHelper {
 
     // Tabela de badges
     await db.execute('''
-      CREATE TABLE badges (
+      CREATE TABLE IF NOT EXISTS badges (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
         badge_type TEXT NOT NULL,
@@ -158,7 +162,7 @@ class DatabaseHelper {
 
     // Tabela de desafios
     await db.execute('''
-      CREATE TABLE challenges (
+      CREATE TABLE IF NOT EXISTS challenges (
         id TEXT PRIMARY KEY,
         user_id TEXT,
         title TEXT NOT NULL,
@@ -183,7 +187,7 @@ class DatabaseHelper {
 
     // Tabela de notificações
     await db.execute('''
-      CREATE TABLE notifications (
+      CREATE TABLE IF NOT EXISTS notifications (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
         type TEXT NOT NULL,
@@ -197,10 +201,22 @@ class DatabaseHelper {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS sync_queue (
+        entity_type TEXT NOT NULL,
+        entity_id TEXT PRIMARY KEY,
+        operation TEXT NOT NULL,
+        data TEXT,
+        timestamp INTEGER NOT NULL
+)
+    ''');
+
     // Índices para melhorar performance
-    await db.execute('CREATE INDEX idx_places_category ON places(category)');
     await db.execute(
-      'CREATE INDEX idx_places_location ON places(latitude, longitude)',
+      'CREATE INDEX idx_businesses_category ON businesses(category)',
+    );
+    await db.execute(
+      'CREATE INDEX idx_businesses_location ON businesses(latitude, longitude)',
     );
     await db.execute('CREATE INDEX idx_reviews_place ON reviews(place_id)');
     await db.execute('CREATE INDEX idx_checkins_user ON checkins(user_id)');
@@ -234,7 +250,7 @@ class DatabaseHelper {
   Future<void> clearAllData() async {
     final db = await database;
     await db.delete('users');
-    await db.delete('places');
+    await db.delete('businesses');
     await db.delete('reviews');
     await db.delete('checkins');
     await db.delete('favorites');

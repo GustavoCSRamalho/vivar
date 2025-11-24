@@ -1,9 +1,10 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 
 abstract class SwipeLocalDataSourceProtocol {
-  Future<List<PlaceModel>> getSwipePlaces();
+  Future<List<BusinessModel>> getSwipePlaces();
   Future<void> likePlace(String userId, String placeId);
   Future<void> superLikePlace(String userId, String placeId);
   Future<void> dislikePlace(String userId, String placeId);
@@ -11,13 +12,13 @@ abstract class SwipeLocalDataSourceProtocol {
 
 class SwipeLocalDataSource implements SwipeLocalDataSourceProtocol {
   final DatabaseHelper _dbHelper = DatabaseHelper();
-  final String _placeTableName = 'places';
+  final String _placeTableName = 'businesses';
   final String _favoriteTableName = 'favorites';
 
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<List<PlaceModel>> getSwipePlaces() async {
+  Future<List<BusinessModel>> getSwipePlaces() async {
     final db = await _database;
 
     final maps = await db.query(
@@ -26,7 +27,7 @@ class SwipeLocalDataSource implements SwipeLocalDataSourceProtocol {
       limit: 50,
     );
 
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 
   @override

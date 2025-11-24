@@ -2,6 +2,7 @@
 
 // data/datasources/place/place_datasource_protocol.dart
 
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vivar/core/database/database_helper.dart';
@@ -12,7 +13,7 @@ abstract class PlaceDatasourceProtocol {
   /// Busca todos os lugares cadastrados
   ///
   /// Retorna lista de [PlaceModel]
-  Future<List<PlaceModel>> getAllPlaces();
+  Future<List<BusinessModel>> getAllPlaces();
 
   /// Busca lugares próximos a uma coordenada geográfica
   ///
@@ -20,7 +21,7 @@ abstract class PlaceDatasourceProtocol {
   /// [longitude] - Longitude do ponto de referência
   /// [radiusKm] - Raio de busca em quilômetros
   /// Retorna lista de lugares ordenados por distância
-  Future<List<PlaceModel>> getNearbyPlaces({
+  Future<List<BusinessModel>> getNearbyPlaces({
     required double latitude,
     required double longitude,
     required double radiusKm,
@@ -30,30 +31,30 @@ abstract class PlaceDatasourceProtocol {
   ///
   /// [category] - Categoria do lugar (ex: "restaurante", "bar", "academia")
   /// Retorna lista de [PlaceModel] da categoria especificada
-  Future<List<PlaceModel>> getPlacesByCategory(String category);
+  Future<List<BusinessModel>> getPlacesByCategory(String category);
 
   /// Busca lugares por texto
   ///
   /// [query] - Texto de busca (procura em nome, descrição e categoria)
   /// Retorna lista de [PlaceModel] que correspondem à busca
-  Future<List<PlaceModel>> searchPlaces(String query);
+  Future<List<BusinessModel>> searchPlaces(String query);
 
   /// Busca um lugar específico pelo ID
   ///
   /// [id] - ID do lugar
   /// Retorna [PlaceModel] se encontrado, ou [null] caso contrário
-  Future<PlaceModel?> getPlaceById(String id);
+  Future<BusinessModel?> getPlaceById(String id);
 
   /// Busca lugares que oferecem desconto
   ///
   /// Retorna lista de [PlaceModel] com desconto ativo
-  Future<List<PlaceModel>> getPlacesWithDiscount();
+  Future<List<BusinessModel>> getPlacesWithDiscount();
 
   /// Busca os lugares mais bem avaliados
   ///
   /// [limit] - Número máximo de lugares a retornar (padrão: 10)
   /// Retorna lista de [PlaceModel] ordenados por avaliação
-  Future<List<PlaceModel>> getTopRatedPlaces({int limit = 10});
+  Future<List<BusinessModel>> getTopRatedPlaces({int limit = 10});
 
   /// Busca lugares com filtros múltiplos
   ///
@@ -63,7 +64,7 @@ abstract class PlaceDatasourceProtocol {
   /// [amenities] - Lista de comodidades desejadas
   /// [openNow] - Se deve filtrar apenas lugares abertos
   /// Retorna lista de [PlaceModel] que correspondem aos filtros
-  Future<List<PlaceModel>> getFilteredPlaces({
+  Future<List<BusinessModel>> getFilteredPlaces({
     List<String>? categories,
     String? priceRange,
     double? minRating,
@@ -78,7 +79,7 @@ abstract class PlaceDatasourceProtocol {
 class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   final DatabaseHelper _dbHelper;
 
-  static const String _tableName = 'places';
+  static const String _tableName = 'businesses';
 
   PlaceDatasourceImpl({DatabaseHelper? dbHelper})
     : _dbHelper = dbHelper ?? DatabaseHelper();
@@ -86,7 +87,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   Future<Database> get _database async => await _dbHelper.database;
 
   @override
-  Future<List<PlaceModel>> getAllPlaces() async {
+  Future<List<BusinessModel>> getAllPlaces() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(_tableName);
@@ -98,7 +99,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getNearbyPlaces({
+  Future<List<BusinessModel>> getNearbyPlaces({
     required double latitude,
     required double longitude,
     required double radiusKm,
@@ -122,7 +123,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getPlacesByCategory(String category) async {
+  Future<List<BusinessModel>> getPlacesByCategory(String category) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -138,7 +139,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> searchPlaces(String query) async {
+  Future<List<BusinessModel>> searchPlaces(String query) async {
     try {
       final db = await _database;
       final searchPattern = '%$query%';
@@ -157,7 +158,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<PlaceModel?> getPlaceById(String id) async {
+  Future<BusinessModel?> getPlaceById(String id) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -169,7 +170,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
 
       if (maps.isEmpty) return null;
 
-      return PlaceModel.fromMap(maps.first);
+      return BusinessModel.fromMap(maps.first);
     } catch (e) {
       print('❌ Erro ao buscar lugar por ID: $e');
       return null;
@@ -177,7 +178,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getPlacesWithDiscount() async {
+  Future<List<BusinessModel>> getPlacesWithDiscount() async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -192,7 +193,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getTopRatedPlaces({int limit = 10}) async {
+  Future<List<BusinessModel>> getTopRatedPlaces({int limit = 10}) async {
     try {
       final db = await _database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -208,7 +209,7 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   @override
-  Future<List<PlaceModel>> getFilteredPlaces({
+  Future<List<BusinessModel>> getFilteredPlaces({
     List<String>? categories,
     String? priceRange,
     double? minRating,
@@ -291,8 +292,8 @@ class PlaceDatasourceImpl implements PlaceDatasourceProtocol {
   }
 
   /// Converte lista de Maps para lista de PlaceModel
-  List<PlaceModel> _mapListToModels(List<Map<String, dynamic>> maps) {
-    return maps.map((map) => PlaceModel.fromMap(map)).toList();
+  List<BusinessModel> _mapListToModels(List<Map<String, dynamic>> maps) {
+    return maps.map((map) => BusinessModel.fromMap(map)).toList();
   }
 }
 

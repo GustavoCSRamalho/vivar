@@ -1,33 +1,90 @@
-// domain/entities/merchant_entity.dart
+// class MerchantEntity {
+//   final String id;
+//   final String? userId;
 
-class MerchantEntity {
-  final String id;
-  final String name;
-  final String category;
-  final String address;
-  final String phone;
-  final String email;
-  final String description;
-  final List<String> images;
-  final Map<String, String> schedule;
-  final List<String> amenities;
-  final bool isWhatsapp;
-  final String status;
-  final DateTime createdAt;
+//   final String name;
+//   final String category;
+//   final String? description;
 
-  MerchantEntity({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.address,
-    required this.phone,
-    required this.email,
-    required this.description,
-    required this.images,
-    required this.schedule,
-    required this.amenities,
-    required this.isWhatsapp,
-    this.status = 'pending',
-    required this.createdAt,
-  });
-}
+//   final String address;
+//   final String city;
+//   final String state;
+
+//   final double? latitude;
+//   final double? longitude;
+
+//   final String? phone;
+//   final String? whatsapp;
+//   final String? email;
+//   final String? website;
+
+//   final Map<String, dynamic>? schedule;
+//   final bool isWhatsapp;
+
+//   final double rating;
+//   final int reviewsCount;
+
+//   final String? priceRange;
+//   final bool isOpen;
+
+//   final Map<String, dynamic>? openingHours;
+
+//   final List<String> amenities;
+//   final List<String> images;
+
+//   final String? discountText;
+//   final int discountPercentage;
+
+//   final bool isPremiumOnly;
+
+//   final double? distance;
+
+//   final DateTime createdAt;
+//   final DateTime updatedAt;
+
+//   final bool synced;
+
+//   MerchantEntity({
+//     required this.id,
+//     this.userId,
+//     required this.name,
+//     required this.category,
+//     this.description,
+//     required this.address,
+//     required this.city,
+//     required this.state,
+//     this.latitude,
+//     this.longitude,
+
+//     this.phone,
+//     this.whatsapp,
+//     this.email,
+//     this.website,
+
+//     this.schedule,
+//     this.isWhatsapp = false,
+
+//     this.rating = 0.0,
+//     this.reviewsCount = 0,
+
+//     this.priceRange,
+//     this.isOpen = true,
+
+//     this.openingHours,
+
+//     this.amenities = const [],
+//     this.images = const [],
+
+//     this.discountText,
+//     this.discountPercentage = 0,
+
+//     this.isPremiumOnly = false,
+
+//     this.distance,
+
+//     required this.createdAt,
+//     required this.updatedAt,
+
+//     this.synced = false,
+//   });
+// }

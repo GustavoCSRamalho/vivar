@@ -3,53 +3,53 @@
 import 'package:vivar/models/user_model.dart';
 import 'package:vivar/domain/entity/user/user_entity.dart';
 import 'package:vivar/domain/interface/user/user_repository_protocol.dart';
-import 'package:vivar/screens/home/data/datasource/user_datasource.dart';
+import 'package:vivar/screens/home/data/datasource/user/home_user_sync_datasource.dart';
 
 /// Implementação do repositório de usuário
-/// Delega operações de dados para o datasource
+/// Delega operações de dados para o datasource de sincronização
 /// Responsável por converter entre Model (data layer) e Entity (domain layer)
 class UserRepositoryImpl implements UserRepositoryProtocol {
-  final UserDatasourceProtocol _datasource;
+  final UserSyncDatasource _syncDatasource;
 
-  UserRepositoryImpl({required UserDatasourceProtocol datasource})
-    : _datasource = datasource;
+  UserRepositoryImpl({required UserSyncDatasource syncDatasource})
+    : _syncDatasource = syncDatasource;
 
   @override
   Future<UserEntity?> getCurrentUser() async {
-    final model = await _datasource.getCurrentUser();
+    final model = await _syncDatasource.getCurrentUser();
     return model != null ? _modelToEntity(model) : null;
   }
 
   @override
   Future<UserEntity?> getUserById(String id) async {
-    final model = await _datasource.getUserById(id);
+    final model = await _syncDatasource.getUserById(id);
     return model != null ? _modelToEntity(model) : null;
   }
 
   @override
   Future<void> updateUser(UserEntity user) async {
     final model = _entityToModel(user);
-    await _datasource.updateUser(model);
+    await _syncDatasource.updateUser(model);
   }
 
   @override
   Future<List<String>> getUserFavoritePlaceIds(String userId) {
-    return _datasource.getUserFavoritePlaceIds(userId);
+    return _syncDatasource.getUserFavoritePlaceIds(userId);
   }
 
   @override
   Future<void> addFavorite(String userId, String placeId) {
-    return _datasource.addFavorite(userId, placeId);
+    return _syncDatasource.addFavorite(userId, placeId);
   }
 
   @override
   Future<void> removeFavorite(String userId, String placeId) {
-    return _datasource.removeFavorite(userId, placeId);
+    return _syncDatasource.removeFavorite(userId, placeId);
   }
 
   @override
   Future<bool> toggleFavorite(String userId, String placeId) {
-    return _datasource.toggleFavorite(userId, placeId);
+    return _syncDatasource.toggleFavorite(userId, placeId);
   }
 
   /// Converte UserModel (data layer) para UserEntity (domain layer)
@@ -65,7 +65,7 @@ class UserRepositoryImpl implements UserRepositoryProtocol {
       location: model.location,
       planType: model.planType,
       points: model.points,
-      placesVisited: model.placesVisited,
+      businessesVisited: model.businessesVisited,
       badgesCount: model.badgesCount,
       streakDays: model.streakDays,
       favoriteCount: model.favoriteCount,
@@ -87,7 +87,7 @@ class UserRepositoryImpl implements UserRepositoryProtocol {
       location: entity.location,
       planType: entity.planType,
       points: entity.points,
-      placesVisited: entity.placesVisited,
+      businessesVisited: entity.businessesVisited,
       badgesCount: entity.badgesCount,
       streakDays: entity.streakDays,
       favoriteCount: entity.favoriteCount,

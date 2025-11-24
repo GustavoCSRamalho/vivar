@@ -1,6 +1,7 @@
-// domain/usecases/place/get_nearby_places_usecase.dart
+// domain/usecases/place/get_nearby_businesses_usecase.dart
 
 import 'package:vivar/core/services/location_service.dart';
+import 'package:vivar/domain/entity/business/business_entity.dart';
 
 import '../../entity/place/place_entity.dart';
 import '../../interface/place/place_repository_protocol.dart';
@@ -11,19 +12,19 @@ class GetNearbyPlacesUseCase {
 
   GetNearbyPlacesUseCase(this._placeRepository, this._locationService);
 
-  Future<List<PlaceEntity>> execute({
+  Future<List<BusinessEntity>> execute({
     required double userLatitude,
     required double userLongitude,
     double radiusKm = 5.0,
   }) async {
     try {
-      final places = await _placeRepository.getNearbyPlaces(
+      final businesses = await _placeRepository.getNearbyPlaces(
         latitude: userLatitude,
         longitude: userLongitude,
         radiusKm: radiusKm,
       );
 
-      final placesWithDistance = places.map((place) {
+      final businessesWithDistance = businesses.map((place) {
         final distance = _locationService.getDistanceBetween(
           userLatitude,
           userLongitude,
@@ -31,7 +32,7 @@ class GetNearbyPlacesUseCase {
           place.longitude,
         );
 
-        return PlaceEntity(
+        return BusinessEntity(
           id: place.id,
           name: place.name,
           category: place.category,
@@ -61,14 +62,14 @@ class GetNearbyPlacesUseCase {
         );
       }).toList();
 
-      placesWithDistance.sort((a, b) {
+      businessesWithDistance.sort((a, b) {
         if (a.distance == null && b.distance == null) return 0;
         if (a.distance == null) return 1;
         if (b.distance == null) return -1;
         return a.distance!.compareTo(b.distance!);
       });
 
-      return placesWithDistance;
+      return businessesWithDistance;
     } catch (e) {
       print('❌ Erro ao buscar lugares próximos: $e');
       rethrow;

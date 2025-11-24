@@ -6,7 +6,7 @@ class DiscoverCollectionEntity {
   final String category;
   final String description;
   final String? imageUrl;
-  final int placesCount;
+  final int businessesCount;
   final List<String>? placeIds;
 
   DiscoverCollectionEntity({
@@ -15,7 +15,7 @@ class DiscoverCollectionEntity {
     required this.category,
     required this.description,
     this.imageUrl,
-    required this.placesCount,
+    required this.businessesCount,
     this.placeIds,
   });
 

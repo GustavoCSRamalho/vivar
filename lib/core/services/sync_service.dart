@@ -177,8 +177,8 @@ class SyncService {
       // TODO: Implementar quando migrar para Supabase
       /*
       // Baixar lugares
-      final placesData = await supabase.from('places').select();
-      for (var data in placesData) {
+      final businessesData = await supabase.from('businesses').select();
+      for (var data in businessesData) {
         final place = PlaceModel.fromJson(data);
         await _placeRepo.insert(place);
       }

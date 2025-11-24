@@ -1,7 +1,9 @@
 // data/repositories/discover_repository_impl.dart
 
+import 'package:vivar/domain/entity/business/business_entity.dart';
 import 'package:vivar/domain/entity/discover/discover_collection_entity.dart';
 import 'package:vivar/domain/interface/discover/discover_repository_protocol.dart';
+import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:vivar/domain/entity/place/place_entity.dart';
 import 'package:vivar/screens/discover/data/datasource/discover_datasource.dart';
@@ -23,42 +25,42 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
   }
 
   @override
-  Future<List<PlaceEntity>> getCollectionPlaces(String collectionId) async {
+  Future<List<BusinessEntity>> getCollectionPlaces(String collectionId) async {
     final models = await _getPlaceModelsForCollection(collectionId);
-    return models.map(_modelToEntity).toList();
+    return models;
   }
 
   @override
-  Future<List<PlaceEntity>> getTrendingPlaces() async {
+  Future<List<BusinessEntity>> getTrendingPlaces() async {
     final models = await _datasource.getTrendingPlaces();
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<PlaceEntity>> getNearYouPlaces() async {
+  Future<List<BusinessEntity>> getNearYouPlaces() async {
     final models = await _datasource.getNearYouPlaces();
     return models.map(_modelToEntity).toList();
   }
 
   @override
-  Future<List<PlaceEntity>> getTopRatedPlaces() async {
+  Future<List<BusinessEntity>> getTopRatedPlaces() async {
     final models = await _datasource.getTopRatedPlaces();
     return models.map(_modelToEntity).toList();
   }
 
   /// Busca os lugares de acordo com o ID da coleção
-  Future<List<PlaceModel>> _getPlaceModelsForCollection(
+  Future<List<BusinessEntity>> _getPlaceModelsForCollection(
     String collectionId,
   ) async {
     switch (collectionId) {
       case 'trending':
-        return await _datasource.getTrendingPlaces();
+        return toEntityList(await _datasource.getTrendingPlaces());
       case 'near_you':
-        return await _datasource.getNearYouPlaces();
+        return toEntityList(await _datasource.getNearYouPlaces());
       case 'top_rated':
-        return await _datasource.getTopRatedPlaces();
+        return toEntityList(await _datasource.getTopRatedPlaces());
       case 'new':
-        return await _datasource.getNewPlaces();
+        return toEntityList(await _datasource.getNewPlaces());
       default:
         return [];
     }
@@ -74,7 +76,7 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
         category: 'Tendências',
         description: 'Os lugares mais populares da semana',
         imageUrl: 'assets/images/trending.jpg',
-        placesCount: 12,
+        businessesCount: 12,
       ),
       DiscoverCollectionEntity(
         id: 'near_you',
@@ -82,7 +84,7 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
         category: 'Proximidade',
         description: 'Descubra lugares próximos à sua localização',
         imageUrl: 'assets/images/near.jpg',
-        placesCount: 8,
+        businessesCount: 8,
       ),
       DiscoverCollectionEntity(
         id: 'top_rated',
@@ -90,7 +92,7 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
         category: 'Qualidade',
         description: 'Os lugares com as melhores avaliações',
         imageUrl: 'assets/images/top_rated.jpg',
-        placesCount: 15,
+        businessesCount: 15,
       ),
       DiscoverCollectionEntity(
         id: 'new',
@@ -98,14 +100,14 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
         category: 'Novidades',
         description: 'Lugares recém adicionados ao app',
         imageUrl: 'assets/images/new.jpg',
-        placesCount: 6,
+        businessesCount: 6,
       ),
     ];
   }
 
   /// Converte PlaceModel (data layer) para PlaceEntity (domain layer)
-  PlaceEntity _modelToEntity(PlaceModel model) {
-    return PlaceEntity(
+  BusinessEntity _modelToEntity(BusinessModel model) {
+    return BusinessEntity(
       id: model.id,
       name: model.name,
       category: model.category,
@@ -133,5 +135,83 @@ class DiscoverRepositoryImpl implements DiscoverRepositoryProtocol {
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     );
+  }
+
+  BusinessEntity toEntity(BusinessModel model) {
+    return BusinessEntity(
+      id: model.id,
+      userId: model.userId,
+      name: model.name,
+      category: model.category,
+      description: model.description,
+      address: model.address,
+      city: model.city,
+      state: model.state,
+      latitude: model.latitude,
+      longitude: model.longitude,
+      phone: model.phone,
+      whatsapp: model.whatsapp,
+      email: model.email,
+      website: model.website,
+      schedule: model.schedule,
+      isWhatsapp: model.isWhatsapp,
+      rating: model.rating,
+      reviewsCount: model.reviewsCount,
+      priceRange: model.priceRange,
+      isOpen: model.isOpen,
+      openingHours: model.openingHours,
+      amenities: model.amenities,
+      images: model.images,
+      discountText: model.discountText,
+      discountPercentage: model.discountPercentage,
+      isPremiumOnly: model.isPremiumOnly,
+      distance: model.distance,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
+      synced: model.synced,
+    );
+  }
+
+  BusinessModel toModel(BusinessEntity entity) {
+    return BusinessModel(
+      id: entity.id,
+      userId: entity.userId,
+      name: entity.name,
+      category: entity.category,
+      description: entity.description,
+      address: entity.address,
+      city: entity.city,
+      state: entity.state,
+      latitude: entity.latitude,
+      longitude: entity.longitude,
+      phone: entity.phone,
+      whatsapp: entity.whatsapp,
+      email: entity.email,
+      website: entity.website,
+      schedule: entity.schedule,
+      isWhatsapp: entity.isWhatsapp,
+      rating: entity.rating,
+      reviewsCount: entity.reviewsCount,
+      priceRange: entity.priceRange,
+      isOpen: entity.isOpen,
+      openingHours: entity.openingHours,
+      amenities: entity.amenities,
+      images: entity.images,
+      discountText: entity.discountText,
+      discountPercentage: entity.discountPercentage,
+      isPremiumOnly: entity.isPremiumOnly,
+      distance: entity.distance,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      synced: entity.synced,
+    );
+  }
+
+  List<BusinessEntity> toEntityList(List<BusinessModel> models) {
+    return models.map((model) => toEntity(model)).toList();
+  }
+
+  List<BusinessModel> toModelList(List<BusinessEntity> entities) {
+    return entities.map((entity) => toModel(entity)).toList();
   }
 }

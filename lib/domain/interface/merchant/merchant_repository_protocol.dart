@@ -1,9 +1,11 @@
 // domain/repositories/merchant_repository_protocol.dart
 
+import 'package:vivar/domain/entity/business/business_entity.dart';
+
 import '../../entity/merchant/merchant_entity.dart';
 
 abstract class MerchantRepositoryProtocol {
-  Future<void> registerMerchant(MerchantEntity merchant);
-  Future<MerchantEntity?> getMerchantById(String merchantId);
-  Future<List<MerchantEntity>> getUserMerchants(String userId);
+  Future<void> registerMerchant(BusinessEntity merchant);
+  Future<BusinessEntity?> getMerchantById(String merchantId);
+  Future<List<BusinessEntity>> getUserMerchants(String userId);
 }
