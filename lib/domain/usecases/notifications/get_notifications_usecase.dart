@@ -1,6 +1,6 @@
 // domain/usecases/notifications/get_notifications_usecase.dart
 
-import 'package:vivar/domain/entity/notification/notification_entity.dart';
+import '../../../../packages/home_module/lib/src/domain/entity/notification_entity.dart';
 
 import '../../interface/notification/notifications_repository_protocol.dart';
 

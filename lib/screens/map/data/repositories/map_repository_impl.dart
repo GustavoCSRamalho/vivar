@@ -1,6 +1,6 @@
 // data/repositories/map_repository_impl.dart
 
-import 'package:vivar/models/business_model.dart';
+import '../../../../../packages/home_module/lib/src/data/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:vivar/domain/entity/map/map_place_entity.dart';
 import 'package:vivar/domain/interface/map/map_repository_protocol.dart';

@@ -1,6 +1,6 @@
 // domain/usecases/notification/mark_notification_as_read_usecase.dart
 
-import '../../interface/notification/notification_repository_protocol.dart';
+import '../../../../packages/home_module/lib/src/domain/interfaces/notification_repository_protocol.dart';
 
 class MarkNotificationAsReadUseCase {
   final NotificationRepositoryProtocol _notificationRepository;

@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
+import '../../../../../packages/database_module/lib/src/database_helper.dart';
 import 'package:vivar/domain/entity/subscription/subscription_plan_entity.dart';
 import 'package:vivar/domain/entity/user/user_subscription_entity.dart';
 

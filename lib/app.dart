@@ -1,7 +1,7 @@
 // app.dart
+import 'package:core_module/core_module.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'core/constants/colors.dart';
 import 'core/constants/routes.dart';
 
 class VivarApp extends StatelessWidget {
@@ -100,7 +100,7 @@ class VivarApp extends StatelessWidget {
       ),
 
       // Rotas
-      initialRoute: AppRoutes.splash,
+      initialRoute: RouteConstants.splash,
       routes: AppRoutes.routes,
       onGenerateRoute: AppRoutes.onGenerateRoute,
     );

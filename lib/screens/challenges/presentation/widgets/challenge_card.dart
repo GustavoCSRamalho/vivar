@@ -1,8 +1,8 @@
 // widgets/cards/challenge_card.dart
 
 import 'package:flutter/material.dart';
-import 'package:vivar/core/constants/colors.dart';
-import 'package:vivar/core/constants/text_styles.dart';
+import '../../../../../packages/design_system_module/lib/src/constants/colors.dart';
+import '../../../../../packages/design_system_module/lib/src/constants/text_styles.dart';
 
 import '../../../../domain/entity/challenge/challenge_entity.dart';
 

@@ -1,0 +1,1 @@
+library place_details_module;

@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/core/constants/colors.dart';
-import 'package:vivar/core/constants/text_styles.dart';
-import 'package:vivar/core/constants/spacing.dart';
+import '../../../../packages/design_system_module/lib/src/constants/colors.dart';
+import '../../../../packages/design_system_module/lib/src/constants/text_styles.dart';
+import '../../../../packages/design_system_module/lib/src/constants/spacing.dart';
 import 'package:vivar/screens/challenges/presentation/widgets/challenge_card.dart';
 
-import '../../auth/presentation/login/login_provider.dart';
+import '../../../../packages/authentication_module/lib/src/presentation/login/login_provider.dart';
 import 'providers/challenges_provider.dart';
 
 class ChallengesScreen extends StatefulWidget {

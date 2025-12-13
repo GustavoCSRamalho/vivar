@@ -3,7 +3,7 @@
 // data/datasources/challenge/challenge_datasource_protocol.dart
 
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
+import '../../../../../packages/database_module/lib/src/database_helper.dart';
 import 'package:vivar/domain/entity/challenge/challenge_entity.dart';
 
 /// Contrato abstrato para datasource de desafios

@@ -1,5 +1,5 @@
 // core/repositories/review_repository.dart
-import '../database/database_helper.dart';
+import '../../../packages/database_module/lib/src/database_helper.dart';
 import '../../models/review_model.dart';
 import 'base_repository.dart';
 import 'package:sqflite/sqflite.dart';

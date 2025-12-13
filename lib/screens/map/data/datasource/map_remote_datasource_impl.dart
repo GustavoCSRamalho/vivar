@@ -1,6 +1,6 @@
 // data/datasources/map/map_remote_datasource_protocol.dart
 
-import 'package:vivar/models/business_model.dart';
+import '../../../../../packages/home_module/lib/src/data/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'dart:math';
 import 'package:supabase_flutter/supabase_flutter.dart';

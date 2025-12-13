@@ -1,7 +1,7 @@
 // data/datasources/loyalty/loyalty_datasource.dart
 
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
+import '../../../../../packages/database_module/lib/src/database_helper.dart';
 import 'package:vivar/domain/entity/acitivty/activity_entity.dart';
 import 'package:vivar/domain/entity/benefit/benefit_entity.dart';
 import 'package:vivar/domain/entity/loyalt/loyalty_card_entity.dart';

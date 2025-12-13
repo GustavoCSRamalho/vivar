@@ -1,7 +1,7 @@
 // presentation/providers/notifications_provider_factory.dart
 
 import 'package:vivar/domain/usecases/notifications/get_notifications_by_type_usecase.dart';
-import 'package:vivar/screens/home/data/datasource/notification_datasource.dart';
+import '../../packages/home_module/lib/src/data/datasource/notification_datasource.dart';
 import 'package:vivar/screens/notifications/data/datasource/notifications_datasource.dart';
 
 import '../screens/notifications/data/repositories/notifications_repository_impl.dart';

@@ -1,5 +1,5 @@
 // core/repositories/checkin_repository.dart
-import '../database/database_helper.dart';
+import '../../../packages/database_module/lib/src/database_helper.dart';
 import '../../models/checkin_model.dart';
 import 'base_repository.dart';
 import 'package:sqflite/sqflite.dart';

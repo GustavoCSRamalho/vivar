@@ -1,12 +1,13 @@
+import 'package:core_module/core_module.dart';
 import 'package:flutter/material.dart';
 
 // Imports das telas que ainda estão no app principal
-import '../../screens/splash/presentation/splash_screen.dart';
-import '../../screens/onboarding/presentation/onboarding_screen.dart';
-import '../../screens/location/presentation/location_permission_screen.dart';
-import '../../screens/profile/presentation/profile_screen.dart';
-import '../../screens/profile/presentation/edit_profile_screen.dart';
-import '../../screens/profile/presentation/settings_screen.dart';
+import '../../../packages/splash/lib/src/presentation/splash_screen.dart';
+import '../../../packages/onboarding_module/lib/src/presentation/onboarding_screen.dart';
+import '../../../packages/location_module/lib/src/presentation/location_permission_screen.dart';
+import '../../../packages/profile_module/lib/src/presentation/profile_screen.dart';
+import '../../../packages/profile_module/lib/src/presentation/edit_profile_screen.dart';
+import '../../../packages/profile_module/lib/src/presentation/settings_screen.dart';
 import '../../screens/premium/presentation/vivar_plus_screen.dart';
 import '../../screens/challenges/presentation/challenges_screen.dart';
 import '../../screens/loyalty_card/presentation/loyalty_card_screen.dart';

@@ -89,6 +89,14 @@ dependencies:
   connectivity_plus: ^7.0.0
   supabase_flutter: ^2.10.3
 
+  discover_module:
+    path: ./packages/discover_module
+  profile_module:
+    path: ./packages/profile_module
+  swipe_module:
+    path: ./packages/swipe_module
+  home_module:
+    path: ./packages/home_module
   authentication_module:
     path: ./packages/authentication_module
   splash_module:

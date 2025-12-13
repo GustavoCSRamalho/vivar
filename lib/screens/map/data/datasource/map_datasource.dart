@@ -1,8 +1,8 @@
 // data/datasources/map/map_datasource.dart
 
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/models/business_model.dart';
+import '../../../../../packages/database_module/lib/src/database_helper.dart';
+import '../../../../../packages/home_module/lib/src/data/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 
 /// Contrato abstrato para datasource de mapa

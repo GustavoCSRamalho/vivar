@@ -1,11 +1,11 @@
 // data/datasources/map/map_sync_datasource.dart
 
-import 'package:vivar/models/business_model.dart';
+import '../../../../../packages/home_module/lib/src/data/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
+import '../../../../../packages/database_module/lib/src/database_helper.dart';
 import 'package:vivar/screens/map/data/datasource/map_datasource.dart';
 import 'package:vivar/screens/map/data/datasource/map_remote_datasource_impl.dart';
 

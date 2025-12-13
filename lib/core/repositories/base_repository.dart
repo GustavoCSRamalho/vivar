@@ -1,6 +1,6 @@
 // core/repositories/base_repository.dart
 import 'package:sqflite/sqflite.dart';
-import '../database/database_helper.dart';
+import '../../../packages/database_module/lib/src/database_helper.dart';
 
 abstract class BaseRepository<T> {
   final DatabaseHelper _dbHelper = DatabaseHelper();

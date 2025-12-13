@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:vivar/core/constants/colors.dart';
+import '../../../../packages/design_system_module/lib/src/constants/colors.dart';
 import 'package:vivar/core/constants/routes.dart';
-import 'package:vivar/core/constants/text_styles.dart';
+import '../../../../packages/design_system_module/lib/src/constants/text_styles.dart';
 import 'package:vivar/screens/map/presentation/providers/map_provider.dart';
 import 'package:vivar/screens/map/presentation/widgets/place_preview_card.dart';
 

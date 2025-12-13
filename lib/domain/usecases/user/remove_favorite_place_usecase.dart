@@ -1,6 +1,6 @@
 // domain/usecases/user/remove_favorite_place_usecase.dart
 
-import '../../interface/user/user_repository_protocol.dart';
+import '../../../../packages/home_module/lib/src/domain/interfaces/user_repository_protocol.dart';
 
 class RemoveFavoritePlaceUseCase {
   final UserRepositoryProtocol _userRepository;

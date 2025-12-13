@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/core/constants/colors.dart';
-import 'package:vivar/core/constants/text_styles.dart';
-import 'package:vivar/core/constants/spacing.dart';
-import 'package:vivar/screens/auth/presentation/login/login_provider.dart';
+import '../../../../packages/design_system_module/lib/src/constants/colors.dart';
+import '../../../../packages/design_system_module/lib/src/constants/text_styles.dart';
+import '../../../../packages/design_system_module/lib/src/constants/spacing.dart';
+import '../../../../packages/authentication_module/lib/src/presentation/login/login_provider.dart';
 import 'package:vivar/screens/loyalty_card/presentation/providers/loyalty_card_provider.dart';
 
 class LoyaltyCardScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 // domain/repositories/notifications_repository_protocol.dart
 
-import 'package:vivar/domain/entity/notification/notification_entity.dart';
+import '../../../../packages/home_module/lib/src/domain/entity/notification_entity.dart';
 
 abstract class NotificationsRepositoryProtocol {
   Future<List<NotificationEntity>> getNotifications(String userId);

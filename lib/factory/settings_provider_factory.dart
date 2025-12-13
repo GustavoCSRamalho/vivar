@@ -1,16 +1,16 @@
 // presentation/providers/settings_provider_factory.dart
 
-import 'package:vivar/screens/auth/domain/usecases/logout_usecase.dart';
-import 'package:vivar/screens/auth/data/datasource/auth_datasource.dart';
-import 'package:vivar/screens/auth/data/repositories/auth_repository_impl.dart';
-import 'package:vivar/screens/profile/data/datasource/settings_local_datasource.dart';
-import 'package:vivar/screens/profile/data/repositories/settings_repository_impl.dart';
-import 'package:vivar/screens/profile/presentation/providers/settings_provider.dart';
+import '../../packages/authentication_module/lib/src/domain/usecases/logout_usecase.dart';
+import '../../packages/authentication_module/lib/src/data/datasource/auth_datasource.dart';
+import '../../packages/authentication_module/lib/src/data/repositories/auth_repository_impl.dart';
+import '../../packages/profile_module/lib/src/data/datasource/settings_local_datasource.dart';
+import '../../packages/profile_module/lib/src/data/repositories/settings_repository_impl.dart';
+import '../../packages/profile_module/lib/src/presentation/providers/settings_provider.dart';
 
-import '../domain/usecases/settings/clear_cache_usecase.dart';
-import '../domain/usecases/settings/get_app_version_usecase.dart';
-import '../domain/usecases/settings/get_settings_usecase.dart';
-import '../domain/usecases/settings/update_settings_usecase.dart';
+import '../../packages/profile_module/lib/src/domain/usecases/clear_cache_usecase.dart';
+import '../../packages/profile_module/lib/src/domain/usecases/get_app_version_usecase.dart';
+import '../../packages/profile_module/lib/src/domain/usecases/get_settings_usecase.dart';
+import '../../packages/profile_module/lib/src/domain/usecases/update_settings_usecase.dart';
 
 class SettingsProviderFactory {
   static SettingsProvider create() {

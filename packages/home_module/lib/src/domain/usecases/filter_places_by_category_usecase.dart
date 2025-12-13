@@ -1,0 +1,23 @@
+// domain/usecases/place/filter_businesses_by_category_usecase.dart
+
+import '../entity/business_entity.dart';
+
+class FilterBusinessesByCategoryUseCase {
+  FilterBusinessesByCategoryUseCase();
+
+  List<BusinessEntity> execute({
+    required List<BusinessEntity> businesses,
+    required String category,
+  }) {
+    try {
+      if (category == 'Todos') {
+        return businesses;
+      }
+
+      return businesses.where((place) => place.category == category).toList();
+    } catch (e) {
+      print('❌ Erro ao filtrar por categoria: $e');
+      return businesses;
+    }
+  }
+}

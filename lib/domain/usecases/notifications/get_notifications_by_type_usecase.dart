@@ -1,6 +1,6 @@
 // domain/usecases/notifications/get_notifications_by_type_usecase.dart
 
-import '../../entity/notification/notification_entity.dart';
+import '../../../../packages/home_module/lib/src/domain/entity/notification_entity.dart';
 import '../../interface/notification/notifications_repository_protocol.dart';
 
 class GetNotificationsByTypeUseCase {

@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/core/constants/colors.dart';
-import 'package:vivar/core/constants/text_styles.dart';
+import '../../../../packages/design_system_module/lib/src/constants/colors.dart';
+import '../../../../packages/design_system_module/lib/src/constants/text_styles.dart';
 import 'package:vivar/screens/premium/presentation/providers/subscription_provider.dart';
 
 class VivarPlusScreen extends StatefulWidget {

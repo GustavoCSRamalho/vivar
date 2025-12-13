@@ -1,5 +1,5 @@
 // core/repositories/challenge_repository.dart
-import '../database/database_helper.dart';
+import '../../../packages/database_module/lib/src/database_helper.dart';
 import '../../models/challenge_model.dart';
 import 'base_repository.dart';
 

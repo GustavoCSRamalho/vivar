@@ -1,8 +1,8 @@
 // data/datasources/notification/notifications_datasource.dart
 
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
-import 'package:vivar/domain/entity/notification/notification_entity.dart';
+import '../../../../../packages/database_module/lib/src/database_helper.dart';
+import '../../../../../packages/home_module/lib/src/domain/entity/notification_entity.dart';
 import 'dart:convert';
 
 /// Contrato abstrato para datasource de notificações
