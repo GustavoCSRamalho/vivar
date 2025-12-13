@@ -1,5 +1,5 @@
-name: authentication_module
-description: Descrição do módulo
+name: splash_module
+description: Descrição do módulo splash
 version: 0.0.1
 
 environment:

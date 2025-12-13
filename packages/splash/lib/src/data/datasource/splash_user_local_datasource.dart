@@ -1,5 +1,5 @@
+import 'package:core_module/core_module.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:vivar/core/database/database_helper.dart';
 
 abstract class SplashUserLocalDataSourceProtocol {
   Future<bool> isUserLoggedIn();

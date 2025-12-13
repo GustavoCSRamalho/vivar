@@ -1,9 +1,8 @@
 // presentation/providers/splash_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:vivar/domain/usecases/splash/check_authentication_usecase.dart';
-import 'package:vivar/domain/usecases/splash/check_authentication_usecase.dart';
-import 'package:vivar/domain/usecases/splash/initialize_app_usecase.dart';
+import 'package:splash_module/src/domain/usecase/check_authentication_usecase.dart';
+import 'package:splash_module/src/domain/usecase/initialize_app_usecase.dart';
 
 enum SplashState { initial, loading, authenticated, unauthenticated, error }
 
@@ -14,8 +13,8 @@ class SplashProvider with ChangeNotifier {
   SplashProvider({
     required UserLoggedInUseCase userLoggedInUseCase,
     required InitializeAppUseCase initializeAppUseCase,
-  }) : _userLoggedInUseCase = userLoggedInUseCase,
-       _initializeAppUseCase = initializeAppUseCase;
+  })  : _userLoggedInUseCase = userLoggedInUseCase,
+        _initializeAppUseCase = initializeAppUseCase;
 
   SplashState _state = SplashState.initial;
   String? _error;

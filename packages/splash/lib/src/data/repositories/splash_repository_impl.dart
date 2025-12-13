@@ -1,5 +1,6 @@
-import 'package:vivar/screens/splash/data/datasource/splash_user_local_datasource.dart';
-import '../../../auth/domain/interfaces/auth_repository_protocol.dart';
+import 'package:splash_module/src/domain/interfaces/auth_repository_protocol.dart';
+
+import '../datasource/splash_user_local_datasource.dart';
 
 class SplashRepositoryImpl implements UserLoggedInProtocol {
   final SplashUserLocalDataSourceProtocol datasource;

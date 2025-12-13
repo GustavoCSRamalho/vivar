@@ -1,11 +1,9 @@
 // screens/splash/splash_screen.dart
 
+import 'package:core_module/core_module.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/core/constants/routes.dart';
-import 'package:vivar/core/constants/colors.dart';
-import 'package:vivar/core/constants/text_styles.dart';
-import 'package:vivar/screens/splash/presentation/providers/splash_provider.dart';
+import 'providers/splash_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -47,16 +45,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     switch (provider.state) {
       case SplashState.authenticated:
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        Navigator.pushReplacementNamed(context, RouteConstants.home);
         break;
       case SplashState.unauthenticated:
-        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+        Navigator.pushReplacementNamed(context, RouteConstants.onboarding);
         break;
       case SplashState.error:
         _showErrorDialog();
         break;
       default:
-        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+        Navigator.pushReplacementNamed(context, RouteConstants.onboarding);
     }
   }
 
