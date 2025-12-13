@@ -7,7 +7,7 @@ import 'package:vivar/core/constants/text_styles.dart';
 import 'package:vivar/core/constants/spacing.dart';
 import 'package:vivar/screens/challenges/presentation/widgets/challenge_card.dart';
 
-import '../../auth/presentation/providers/login_provider.dart';
+import '../../auth/presentation/login/login_provider.dart';
 import 'providers/challenges_provider.dart';
 
 class ChallengesScreen extends StatefulWidget {

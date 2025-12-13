@@ -6,7 +6,7 @@ import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/text_styles.dart';
 import 'package:vivar/core/constants/spacing.dart';
 
-import '../../auth/presentation/providers/login_provider.dart';
+import '../../auth/presentation/login/login_provider.dart';
 import 'providers/notifications_provider.dart';
 
 class NotificationsScreen extends StatefulWidget {

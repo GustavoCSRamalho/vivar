@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vivar/core/constants/colors.dart';
 import 'package:vivar/core/constants/text_styles.dart';
 import 'package:vivar/core/constants/spacing.dart';
-import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
+import 'package:vivar/screens/auth/presentation/login/login_provider.dart';
 import 'package:vivar/screens/loyalty_card/presentation/providers/loyalty_card_provider.dart';
 
 class LoyaltyCardScreen extends StatefulWidget {

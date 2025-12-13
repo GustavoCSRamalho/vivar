@@ -1,6 +1,6 @@
 // presentation/providers/settings_provider_factory.dart
 
-import 'package:vivar/domain/usecases/auth/logout_usecase.dart';
+import 'package:vivar/screens/auth/domain/usecases/logout_usecase.dart';
 import 'package:vivar/screens/auth/data/datasource/auth_datasource.dart';
 import 'package:vivar/screens/auth/data/repositories/auth_repository_impl.dart';
 import 'package:vivar/screens/profile/data/datasource/settings_local_datasource.dart';

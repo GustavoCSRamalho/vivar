@@ -1,14 +1,9 @@
-// core/constants/routes.dart
 import 'package:flutter/material.dart';
+
+// Imports das telas que ainda estão no app principal
 import '../../screens/splash/presentation/splash_screen.dart';
 import '../../screens/onboarding/presentation/onboarding_screen.dart';
-import '../../screens/auth/presentation/login_screen.dart';
 import '../../screens/location/presentation/location_permission_screen.dart';
-import '../../screens/home/presentation/home_screen.dart';
-import '../../screens/discover/presentation/discover_screen.dart';
-import '../../screens/swipe/presentation/swipe_screen.dart';
-import '../../screens/map/presentation/map_screen.dart';
-import '../../screens/place_details/presentation/place_details_screen.dart';
 import '../../screens/profile/presentation/profile_screen.dart';
 import '../../screens/profile/presentation/edit_profile_screen.dart';
 import '../../screens/profile/presentation/settings_screen.dart';
@@ -19,87 +14,39 @@ import '../../screens/notifications/presentation/notifications_screen.dart';
 import '../../screens/merchant/presentation/merchant_register_screen.dart';
 
 class AppRoutes {
-  static const String splash = '/';
-  static const String onboarding = '/onboarding';
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String locationPermission = '/location-permission';
-  static const String home = '/home';
-  static const String discover = '/discover';
-  static const String swipe = '/swipe';
-  static const String map = '/map';
-  static const String businessesDetails = '/businesses-details';
-  static const String profile = '/profile';
-  static const String editProfile = '/edit-profile';
-  static const String settings = '/settings';
-  static const String vivarPlus = '/vivar-plus';
-  static const String challenges = '/challenges';
-  static const String loyaltyCard = '/loyalty-card';
-  static const String notifications = '/notifications';
-  static const String merchantRegister = '/merchant-register';
+  AppRoutes._();
 
-  // Rotas que não precisam de argumentos
+  /// Retorna todas as rotas combinadas
   static Map<String, WidgetBuilder> get routes {
     return {
-      splash: (context) => SplashScreen(),
-      onboarding: (context) => OnboardingScreen(),
-      login: (context) => LoginScreen(),
-      locationPermission: (context) => LocationPermissionScreen(),
-      home: (context) => HomeScreen(),
-      discover: (context) => DiscoverScreen(),
-      swipe: (context) => SwipeScreen(),
-      map: (context) => MapScreen(),
-      profile: (context) => ProfileScreen(),
-      editProfile: (context) => EditProfileScreen(),
-      settings: (context) => SettingsScreen(),
-      vivarPlus: (context) => VivarPlusScreen(),
-      challenges: (context) => ChallengesScreen(),
-      loyaltyCard: (context) => LoyaltyCardScreen(),
-      notifications: (context) => NotificationsScreen(),
-      merchantRegister: (context) => MerchantRegisterScreen(),
+      // Rotas locais (ainda no app principal)
+      RouteConstants.splash: (context) => SplashScreen(),
+      RouteConstants.onboarding: (context) => OnboardingScreen(),
+      RouteConstants.locationPermission: (context) =>
+          LocationPermissionScreen(),
+      RouteConstants.profile: (context) => ProfileScreen(),
+      RouteConstants.editProfile: (context) => EditProfileScreen(),
+      RouteConstants.settings: (context) => SettingsScreen(),
+      RouteConstants.vivarPlus: (context) => VivarPlusScreen(),
+      RouteConstants.challenges: (context) => ChallengesScreen(),
+      RouteConstants.loyaltyCard: (context) => LoyaltyCardScreen(),
+      RouteConstants.notifications: (context) => NotificationsScreen(),
+      RouteConstants.merchantRegister: (context) => MerchantRegisterScreen(),
+
+      // Rotas dos módulos (via registry)
+      ...RouteRegistry.instance.allRoutes,
     };
   }
 
-  // Método para lidar com rotas com argumentos
+  /// Lida com rotas que precisam de argumentos
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-    debugPrint('🔍 Navegando para detalhes do lugar: $settings');
-    debugPrint('🔍 Navegando para detalhes do lugar name: ${settings.name}');
+    debugPrint('🔍 AppRoutes.onGenerateRoute: ${settings.name}');
 
-    switch (settings.name) {
-      case businessesDetails:
-        // Extrai os argumentos
+    // Tenta resolver no registry (módulos)
+    final route = RouteRegistry.instance.onGenerateRoute(settings);
+    if (route != null) return route;
 
-        final args = settings.arguments as Map<String, dynamic>?;
-        final businessesId = args?['businessesId'] as String?;
-        debugPrint('🏪 Abrindo detalhes do lugar: $businessesId');
-
-        if (businessesId == null) {
-          debugPrint('❌ ID do lugar não fornecido');
-
-          // Se não tiver placeId, retorna para home
-          return MaterialPageRoute(builder: (context) => HomeScreen());
-        }
-
-        return MaterialPageRoute(
-          builder: (context) =>
-              BusinessesDetailsScreen(businessesId: businessesId),
-        );
-
-      default:
-        return null;
-    }
-  }
-
-  // Método helper para navegação com argumentos
-  static Future<T?> navigateToBusinessesDetails<T>(
-    BuildContext context,
-    String businessesId,
-  ) {
-    debugPrint('🔍 Navegando para detalhes do lugar: $businessesId');
-    return Navigator.pushNamed<T>(
-      context,
-      businessesDetails,
-      arguments: {'businessesId': businessesId},
-    );
+    // Se não encontrar, retorna null
+    return null;
   }
 }

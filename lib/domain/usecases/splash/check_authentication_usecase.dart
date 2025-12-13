@@ -1,6 +1,6 @@
 // data/usecases/splash/check_authentication_usecase_impl.dart
 
-import 'package:vivar/domain/interface/auth/auth_repository_protocol.dart';
+import 'package:vivar/screens/auth/domain/interfaces/auth_repository_protocol.dart';
 
 class UserLoggedInUseCase {
   final UserLoggedInProtocol _authRepository;

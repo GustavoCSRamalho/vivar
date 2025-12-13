@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vivar/screens/auth/presentation/providers/login_provider.dart';
+import 'package:vivar/screens/auth/presentation/login/login_provider.dart';
 import 'package:vivar/screens/profile/presentation/providers/profile_provider.dart';
 import 'package:vivar/screens/profile/presentation/providers/settings_provider.dart';
 import '../../../core/constants/colors.dart';

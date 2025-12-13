@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:vivar/domain/entity/settings/app_settings_entity.dart';
-import 'package:vivar/domain/usecases/auth/logout_usecase.dart';
+import 'package:vivar/screens/auth/domain/usecases/logout_usecase.dart';
 import '../../../../domain/usecases/settings/clear_cache_usecase.dart';
 import '../../../../domain/usecases/settings/get_app_version_usecase.dart';
 import '../../../../domain/usecases/settings/get_settings_usecase.dart';
