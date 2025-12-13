@@ -91,6 +91,8 @@ dependencies:
 
   authentication_module:
     path: ./packages/authentication_module
+  splash_module:
+    path: ./packages/splash_module
   core_module:
     path: ./packages/core_module
 

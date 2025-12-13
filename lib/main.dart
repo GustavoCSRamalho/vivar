@@ -1,32 +1,29 @@
 // main.dart
+import 'package:authentication_module/authentication_module.dart';
+import 'package:core_module/core_module.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:splash_module/splash_module.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:vivar/core/database/database_seeder.dart';
 import 'package:vivar/factory/challenges_provider_factory.dart';
 import 'package:vivar/factory/discover_provider_factory.dart';
 import 'package:vivar/factory/edit_profile_provider_factory.dart';
-import 'package:vivar/screens/auth/factory/forgot_password_provider_factory.dart';
 import 'package:vivar/factory/home_provider_factory.dart';
 import 'package:vivar/factory/location_permission_provider_factory.dart';
-import 'package:vivar/screens/auth/factory/login_provider_factory.dart';
 import 'package:vivar/factory/loyalty_card_provider_factory.dart';
 import 'package:vivar/factory/merchant_register_provider_factory.dart';
 import 'package:vivar/factory/notifications_provider_factory.dart';
 import 'package:vivar/factory/onboarding_provider_factory.dart';
 import 'package:vivar/factory/place_details_provider_factory.dart';
 import 'package:vivar/factory/profile_provider_factory.dart';
-import 'package:vivar/screens/auth/factory/register_provider_factory.dart';
 import 'package:vivar/factory/settings_provider_factory.dart';
-import 'package:vivar/factory/splash_provider_factory.dart';
 import 'package:vivar/factory/subscription_provider_factory.dart';
 import 'package:vivar/factory/swipe_provider_factory.dart';
 import 'package:vivar/firebase_options.dart';
 import 'package:vivar/models/business_model.dart';
 import 'package:vivar/models/place_model.dart';
 import 'app.dart';
-import 'core/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 void main() async {

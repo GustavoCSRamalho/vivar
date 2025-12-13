@@ -1,10 +1,5 @@
 library authentication_module;
 
-// // Models
-// export 'src/models/user.dart';
-
-// // Services
-// export 'src/services/auth_service.dart';
-
-// // Widgets
-// export 'src/widgets/login_button.dart';
+export './src/factory/forgot_password_provider_factory.dart';
+export './src/factory/login_provider_factory.dart';
+export './src/factory/register_provider_factory.dart';
