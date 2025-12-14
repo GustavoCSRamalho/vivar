@@ -1,5 +1,6 @@
 // screens/discover/discover_screen.dart
 import 'package:core_module/core_module.dart';
+import 'package:discover_module/src/presentation/providers/discover_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'widgets/discover_card.dart';
@@ -28,10 +29,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     try {
       debugPrint('🔄 DiscoverScreen: Carregando coleções...');
 
-      final homeProvider = context.read<HomeProvider>();
+      final discoverProvider = context.read<DiscoverProvider>();
 
       // Gerar coleções baseadas nos lugares do banco
-      _collections = _generateCollections(homeProvider);
+      _collections = _generateCollections(discoverProvider);
 
       setState(() => _isLoading = false);
 
@@ -43,8 +44,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   /// Gera coleções dinamicamente baseadas nos lugares
-  List<Map<String, dynamic>> _generateCollections(HomeProvider provider) {
-    final businesses = provider.businesses;
+  List<Map<String, dynamic>> _generateCollections(DiscoverProvider provider) {
+    final businesses = provider.nearYouBusinesses;
 
     if (businesses.isEmpty) {
       return [];

@@ -1,25 +1,25 @@
-// domain/usecases/user/add_favorite_place_usecase.dart
+// // domain/usecases/user/add_favorite_place_usecase.dart
 
-import '../../../../packages/home_module/lib/src/domain/interfaces/user_repository_protocol.dart';
+// import '../../../../packages/home_module/lib/src/domain/interfaces/user_repository_protocol.dart';
 
-class AddFavoritePlaceUseCase {
-  final UserRepositoryProtocol _userRepository;
+// class AddFavoritePlaceUseCase {
+//   final UserRepositoryProtocol _userRepository;
 
-  AddFavoritePlaceUseCase(this._userRepository);
+//   AddFavoritePlaceUseCase(this._userRepository);
 
-  Future<void> execute({
-    required String userId,
-    required String placeId,
-  }) async {
-    try {
-      if (userId.trim().isEmpty || placeId.trim().isEmpty) {
-        throw Exception('User ID e Place ID são obrigatórios');
-      }
+//   Future<void> execute({
+//     required String userId,
+//     required String placeId,
+//   }) async {
+//     try {
+//       if (userId.trim().isEmpty || placeId.trim().isEmpty) {
+//         throw Exception('User ID e Place ID são obrigatórios');
+//       }
 
-      await _userRepository.addFavorite(userId, placeId);
-    } catch (e) {
-      print('❌ Erro ao adicionar favorito: $e');
-      rethrow;
-    }
-  }
-}
+//       await _userRepository.addFavorite(userId, placeId);
+//     } catch (e) {
+//       print('❌ Erro ao adicionar favorito: $e');
+//       rethrow;
+//     }
+//   }
+// }

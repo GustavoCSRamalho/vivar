@@ -4,22 +4,22 @@ import 'package:core_module/core_module.dart';
 import 'package:discover_module/discover_module.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:location_module/location_module.dart';
+import 'package:merchant_module/merchant_module.dart';
+import 'package:onboarding_module/onboarding_module.dart';
+import 'package:place_details_module/place_details_module.dart';
+import 'package:premium_module/premium_module.dart';
+import 'package:profile_module/profile_module.dart';
 import 'package:provider/provider.dart';
 import 'package:splash_module/splash_module.dart';
 import 'package:home_module/home_module.dart';
 import 'package:swipe_module/swipe_module.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vivar/factory/challenges_provider_factory.dart';
-import 'package:vivar/factory/edit_profile_provider_factory.dart';
-import '../packages/location_module/lib/src/factory/location_permission_provider_factory.dart';
+import 'package:profile_module/src/factory/edit_profile_provider_factory.dart';
 import 'package:vivar/factory/loyalty_card_provider_factory.dart';
-import 'package:vivar/factory/merchant_register_provider_factory.dart';
 import 'package:vivar/factory/notifications_provider_factory.dart';
-import '../packages/onboarding_module/lib/src/factory/onboarding_provider_factory.dart';
-import '../packages/place_details_module/lib/src/factory/place_details_provider_factory.dart';
-import '../packages/profile_module/lib/src/factory/profile_provider_factory.dart';
-import 'package:vivar/factory/settings_provider_factory.dart';
-import 'package:vivar/factory/subscription_provider_factory.dart';
+import 'package:profile_module/src/factory/settings_provider_factory.dart';
 import 'package:vivar/firebase_options.dart';
 import 'package:vivar/models/place_model.dart';
 import 'app.dart';
@@ -61,9 +61,9 @@ void main() async {
   final settingsProvider = SettingsProviderFactory.create();
   final splashProvider = SplashProviderFactory.create();
   final subscriptionProvider = SubscriptionProviderFactory.create();
-  final loyaltyCardProvider = LoyaltyCardProviderFactory.create();
-  final notificationProvider = NotificationsProviderFactory.create();
-  final challengesProvider = ChallengesProviderFactory.create();
+  // final loyaltyCardProvider = LoyaltyCardProviderFactory.create();
+  // final notificationProvider = NotificationsProviderFactory.create();
+  // final challengesProvider = ChallengesProviderFactory.create();
 
   runApp(
     MultiProvider(
@@ -83,14 +83,16 @@ void main() async {
         ChangeNotifierProvider(create: (_) => forgotPasswordProvider),
         ChangeNotifierProvider(create: (_) => editProfileProvider),
         ChangeNotifierProvider(create: (_) => settingsProvider),
-        ChangeNotifierProvider(create: (_) => loyaltyCardProvider),
-        ChangeNotifierProvider(create: (_) => notificationProvider),
-        ChangeNotifierProvider(create: (_) => challengesProvider),
+        // ChangeNotifierProvider(create: (_) => loyaltyCardProvider),
+        // ChangeNotifierProvider(create: (_) => notificationProvider),
+        // ChangeNotifierProvider(create: (_) => challengesProvider),
       ],
       child: VivarApp(),
     ),
   );
 }
+
+class LoyaltyCardProviderFactory {}
 
 // Future<void> _testDatabaseDirectly() async {
 //   debugPrint('🧪 TESTE DIRETO NO BANCO');

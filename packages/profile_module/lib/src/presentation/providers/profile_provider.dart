@@ -2,6 +2,8 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:profile_module/src/domain/entity/profile_entity.dart';
+import 'package:profile_module/src/domain/entity/user_entity.dart';
+import 'package:profile_module/src/domain/usecases/get_current_user_usecase.dart';
 import 'package:profile_module/src/domain/usecases/get_profile_usecase.dart';
 import 'package:profile_module/src/domain/usecases/get_recent_badges_usecase.dart';
 import 'package:profile_module/src/domain/usecases/get_recent_checkins_count_usecase.dart';
@@ -12,14 +14,17 @@ class ProfileProvider with ChangeNotifier {
   final UpdateProfileUseCase _updateProfileUseCase;
   final GetRecentCheckinsCountUseCase _getRecentCheckinsCountUseCase;
   final GetRecentBadgesUseCase _getRecentBadgesUseCase;
+  final GetCurrentUserUseCase _getCurrentUserUseCase;
 
   ProfileProvider({
     required GetProfileUseCase getProfileUseCase,
     required UpdateProfileUseCase updateProfileUseCase,
     required GetRecentCheckinsCountUseCase getRecentCheckinsCountUseCase,
+    required GetCurrentUserUseCase getCurrentUserUseCase,
     required GetRecentBadgesUseCase getRecentBadgesUseCase,
   }) : _getProfileUseCase = getProfileUseCase,
        _updateProfileUseCase = updateProfileUseCase,
+       _getCurrentUserUseCase = getCurrentUserUseCase,
        _getRecentCheckinsCountUseCase = getRecentCheckinsCountUseCase,
        _getRecentBadgesUseCase = getRecentBadgesUseCase;
 
@@ -34,6 +39,17 @@ class ProfileProvider with ChangeNotifier {
   List<String> get recentBadges => _recentBadges;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  UserEntity? _currentUser;
+  UserEntity? get currentUser => _currentUser;
+
+  Future<void> loadUser() async {
+    try {
+      _currentUser = await _getCurrentUserUseCase.execute();
+      debugPrint('✅ Usuário carregado: ${_currentUser?.name}');
+    } catch (e) {
+      debugPrint('❌ Erro ao carregar usuário: $e');
+    }
+  }
 
   Future<void> loadProfile(String userId) async {
     _setLoading(true);

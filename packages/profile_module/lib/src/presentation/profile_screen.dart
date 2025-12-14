@@ -1,5 +1,6 @@
 // screens/profile/profile_screen.dart
 
+import 'package:core_module/core_module.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/profile_provider.dart';
@@ -18,7 +19,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final user = await context.read<LoginProvider>().currentUser;
+    await context.read<ProfileProvider>().loadUser();
+
+    final user = await context.read<ProfileProvider>().currentUser;
     if (user != null) {
       await context.read<ProfileProvider>().loadProfile(user.id);
     }
@@ -364,7 +367,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.login);
+                Navigator.pushReplacementNamed(context, RouteConstants.login);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
@@ -594,19 +597,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _editProfile() {
-    Navigator.pushNamed(context, AppRoutes.editProfile);
+    Navigator.pushNamed(context, RouteConstants.editProfile);
   }
 
   void _openSettings() {
-    Navigator.pushNamed(context, AppRoutes.settings);
+    Navigator.pushNamed(context, RouteConstants.settings);
   }
 
   void _openLoyaltyCard() {
-    Navigator.pushNamed(context, AppRoutes.loyaltyCard);
+    // Navigator.pushNamed(context, RouteConstants.loyaltyCard);
   }
 
   void _openChallenges() {
-    Navigator.pushNamed(context, AppRoutes.challenges);
+    // Navigator.pushNamed(context, RouteConstants.challenges);
   }
 
   void _openFavorites() {
@@ -617,15 +620,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _openVizinhoPlus() {
-    Navigator.pushNamed(context, AppRoutes.vivarPlus);
+    Navigator.pushNamed(context, RouteConstants.vivarPlus);
   }
 
   void _openNotifications() {
-    Navigator.pushNamed(context, AppRoutes.notifications);
+    // Navigator.pushNamed(context, RouteConstants.notifications);
   }
 
   void _openMerchantRegister() {
-    Navigator.pushNamed(context, AppRoutes.merchantRegister);
+    Navigator.pushNamed(context, RouteConstants.merchantRegister);
   }
 
   void _openHelp() {
@@ -673,7 +676,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               context.read<SettingsProvider>().logout();
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                AppRoutes.home,
+                RouteConstants.home,
                 (route) => false,
               );
             },
@@ -689,16 +692,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     switch (index) {
       case 0:
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        Navigator.pushReplacementNamed(context, RouteConstants.home);
         break;
       case 1:
-        Navigator.pushReplacementNamed(context, AppRoutes.discover);
+        Navigator.pushReplacementNamed(context, RouteConstants.discover);
         break;
       case 2:
-        Navigator.pushReplacementNamed(context, AppRoutes.swipe);
+        Navigator.pushReplacementNamed(context, RouteConstants.swipe);
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, AppRoutes.map);
+        Navigator.pushReplacementNamed(context, RouteConstants.map);
         break;
     }
   }

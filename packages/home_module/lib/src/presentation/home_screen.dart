@@ -306,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openNotifications() {
-    Navigator.pushNamed(context, RouteConstants.notifications);
+    // Navigator.pushNamed(context, RouteConstants.notifications);
   }
 
   void _openSearch() {

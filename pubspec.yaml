@@ -89,6 +89,18 @@ dependencies:
   connectivity_plus: ^7.0.0
   supabase_flutter: ^2.10.3
 
+  location_module:
+    path: ./packages/location_module
+  map_module:
+    path: ./packages/map_module
+  merchant_module:
+    path: ./packages/merchant_module
+  onboarding_module:
+    path: ./packages/onboarding_module
+  place_details_module:
+    path: ./packages/place_details_module
+  premium_module:
+    path: ./packages/premium_module
   discover_module:
     path: ./packages/discover_module
   profile_module:

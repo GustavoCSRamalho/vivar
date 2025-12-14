@@ -53,9 +53,14 @@ class _BusinessesDetailsScreenState extends State<BusinessesDetailsScreen> {
 
     try {
       final businessesProvider = context.read<PlaceDetailsProvider>();
-      final homeProvider = context.read<HomeProvider>();
+      final placeDetailsProvider = context.read<PlaceDetailsProvider>();
 
       // Buscar o lugar pelo ID
+      final userId = await businessesProvider.currentUser?.id;
+      await businessesProvider.loadPlaceDetails(
+        widget.businessesId,
+        userId ?? "",
+      );
       await businessesProvider.getPlaceById(widget.businessesId);
 
       final place = businessesProvider.place!;
@@ -63,7 +68,7 @@ class _BusinessesDetailsScreenState extends State<BusinessesDetailsScreen> {
       debugPrint('🔍 Lugar encontrado: ${place?.name}');
 
       if (place != null) {
-        final isFav = homeProvider.isFavorite(widget.businessesId);
+        final isFav = placeDetailsProvider.isFavorite(widget.businessesId);
 
         setState(() {
           _place = place;
@@ -581,9 +586,11 @@ class _BusinessesDetailsScreenState extends State<BusinessesDetailsScreen> {
   }
 
   void _toggleFavorite() async {
-    final user = await context.read<LoginProvider>().currentUser;
+    final user = await context.read<PlaceDetailsProvider>().currentUser;
     if (user != null) {
-      await context.read<HomeProvider>().toggleFavorite(widget.businessesId);
+      await context.read<PlaceDetailsProvider>().toggleFavorite(
+        widget.businessesId,
+      );
       setState(() => _isFavorite = !_isFavorite);
     }
   }

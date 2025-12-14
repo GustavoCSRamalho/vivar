@@ -3,18 +3,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:place_details_module/src/domain/entity/business_entity.dart';
 import 'package:place_details_module/src/domain/entity/review_entity.dart';
+import 'package:place_details_module/src/domain/entity/user_entity.dart';
 import 'package:place_details_module/src/domain/usecase/add_review_usecase.dart';
 import 'package:place_details_module/src/domain/usecase/check_user_reviewed_usecase.dart';
+import 'package:place_details_module/src/domain/usecase/get_current_user_usecase.dart';
 import 'package:place_details_module/src/domain/usecase/get_place_by_Id_usecase.dart';
 import 'package:place_details_module/src/domain/usecase/get_place_details_usecase.dart';
 import 'package:place_details_module/src/domain/usecase/get_place_reviews_usecase.dart';
+import 'package:place_details_module/src/domain/usecase/load_user_favorites_usecase.dart';
+import 'package:place_details_module/src/domain/usecase/toggle_favorite_place_usecase.dart';
 
 class PlaceDetailsProvider with ChangeNotifier {
   final GetPlaceDetailsUseCase _getPlaceDetailsUseCase;
   final GetPlaceReviewsUseCase _getPlaceReviewsUseCase;
   final AddReviewUseCase _addReviewUseCase;
   final CheckUserReviewedUseCase _checkUserReviewedUseCase;
+  final GetCurrentUserUseCase _getCurrentUserUseCase;
+  final ToggleFavoriteBusinessesUseCase _toggleFavoriteBusinessesUseCase;
   final GetPlaceByIdUseCase _getPlaceByIdUseCase;
+  final LoadUserFavoritesUseCase _loadUserFavoritesUseCase;
 
   PlaceDetailsProvider({
     required GetPlaceDetailsUseCase getPlaceDetailsUseCase,
@@ -22,10 +29,16 @@ class PlaceDetailsProvider with ChangeNotifier {
     required AddReviewUseCase addReviewUseCase,
     required CheckUserReviewedUseCase checkUserReviewedUseCase,
     required GetPlaceByIdUseCase getPlaceByIdUseCase,
+    required ToggleFavoriteBusinessesUseCase toggleFavoriteBusinessesUseCase,
+    required GetCurrentUserUseCase getCurrentUserUseCase,
+    required LoadUserFavoritesUseCase loadUserFavoritesUseCase,
   }) : _getPlaceDetailsUseCase = getPlaceDetailsUseCase,
        _getPlaceReviewsUseCase = getPlaceReviewsUseCase,
        _addReviewUseCase = addReviewUseCase,
        _checkUserReviewedUseCase = checkUserReviewedUseCase,
+       _loadUserFavoritesUseCase = loadUserFavoritesUseCase,
+       _toggleFavoriteBusinessesUseCase = toggleFavoriteBusinessesUseCase,
+       _getCurrentUserUseCase = getCurrentUserUseCase,
        _getPlaceByIdUseCase = getPlaceByIdUseCase;
 
   BusinessEntity? _place;
@@ -38,7 +51,60 @@ class PlaceDetailsProvider with ChangeNotifier {
   List<ReviewEntity> get reviews => _reviews;
   bool get hasUserReviewed => _hasUserReviewed;
   bool get isLoading => _isLoading;
+  List<String> _favoritePlaceIds = [];
   String? get error => _error;
+  bool isFavorite(String placeId) {
+    return _favoritePlaceIds.contains(placeId);
+  }
+
+  UserEntity? get currentUser => _currentUser;
+  UserEntity? _currentUser;
+
+  Future<void> toggleFavorite(String placeId) async {
+    if (_currentUser == null) return;
+
+    try {
+      final isFavorite = await _toggleFavoriteBusinessesUseCase.execute(
+        userId: _currentUser!.id,
+        placeId: placeId,
+      );
+
+      if (isFavorite) {
+        _favoritePlaceIds.add(placeId);
+      } else {
+        _favoritePlaceIds.remove(placeId);
+      }
+
+      notifyListeners();
+      debugPrint('✅ Favorito alternado: $placeId');
+    } catch (e) {
+      debugPrint('❌ Erro ao alternar favorito: $e');
+    }
+  }
+
+  /// Carrega os favoritos do usuário
+  Future<void> _loadFavorites() async {
+    if (_currentUser == null) return;
+
+    try {
+      _favoritePlaceIds = await _loadUserFavoritesUseCase.execute(
+        _currentUser!.id,
+      );
+      debugPrint('✅ ${_favoritePlaceIds.length} favoritos carregados');
+      notifyListeners();
+    } catch (e) {
+      debugPrint('❌ Erro ao carregar favoritos: $e');
+    }
+  }
+
+  Future<void> _loadUser() async {
+    try {
+      _currentUser = await _getCurrentUserUseCase.execute();
+      debugPrint('✅ Usuário carregado: ${_currentUser?.name}');
+    } catch (e) {
+      debugPrint('❌ Erro ao carregar usuário: $e');
+    }
+  }
 
   Future<void> loadPlaceDetails(String placeId, String userId) async {
     _setLoading(true);

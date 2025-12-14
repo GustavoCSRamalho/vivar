@@ -28,8 +28,8 @@ class RouteConstants {
 
   // Premium/Features
   static const String vivarPlus = '/vivar-plus';
-  static const String challenges = '/challenges';
-  static const String loyaltyCard = '/loyalty-card';
-  static const String notifications = '/notifications';
+  // static const String challenges = '/challenges';
+  // static const String loyaltyCard = '/loyalty-card';
+  // static const String notifications = '/notifications';
   static const String merchantRegister = '/merchant-register';
 }

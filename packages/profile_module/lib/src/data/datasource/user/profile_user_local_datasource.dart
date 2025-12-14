@@ -1,8 +1,8 @@
 // data/datasources/user/user_local_datasource_protocol.dart
 
+import 'package:core_module/core_module.dart';
+import 'package:profile_module/src/data/models/user_model.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../../../../../database_module/lib/src/database_helper.dart';
-import '../../../../../../home_module/lib/src/data/models/user_model.dart';
 
 abstract class UserLocalDataSourceProtocol {
   Future<UserModel?> getUser(String userId);

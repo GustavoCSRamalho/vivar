@@ -1,6 +1,6 @@
 // data/datasources/user/user_local_sync_datasource.dart
 
-import '../../../../../../home_module/lib/src/data/models/user_model.dart';
+import 'package:profile_module/src/data/models/user_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'profile_user_local_datasource.dart';
 

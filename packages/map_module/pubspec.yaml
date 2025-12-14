@@ -1,4 +1,4 @@
-name: onboarding_module
+name: map_module
 description: Descrição do módulo
 version: 0.0.1
 
@@ -7,6 +7,7 @@ environment:
 
 dependencies:
   supabase_flutter: ^2.10.3
+  google_maps_flutter: ^2.5.0
   json_annotation: ^4.9.0
   geolocator: ^14.0.2
   connectivity_plus: ^7.0.0
